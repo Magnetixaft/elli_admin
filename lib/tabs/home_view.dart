@@ -34,10 +34,10 @@ class _HomeViewState extends State<HomeView> {
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
                 )),
-            const SizedBox(height: 10),
+            const SizedBox(height: 24),
             Row(
               children: [
-                Container(width: 50),
+                Container(width: 80),
                 Expanded(
                   flex: 1,
                   child: Column(
