@@ -21,54 +21,136 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 10),
-          const Text("    Home",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              )),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
+    return SingleChildScrollView(
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 10),
+            const Text("    Home",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                )),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Container(width: 50),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Company'),
+                      _buildCompanyMenu(companies),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Office'),
+                      _buildOfficesMenu(offices),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Space'),
+                      _buildSpacesMenu(spaces),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 24),
+            Container(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Company'),
-                  _buildCompanyMenu(companies),
+                  Container(width: 50),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                      ],
+                    ),
+                  ),
+                    Container(width: 12),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildCard('Smack', 'boom'),
+                          _buildCard('Smack', 'boom'),
+                          _buildCard('Smack', 'boom'),
+                          _buildCard('Smack', 'boom'),
+                          _buildCard('Smack', 'boom'),
+                        ],
+                      ),
+                    ),
+                  Container(width: 12),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildCard('Smack', 'boom'),
+                      ],
+                    ),
+                  ),
+                  Container(width: 50)
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Office'),
-                  _buildOfficesMenu(offices),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Space'),
-                  _buildSpacesMenu(spaces),
-                ],
-              ),
-            ],
-          )
+            )
 
-
-
-        ],
+          ],
+        ),
       ),
     );
   }
 
-
+  Widget _buildCard(String header, String subtitle) {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(header),
+                SizedBox(height: 4),
+                Text(subtitle)
+              ],
+            )
+          ),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
 
   Widget _buildCompanyMenu(List<String> list) {
     return DropdownButton(
@@ -76,7 +158,7 @@ class _HomeViewState extends State<HomeView> {
       value: firstCompany,
 
       style: const TextStyle(
-        fontWeight: FontWeight.bold
+          fontWeight: FontWeight.bold
       ),
 
       // Down Arrow Icon
