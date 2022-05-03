@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:elli_admin/firebase_handler.dart';
-import '../models/space.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -30,34 +27,34 @@ class _HomeViewState extends State<HomeView> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(height: 10),
-          Text("    Home",
+          const SizedBox(height: 10),
+          const Text("    Home",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
               )),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Company'),
+                  const Text('Company'),
                   _buildCompanyMenu(companies),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Office'),
+                  const Text('Office'),
                   _buildOfficesMenu(offices),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Space'),
+                  const Text('Space'),
                   _buildSpacesMenu(spaces),
                 ],
               ),
@@ -78,7 +75,7 @@ class _HomeViewState extends State<HomeView> {
       // Initial Value
       value: firstCompany,
 
-      style: TextStyle(
+      style: const TextStyle(
         fontWeight: FontWeight.bold
       ),
 
@@ -107,7 +104,7 @@ class _HomeViewState extends State<HomeView> {
       // Initial Value
       value: firstOffice,
 
-      style: TextStyle(
+      style: const TextStyle(
           fontWeight: FontWeight.bold
       ),
 
@@ -136,7 +133,7 @@ class _HomeViewState extends State<HomeView> {
       // Initial Value
       value: firstSpace,
 
-      style: TextStyle(
+      style: const TextStyle(
           fontWeight: FontWeight.bold
       ),
 
