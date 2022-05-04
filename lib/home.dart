@@ -1,6 +1,6 @@
 import 'package:elli_admin/tabs/admin_tab.dart';
 import 'package:elli_admin/tabs/config_tab.dart';
-import 'package:elli_admin/tabs/temp_tab.dart';
+import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_view.dart';
 
@@ -15,7 +15,7 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
-    const TempTab(),
+    const AnalyticsTab(),
     const ConfigTab()
   ];
 
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
-            label: 'Temp',
+            label: 'Analytics',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
