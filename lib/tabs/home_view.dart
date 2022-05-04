@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../firebase_handler.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -23,8 +25,20 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    FirebaseHandler backend = FirebaseHandler.getInstance();
+    return FutureBuilder<void>(
+        future: backend.buildStaticModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _renderView();
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
 
+
+  Widget _renderView() {
+    return SingleChildScrollView(
       /// The "Home" header
       child: Align(
         alignment: Alignment.topLeft,
@@ -52,7 +66,7 @@ class _HomeViewState extends State<HomeView> {
                       const Text(
                         'Company',
                         style: TextStyle(
-                          fontSize: 16
+                            fontSize: 16
                         ),
                       ),
                       _buildCompanyMenu(companies), // TODO change parameter to database
@@ -109,27 +123,27 @@ class _HomeViewState extends State<HomeView> {
                     ],
                   ),
                 ),
-                  Container(width: 12),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildAddNewOffice(),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      ],
-                    ),
-                  ),
                 Container(width: 12),
                 Expanded(
                   flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    _buildAddNewSpace(),
+                      _buildAddNewOffice(),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                    ],
+                  ),
+                ),
+                Container(width: 12),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildAddNewSpace(),
                       _buildCard('[Name of space]', 'Total number of seats: [#]'),
                       _buildCard('[Name of space]', 'Total number of seats: [#]'),
                       _buildCard('[Name of space]', 'Total number of seats: [#]'),
@@ -264,22 +278,22 @@ class _HomeViewState extends State<HomeView> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  header,
-                  style: const TextStyle(
-                    fontSize: 16
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    header,
+                    style: const TextStyle(
+                        fontSize: 16
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(subtitle),
-                const SizedBox(height: 4),
-                Container(
-                  width: 40,
-                  child: TextButton(
+                  const SizedBox(height: 4),
+                  Text(subtitle),
+                  const SizedBox(height: 4),
+                  Container(
+                    width: 40,
+                    child: TextButton(
                       onPressed: () {
                         // TODO add function to edit
                       },
@@ -292,10 +306,10 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ),
                       ),
+                    ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
           ),
           color: Colors.grey.shade100,
         ),
