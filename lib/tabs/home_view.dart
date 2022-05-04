@@ -13,17 +13,16 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: const <Widget>[
-        SizedBox(height: 10),
-        Text("Home",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
-            )),
-      ],
-    );
+      Text("Home",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+          )),
+      Text("Test")
+    ]);
+
   }
 }
-
