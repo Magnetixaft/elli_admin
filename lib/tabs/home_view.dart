@@ -10,10 +10,12 @@ class HomeView extends StatefulWidget {
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _HomeViewState extends State<HomeView> {
 
+  /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "company 2", "company 3"];
   List<String> offices = ["Centralen", "office 2", "office 3"];
   List<String> spaces = ["Room X", "space 2", "space 3"];
 
+  /// Temporary first items that is shown in the dropdown menus
   String firstCompany = "Elicit AB";
   String firstOffice = "Centralen";
   String firstSpace = "Room X";
@@ -22,6 +24,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+
+      /// The "Home" header
       child: Align(
         alignment: Alignment.topLeft,
         child: Column(
@@ -35,6 +39,8 @@ class _HomeViewState extends State<HomeView> {
                   fontSize: 30,
                 )),
             const SizedBox(height: 24),
+
+            /// The dropdown menus and small header for each
             Row(
               children: [
                 Container(width: 80),
@@ -44,7 +50,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Company'),
-                      _buildCompanyMenu(companies),
+                      _buildCompanyMenu(companies), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -54,7 +60,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Office'),
-                      _buildOfficesMenu(offices),
+                      _buildOfficesMenu(offices), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -64,47 +70,34 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text('Space'),
-                      _buildSpacesMenu(spaces),
+                      _buildSpacesMenu(spaces), // TODO change parameter to database
                     ],
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 24),
-            Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(width: 50),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                      ],
-                    ),
+            const SizedBox(height: 24),
+
+            /// The card section with all the items under each dropdown menu
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(width: 50),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildCard('Smack', 'boom'),  // TODO remove temporary items
+                      _buildCard('Smack', 'boom'),
+                      _buildCard('Smack', 'boom'),
+                      _buildCard('Smack', 'boom'),
+                      _buildCard('Smack', 'boom'),
+                      _buildCard('Smack', 'boom'),
+                      _buildCard('Smack', 'boom'),
+                    ],
                   ),
-                    Container(width: 12),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildCard('Smack', 'boom'),
-                          _buildCard('Smack', 'boom'),
-                          _buildCard('Smack', 'boom'),
-                          _buildCard('Smack', 'boom'),
-                          _buildCard('Smack', 'boom'),
-                        ],
-                      ),
-                    ),
+                ),
                   Container(width: 12),
                   Expanded(
                     flex: 1,
@@ -112,12 +105,25 @@ class _HomeViewState extends State<HomeView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
+                        _buildCard('Smack', 'boom'),
                       ],
                     ),
                   ),
-                  Container(width: 50)
-                ],
-              ),
+                Container(width: 12),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildCard('Smack', 'boom'),
+                    ],
+                  ),
+                ),
+                Container(width: 50)
+              ],
             )
 
           ],
@@ -126,6 +132,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  /// This creates a card item
   Widget _buildCard(String header, String subtitle) {
     return Container(
       width: 400,
@@ -141,8 +148,26 @@ class _HomeViewState extends State<HomeView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(header),
-                SizedBox(height: 4),
-                Text(subtitle)
+                const SizedBox(height: 4),
+                Text(subtitle),
+                const SizedBox(height: 4),
+                Container(
+                  width: 40,
+                  child: TextButton(
+                      onPressed: () {
+
+                      },
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Edit',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                  ),
+                ),
               ],
             )
           ),
@@ -152,6 +177,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  /// This creates the dropdown menu for companies
   Widget _buildCompanyMenu(List<String> list) {
     return DropdownButton(
       // Initial Value
@@ -165,7 +191,7 @@ class _HomeViewState extends State<HomeView> {
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {
+      items: list.map((String items) {  // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -181,6 +207,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  /// This creates the dropdown menu for offices
   Widget _buildOfficesMenu(List<String> list) {
     return DropdownButton(
       // Initial Value
@@ -194,7 +221,7 @@ class _HomeViewState extends State<HomeView> {
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {
+      items: list.map((String items) {  // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -210,6 +237,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  /// This creates the dropdown menu for spaces
   Widget _buildSpacesMenu(List<String> list) {
     return DropdownButton(
       // Initial Value
@@ -223,7 +251,7 @@ class _HomeViewState extends State<HomeView> {
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {
+      items: list.map((String items) {  // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
