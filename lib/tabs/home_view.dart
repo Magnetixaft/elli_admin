@@ -88,6 +88,7 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      _buildAddNewCompany(),
                       _buildCard('Smack', 'boom'),  // TODO remove temporary items
                       _buildCard('Smack', 'boom'),
                       _buildCard('Smack', 'boom'),
@@ -104,6 +105,7 @@ class _HomeViewState extends State<HomeView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        _buildAddNewOffice(),
                         _buildCard('Smack', 'boom'),
                         _buildCard('Smack', 'boom'),
                         _buildCard('Smack', 'boom'),
@@ -118,15 +120,123 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('Smack', 'boom'),
+                    _buildAddNewSpace(),
+                    _buildCard('Smack', 'boom'),
                     ],
                   ),
                 ),
                 Container(width: 50)
               ],
             )
-
           ],
+        ),
+      ),
+    );
+  }
+
+  /// This creates a card item for creating a new company
+  Widget _buildAddNewCompany() {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      // TODO add new company to the database
+                    },
+                    label: const Text(
+                      'Add new company',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              )
+          ),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  /// This creates a card item for creating a new office
+  Widget _buildAddNewOffice() {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      // TODO add new office to the database
+                    },
+                    label: const Text(
+                      'Add new office',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              )
+          ),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  /// This creates a card item for creating a new space
+  Widget _buildAddNewSpace() {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      // TODO add new space to the database
+                    },
+                    label: const Text(
+                      'Add new space',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              )
+          ),
+          color: Colors.grey.shade100,
         ),
       ),
     );
@@ -155,7 +265,7 @@ class _HomeViewState extends State<HomeView> {
                   width: 40,
                   child: TextButton(
                       onPressed: () {
-
+                        // TODO add function to edit
                       },
                       child: const Align(
                         alignment: Alignment.center,
