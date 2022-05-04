@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../firebase_handler.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -22,127 +24,141 @@ class _HomeViewState extends State<HomeView> {
 
 
   @override
-  Widget build(BuildContext context) {
+    Widget build(BuildContext context) {
+      FirebaseHandler backend = FirebaseHandler.getInstance();
+      return FutureBuilder<void>(
+          future: backend.buildStaticModel(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              print('connection');
+              smackBoom();
+            }
+            print('no connection');
+            return const Center(child: CircularProgressIndicator());
+          });
+    }
+
+
+  Widget smackBoom() {
     return SingleChildScrollView(
+    /// The "Home" header
+    child: Align(
+      alignment: Alignment.topLeft,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(height: 10),
+          const Text("    Home",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              )),
+          const SizedBox(height: 24),
 
-      /// The "Home" header
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 10),
-            const Text("    Home",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                )),
-            const SizedBox(height: 24),
-
-            /// The dropdown menus and small header for each
-            Row(
-              children: [
-                Container(width: 80),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Company',
-                        style: TextStyle(
-                          fontSize: 16
-                        ),
+          /// The dropdown menus and small header for each
+          Row(
+            children: [
+              Container(width: 80),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Company',
+                      style: TextStyle(
+                        fontSize: 16
                       ),
-                      _buildCompanyMenu(companies), // TODO change parameter to database
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Office',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
-                      ),
-                      _buildOfficesMenu(offices), // TODO change parameter to database
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Space',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
-                      ),
-                      _buildSpacesMenu(spaces), // TODO change parameter to database
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            /// The card section with all the items under each dropdown menu
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(width: 50),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildAddNewCompany(),
-                      _buildCard('Elicit AB', 'Org.nr: [#]'),  // TODO remove temporary items
-                      _buildCard('Elicit AB', 'Org.nr: [#]'),
-                    ],
-                  ),
-                ),
-                  Container(width: 12),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildAddNewOffice(),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      ],
                     ),
-                  ),
+                    _buildCompanyMenu(companies), // TODO change parameter to database
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Office',
+                      style: TextStyle(
+                          fontSize: 16
+                      ),
+                    ),
+                    _buildOfficesMenu(offices), // TODO change parameter to database
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Space',
+                      style: TextStyle(
+                          fontSize: 16
+                      ),
+                    ),
+                    _buildSpacesMenu(spaces), // TODO change parameter to database
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          /// The card section with all the items under each dropdown menu
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(width: 50),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildAddNewCompany(),
+                    _buildCard('Elicit AB', 'Org.nr: [#]'),  // TODO remove temporary items
+                    _buildCard('Elicit AB', 'Org.nr: [#]'),
+                  ],
+                ),
+              ),
                 Container(width: 12),
                 Expanded(
                   flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    _buildAddNewSpace(),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                      _buildAddNewOffice(),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
                     ],
                   ),
                 ),
-                Container(width: 50)
-              ],
-            )
-          ],
-        ),
+              Container(width: 12),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  _buildAddNewSpace(),
+                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                  ],
+                ),
+              ),
+              Container(width: 50)
+            ],
+          )
+        ],
       ),
-    );
+    ),
+        );
   }
 
   /// This creates a card item for creating a new company
