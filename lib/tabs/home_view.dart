@@ -30,16 +30,14 @@ class _HomeViewState extends State<HomeView> {
           future: backend.buildStaticModel(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              print('connection');
-              smackBoom();
+              return _renderView();
             }
-            print('no connection');
             return const Center(child: CircularProgressIndicator());
           });
     }
 
 
-  Widget smackBoom() {
+  Widget _renderView() {
     return SingleChildScrollView(
     /// The "Home" header
     child: Align(
