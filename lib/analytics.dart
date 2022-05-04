@@ -6,14 +6,14 @@ import 'package:elli_admin/tabs/home_view.dart';
 
 
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class Analytics extends StatefulWidget {
+  const Analytics({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Analytics> createState() => _AnalyticsState();
 }
 
-class _HomeState extends State<Home> {
+class _AnalyticsState extends State<Analytics> {
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
