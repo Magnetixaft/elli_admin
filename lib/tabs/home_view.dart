@@ -11,14 +11,14 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   /// Temporary list of items for the dropdown menus
-  List<String> companies = ["Elicit AB", "company 2", "company 3"];
-  List<String> offices = ["Centralen", "office 2", "office 3"];
-  List<String> spaces = ["Room X", "space 2", "space 3"];
+  List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
+  List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
+  List<String> spaces = ["Room XYZ", "Room ABC", "Room 123"];
 
   /// Temporary first items that is shown in the dropdown menus
   String firstCompany = "Elicit AB";
   String firstOffice = "Centralen";
-  String firstSpace = "Room X";
+  String firstSpace = "Room XYZ";
 
 
   @override
@@ -49,7 +49,12 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Company'),
+                      const Text(
+                        'Company',
+                        style: TextStyle(
+                          fontSize: 16
+                        ),
+                      ),
                       _buildCompanyMenu(companies), // TODO change parameter to database
                     ],
                   ),
@@ -59,7 +64,12 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Office'),
+                      const Text(
+                        'Office',
+                        style: TextStyle(
+                            fontSize: 16
+                        ),
+                      ),
                       _buildOfficesMenu(offices), // TODO change parameter to database
                     ],
                   ),
@@ -69,7 +79,12 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Space'),
+                      const Text(
+                        'Space',
+                        style: TextStyle(
+                            fontSize: 16
+                        ),
+                      ),
                       _buildSpacesMenu(spaces), // TODO change parameter to database
                     ],
                   ),
@@ -89,13 +104,8 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewCompany(),
-                      _buildCard('Smack', 'boom'),  // TODO remove temporary items
-                      _buildCard('Smack', 'boom'),
-                      _buildCard('Smack', 'boom'),
-                      _buildCard('Smack', 'boom'),
-                      _buildCard('Smack', 'boom'),
-                      _buildCard('Smack', 'boom'),
-                      _buildCard('Smack', 'boom'),
+                      _buildCard('Elicit AB', 'Org.nr: [#]'),  // TODO remove temporary items
+                      _buildCard('Elicit AB', 'Org.nr: [#]'),
                     ],
                   ),
                 ),
@@ -106,11 +116,10 @@ class _HomeViewState extends State<HomeView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildAddNewOffice(),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
-                        _buildCard('Smack', 'boom'),
+                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
                       ],
                     ),
                   ),
@@ -121,7 +130,9 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                     _buildAddNewSpace(),
-                    _buildCard('Smack', 'boom'),
+                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
                     ],
                   ),
                 ),
@@ -257,7 +268,12 @@ class _HomeViewState extends State<HomeView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(header),
+                Text(
+                  header,
+                  style: const TextStyle(
+                    fontSize: 16
+                  ),
+                ),
                 const SizedBox(height: 4),
                 Text(subtitle),
                 const SizedBox(height: 4),
