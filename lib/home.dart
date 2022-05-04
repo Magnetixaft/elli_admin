@@ -35,9 +35,7 @@ class _HomeState extends State<Home> {
           child: Image.asset('assets/images/elicit_logo.png'),
         ),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
