@@ -1,9 +1,8 @@
 import 'package:elli_admin/tabs/admin_tab.dart';
-import 'package:elli_admin/tabs/temp_tab.dart';
+import 'package:elli_admin/tabs/config_tab.dart';
+import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_view.dart';
-
-
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -16,8 +15,8 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
-    const TempTab(),
-    const AdminTab()
+    const AnalyticsTab(),
+    const ConfigTab()
   ];
 
   void _onItemTapped(int index) {
@@ -31,7 +30,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.fromLTRB(10,0,0,0),
+          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
           child: Image.asset('assets/images/elicit_logo.png'),
         ),
       ),
@@ -44,11 +43,11 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
-            label: 'Temp',
+            label: 'Analytics',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Admin',
+            label: 'Config',
           ),
         ],
         currentIndex: _selectedIndex,
