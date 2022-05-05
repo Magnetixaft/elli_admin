@@ -15,9 +15,17 @@ class MenuBar extends StatefulWidget {
 
 class _MenuBarState extends State<MenuBar> {
   int _selectedIndex = 0;
-  changeIndex(int index) {
-    _selectedIndex = index;
-    setState(() {});
+
+  final List<Widget> _widgetOptions = <Widget>[
+    const HomeView(),
+    const AnalyticsTab(),
+    const ConfigTab()
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   final _destinations = <AdaptiveScaffoldDestination>[
@@ -29,8 +37,9 @@ class _MenuBarState extends State<MenuBar> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveNavigationScaffold(
-        body: const Center(child: Text("Hey there")),
+        body: _widgetOptions.elementAt(_selectedIndex),
+        destinations: _destinations,
         selectedIndex: _selectedIndex,
-        destinations: _destinations);
+        onDestinationSelected: _onItemTapped);
   }
 }
