@@ -24,6 +24,7 @@ class _HomeViewState extends State<HomeView> {
 
 
   @override
+
     Widget build(BuildContext context) {
       FirebaseHandler backend = FirebaseHandler.getInstance();
       return FutureBuilder<void>(
@@ -37,8 +38,10 @@ class _HomeViewState extends State<HomeView> {
     }
 
 
+
   Widget _renderView() {
     return SingleChildScrollView(
+
     /// The "Home" header
     child: Align(
       alignment: Alignment.topLeft,
@@ -123,6 +126,7 @@ class _HomeViewState extends State<HomeView> {
                   ],
                 ),
               ),
+
                 Container(width: 12),
                 Expanded(
                   flex: 1,
@@ -130,6 +134,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewOffice(),
+
                       _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
                       _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
                       _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
@@ -195,7 +200,9 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+
   /// This creates a card item for creating a new office
+
   Widget _buildAddNewOffice() {
     return Container(
       width: 400,
@@ -232,6 +239,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for creating a new space
+
   Widget _buildAddNewSpace() {
     return Container(
       width: 400,
@@ -267,8 +275,9 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// This creates a card item
-  Widget _buildCard(String header, String subtitle) {
+
+  /// This creates a card item for company specifications
+  Widget _buildCompanyCard(String name, int orgNr, String address, int offices, int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -278,6 +287,8 @@ class _HomeViewState extends State<HomeView> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Padding(
+
+            
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,6 +321,171 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ],
             )
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        child: TextButton(
+                          onPressed: () {
+                            // TODO add function to edit
+                          },
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text('Org.nr: [$orgNr]'),
+                  const SizedBox(height: 24),
+                  Text('[$address]'),
+                  const SizedBox(height: 12),
+                  Text('Offices: [$offices]'),
+                  const SizedBox(height: 12),
+                  Text('Total number of work spaces: [$numberOfSpaces]'),
+                  const SizedBox(height: 12),
+                  Text('Available work spaces: [$availableSpaces]'),
+                  const SizedBox(height: 12)
+                ],
+              )
+          ),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  /// This creates a card item for office specifications
+  Widget _buildOfficeCard(String name, String address, int spaces, int numberOfSpaces, int availableSpaces) {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        child: TextButton(
+                          onPressed: () {
+                            // TODO add function to edit
+                          },
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text('[$address]'),
+                  const SizedBox(height: 24),
+                  Text('Spaces: [$spaces]'),
+                  const SizedBox(height: 12),
+                  Text('Total number of work spaces: [$numberOfSpaces]'),
+                  const SizedBox(height: 12),
+                  Text('Available work spaces: [$availableSpaces]'),
+                  const SizedBox(height: 12)
+                ],
+              )
+          ),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  /// This creates a card item for space specifications
+  Widget _buildSpacesCard(String name, int numberOfSpaces, int availableSpaces) {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        child: TextButton(
+                          onPressed: () {
+                            // TODO add function to edit
+                          },
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Text('Total number of work spaces: [$numberOfSpaces]'),
+                  const SizedBox(height: 12),
+                  Text('Available work spaces: [$availableSpaces]'),
+                  const SizedBox(height: 12)
+                ],
+              )
+
           ),
           color: Colors.grey.shade100,
         ),
