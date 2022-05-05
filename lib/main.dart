@@ -1,3 +1,5 @@
+import 'package:elli_admin/authentication_handler.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:elli_admin/firebase_handler.dart';
@@ -61,7 +63,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final userIdTextController = TextEditingController();
   final userPasswordTextController = TextEditingController();
+  final AuthenticationHandler authenticationHandler = AuthenticationHandler.getInstance();
 //  final focusNodePassword = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) => checkLoggedIn());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,12 +133,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 "Login",
                               )),
                         ),
-//                    TextButton(
-//                      onPressed: () => {
-//                        print("Todo, Show modal"),
-//                      },
-//                      child: const Text("Create an account"),
-//                    ),
                       ],
                     ),
                   ),
@@ -141,14 +143,34 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  void login() {
-    // TODO login using Firebase Auth
-    String userId = userIdTextController.text;
-    FirebaseHandler.initialize(userId);
-    Navigator.push(
+  Future<void> login() async {
+    FirebaseHandler.initialize(authenticationHandler.getCurrentUser().toString());
+    if(await authenticationHandler.signInUsingEmailPassword(email: userIdTextController.text, password: userPasswordTextController.text)!=null){
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const Home()));
+    }
+  }
+
+  Future<void> checkLoggedIn() async {
+    FirebaseHandler.initialize(authenticationHandler.getCurrentUser().toString());
+    if (await authenticationHandler.isUserSignedIn() == true) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const Home()));
+    }
+  }
+
+  Future<void> logOut() async {
+    authenticationHandler.signOut();
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) =>
-                const Home())); // TODO use pushReplacement when login has been implemented. That way, the user will not be able to return to this page by pressing the back arrow
+            const MyHomePage(title: "Room Bookings")));
   }
 }
