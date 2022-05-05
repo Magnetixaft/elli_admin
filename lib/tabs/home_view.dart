@@ -24,109 +24,104 @@ class _HomeViewState extends State<HomeView> {
 
 
   @override
-
-    Widget build(BuildContext context) {
-      FirebaseHandler backend = FirebaseHandler.getInstance();
-      return FutureBuilder<void>(
-          future: backend.buildStaticModel(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return _renderView();
-            }
-            return const Center(child: CircularProgressIndicator());
-          });
-    }
-
+  Widget build(BuildContext context) {
+    FirebaseHandler backend = FirebaseHandler.getInstance();
+    return FutureBuilder<void>(
+        future: backend.buildStaticModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _renderView();
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
 
 
   Widget _renderView() {
     return SingleChildScrollView(
+      /// The "Home" header
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 10),
+            const Text("    Home",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                )),
+            const SizedBox(height: 24),
 
-    /// The "Home" header
-    child: Align(
-      alignment: Alignment.topLeft,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 10),
-          const Text("    Home",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              )),
-          const SizedBox(height: 24),
-
-          /// The dropdown menus and small header for each
-          Row(
-            children: [
-              Container(width: 80),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Company',
-                      style: TextStyle(
-                        fontSize: 16
+            /// The dropdown menus and small header for each
+            Row(
+              children: [
+                Container(width: 80),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Company',
+                        style: TextStyle(
+                            fontSize: 16
+                        ),
                       ),
-                    ),
-                    _buildCompanyMenu(companies), // TODO change parameter to database
-                  ],
+                      _buildCompanyMenu(companies), // TODO change parameter to database
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Office',
-                      style: TextStyle(
-                          fontSize: 16
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Office',
+                        style: TextStyle(
+                            fontSize: 16
+                        ),
                       ),
-                    ),
-                    _buildOfficesMenu(offices), // TODO change parameter to database
-                  ],
+                      _buildOfficesMenu(offices), // TODO change parameter to database
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Space',
-                      style: TextStyle(
-                          fontSize: 16
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Space',
+                        style: TextStyle(
+                            fontSize: 16
+                        ),
                       ),
-                    ),
-                    _buildSpacesMenu(spaces), // TODO change parameter to database
-                  ],
+                      _buildSpacesMenu(spaces), // TODO change parameter to database
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
+              ],
+            ),
+            const SizedBox(height: 24),
 
-          /// The card section with all the items under each dropdown menu
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(width: 50),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildAddNewCompany(),
-                    _buildCard('Elicit AB', 'Org.nr: [#]'),  // TODO remove temporary items
-                    _buildCard('Elicit AB', 'Org.nr: [#]'),
-                  ],
+            /// The card section with all the items under each dropdown menu
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(width: 50),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildAddNewCompany(),
+                      _buildCompanyCard(firstCompany, 87, 'Drottningtorget', 9, 3, 6),  // TODO remove temporary items and connect to database
+                    ],
+                  ),
                 ),
-              ),
-
                 Container(width: 12),
                 Expanded(
                   flex: 1,
@@ -134,37 +129,31 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewOffice(),
-
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildOfficeCard(firstOffice, 'Drottningtorget 5, 411 03 Göteborg', 4, 35, 19)
                     ],
                   ),
                 ),
-              Container(width: 12),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                  _buildAddNewSpace(),
-                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                  ],
+                Container(width: 12),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildAddNewSpace(),
+                      _buildSpacesCard(firstSpace, 5, 3)
+                    ],
+                  ),
                 ),
-              ),
-              Container(width: 50)
-            ],
-          )
-        ],
+                Container(width: 50)
+              ],
+            )
+          ],
+        ),
       ),
-    ),
-        );
+    );
   }
 
-  /// This creates a card item for creating a new company
+  /// This creates a card item for adding a new company
   Widget _buildAddNewCompany() {
     return Container(
       width: 400,
@@ -200,9 +189,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-
-  /// This creates a card item for creating a new office
-
+  /// This creates a card item for adding a new office
   Widget _buildAddNewOffice() {
     return Container(
       width: 400,
@@ -238,8 +225,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// This creates a card item for creating a new space
-
+  /// This creates a card item for adding a new space
   Widget _buildAddNewSpace() {
     return Container(
       width: 400,
@@ -275,7 +261,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-
   /// This creates a card item for company specifications
   Widget _buildCompanyCard(String name, int orgNr, String address, int offices, int numberOfSpaces, int availableSpaces) {
     return Container(
@@ -287,40 +272,6 @@ class _HomeViewState extends State<HomeView> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Padding(
-
-            
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  header,
-                  style: const TextStyle(
-                    fontSize: 16
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(subtitle),
-                const SizedBox(height: 4),
-                Container(
-                  width: 40,
-                  child: TextButton(
-                      onPressed: () {
-                        // TODO add function to edit
-                      },
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Edit',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                  ),
-                ),
-              ],
-            )
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -485,7 +436,6 @@ class _HomeViewState extends State<HomeView> {
                   const SizedBox(height: 12)
                 ],
               )
-
           ),
           color: Colors.grey.shade100,
         ),
