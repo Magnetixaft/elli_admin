@@ -1,4 +1,3 @@
-import 'package:elli_admin/tabs/admin_tab.dart';
 import 'package:elli_admin/tabs/config_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
