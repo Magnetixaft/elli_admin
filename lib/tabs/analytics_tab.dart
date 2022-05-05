@@ -25,6 +25,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
 
       /// The "Analytics" header
