@@ -1,4 +1,4 @@
-import 'package:elli_admin/tabs/config_tab.dart';
+import 'package:elli_admin/tabs/admin_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_view.dart';
@@ -15,7 +15,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
     const AnalyticsTab(),
-    const ConfigTab()
+    const AdminTab()
   ];
 
   void _onItemTapped(int index) {
@@ -37,15 +37,15 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
+            icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
+            icon: Icon(Icons.bar_chart),
             label: 'Analytics',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.settings),
             label: 'Config',
           ),
         ],
