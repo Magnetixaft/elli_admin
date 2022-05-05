@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:elli_admin/firebase_handler.dart';
-import '../models/space.dart';
 
-class AnalyticsTab extends StatefulWidget {
-  const AnalyticsTab({Key? key}) : super(key: key);
+class AnalyticsView extends StatefulWidget {
+  const AnalyticsView({Key? key}) : super(key: key);
 
   @override
-  State<AnalyticsTab> createState() => _AnalyticsTabState();
+  State<AnalyticsView> createState() => _AnalyticsViewState();
 }
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
-class _AnalyticsTabState extends State<AnalyticsTab> {
+class _AnalyticsViewState extends State<AnalyticsView> {
 
   /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
@@ -105,9 +103,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('Weekday occupancy rate (3w avg.)', 'Monday: [#]%),                                                                Tuesday: [#]%                                              Wednesday: [#]%                                                     Thursday: [#]%                                                          Friday: [#]%' ), //
-                      _buildCard('Comparisson covering % offices', '[Office centralen 45 % ]'),
-                      _buildCard('Most booked office', '[Office Jönköping]'),
+                      _buildCard('Weekday occupancy rate (3w avg.)', 'Monday: [#]%'),  // TODO remove temporary items
+                      _buildCard(' Comparisson covering % offices', '[Office centralen 45 % ]'),
                     ],
                   ),
                 ),
