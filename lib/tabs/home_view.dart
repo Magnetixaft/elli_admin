@@ -118,8 +118,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewCompany(),
-                      _buildCard('Elicit AB', 'Org.nr: [#]'),  // TODO remove temporary items
-                      _buildCard('Elicit AB', 'Org.nr: [#]'),
+                      _buildCompanyCard(firstCompany, 87, 'Drottningtorget', 9, 3, 6),  // TODO remove temporary items and connect to database
                     ],
                   ),
                 ),
@@ -130,10 +129,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewOffice(),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      _buildOfficeCard(firstOffice, 'Drottningtorget 5, 411 03 Göteborg', 4, 35, 19)
                     ],
                   ),
                 ),
@@ -144,9 +140,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewSpace(),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                      _buildSpacesCard(firstSpace, 5, 3)
                     ],
                   ),
                 ),
@@ -159,7 +153,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// This creates a card item for creating a new company
+  /// This creates a card item for adding a new company
   Widget _buildAddNewCompany() {
     return Container(
       width: 400,
@@ -195,7 +189,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// This creates a card item for creating a new office
+  /// This creates a card item for adding a new office
   Widget _buildAddNewOffice() {
     return Container(
       width: 400,
@@ -231,7 +225,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// This creates a card item for creating a new space
+  /// This creates a card item for adding a new space
   Widget _buildAddNewSpace() {
     return Container(
       width: 400,
@@ -267,8 +261,8 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  /// This creates a card item
-  Widget _buildCard(String header, String subtitle) {
+  /// This creates a card item for company specifications
+  Widget _buildCompanyCard(String name, int orgNr, String address, int offices, int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -282,32 +276,164 @@ class _HomeViewState extends State<HomeView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    header,
-                    style: const TextStyle(
-                        fontSize: 16
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(subtitle),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: 40,
-                    child: TextButton(
-                      onPressed: () {
-                        // TODO add function to edit
-                      },
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Edit',
-                          style: TextStyle(
-                            color: Colors.grey,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        child: TextButton(
+                          onPressed: () {
+                            // TODO add function to edit
+                          },
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
+                  Text('Org.nr: [$orgNr]'),
+                  const SizedBox(height: 24),
+                  Text('[$address]'),
+                  const SizedBox(height: 12),
+                  Text('Offices: [$offices]'),
+                  const SizedBox(height: 12),
+                  Text('Total number of work spaces: [$numberOfSpaces]'),
+                  const SizedBox(height: 12),
+                  Text('Available work spaces: [$availableSpaces]'),
+                  const SizedBox(height: 12)
+                ],
+              )
+          ),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  /// This creates a card item for office specifications
+  Widget _buildOfficeCard(String name, String address, int spaces, int numberOfSpaces, int availableSpaces) {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        child: TextButton(
+                          onPressed: () {
+                            // TODO add function to edit
+                          },
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text('[$address]'),
+                  const SizedBox(height: 24),
+                  Text('Spaces: [$spaces]'),
+                  const SizedBox(height: 12),
+                  Text('Total number of work spaces: [$numberOfSpaces]'),
+                  const SizedBox(height: 12),
+                  Text('Available work spaces: [$availableSpaces]'),
+                  const SizedBox(height: 12)
+                ],
+              )
+          ),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  /// This creates a card item for space specifications
+  Widget _buildSpacesCard(String name, int numberOfSpaces, int availableSpaces) {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        child: TextButton(
+                          onPressed: () {
+                            // TODO add function to edit
+                          },
+                          child: const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Edit',
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Text('Total number of work spaces: [$numberOfSpaces]'),
+                  const SizedBox(height: 12),
+                  Text('Available work spaces: [$availableSpaces]'),
+                  const SizedBox(height: 12)
                 ],
               )
           ),
