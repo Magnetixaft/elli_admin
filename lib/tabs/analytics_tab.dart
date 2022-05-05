@@ -17,7 +17,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: const <Widget>[
         SizedBox(height: 10),
-        Text("Analytics",
+        Text("    Analytics",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 30,

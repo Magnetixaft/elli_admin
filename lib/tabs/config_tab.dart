@@ -17,7 +17,7 @@ class _ConfigTabState extends State<ConfigTab> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: const <Widget>[
         SizedBox(height: 10),
-        Text("Config",
+        Text("    Config",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 30,
