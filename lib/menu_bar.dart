@@ -31,6 +31,7 @@ class _MenuBarState extends State<MenuBar> {
                   groupAlignment: 0.0,
                   selectedIndex: _selectedIndex,
                   extended: isExtended,
+                  minExtendedWidth: 150,
                   onDestinationSelected: (_selectedIndex) =>
                       setState(() => this._selectedIndex = _selectedIndex),
                   leading: IconButton(
@@ -87,7 +88,8 @@ class _MenuBarState extends State<MenuBar> {
 
 
 
-/*  The old logout button                
+/*  The old logout button 
+               
 IconButton(
 padding: const EdgeInsets.all(16.0),
 icon: const Icon(
@@ -97,6 +99,9 @@ semanticLabel: "Log out",
 onPressed: () {
 Navigator.of(context).pop();
 }),
+*/
+
+/*The old trailing logout
 
 trailing: IconButton(
 icon: const Icon(Icons.logout_outlined, semanticLabel: "Log out", ),
@@ -104,3 +109,36 @@ onPressed: () {
 Navigator.of(context).pop();
 }),
 */
+
+/*  For some reason I thought this would work...
+  
+  Widget _buildPopupDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text("Log out!"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const <Widget>[
+          Text("You sure bro!?!"),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Nope!'),
+        ),
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Yeah!'),
+        ),
+      ],
+    );
+  }
+  */
