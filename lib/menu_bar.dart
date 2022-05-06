@@ -23,6 +23,7 @@ class _MenuBarState extends State<MenuBar> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NavigationRail(
               groupAlignment: 0.0,
@@ -36,8 +37,6 @@ class _MenuBarState extends State<MenuBar> {
                   isExtended = !isExtended;
                 }),
               ),
-              trailing: IconButton(
-                  icon: Icon(Icons.logout_outlined), onPressed: () {}),
               destinations: const [
                 NavigationRailDestination(
                     icon: Icon(Icons.home), label: Text('Home')),
@@ -46,6 +45,11 @@ class _MenuBarState extends State<MenuBar> {
                 NavigationRailDestination(
                     icon: Icon(Icons.settings), label: Text('Config'))
               ],
+              trailing: IconButton(
+                  icon: Icon(Icons.logout_outlined),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
             ),
             const VerticalDivider(),
             Expanded(child: _widgetOptions.elementAt(_selectedIndex))
