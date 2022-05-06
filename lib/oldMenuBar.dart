@@ -1,4 +1,5 @@
-import 'dart:html';
+//This menuBar is replaced now,
+//ask the rest of the group tomorrow how we feel about the two different options.
 
 import 'package:elli_admin/tabs/config_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
