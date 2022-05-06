@@ -55,27 +55,14 @@ class _MenuBarState extends State<MenuBar> {
                     left: 8,
                     right: 0,
                     //The text does not fit if the navigationRail is collapsed
-                    child: isExtended
-                        ? ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.logout_outlined),
-                            label: Text("Log out"),
-                            style: ElevatedButton.styleFrom(
-                                //textStyle: TextStyle(fontSize: 15),
-                                ),
-                          )
-                        : ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.logout_outlined),
-                            label: Text(""),
-                            style: ElevatedButton.styleFrom(
-                                //textStyle: TextStyle(fontSize: 15),
-                                ),
-                          ))
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.logout_outlined),
+                      label:
+                          isExtended ? const Text("Log out") : const Text(""),
+                    ))
               ],
             ),
             const VerticalDivider(),
