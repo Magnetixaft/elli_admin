@@ -191,9 +191,9 @@ class _ConfigTabState extends State<ConfigTab> {
   }
 
   Widget _buildPopupDialog(BuildContext context, String title, String text) {
-    return new AlertDialog(
+    return AlertDialog(
       title: Text(title),
-      content: new Column(
+      content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -201,7 +201,7 @@ class _ConfigTabState extends State<ConfigTab> {
         ],
       ),
       actions: <Widget>[
-        new FlatButton(
+        FlatButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
