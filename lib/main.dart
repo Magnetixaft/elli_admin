@@ -1,4 +1,5 @@
-import 'package:elli_admin/menuBar.dart';
+import 'package:elli_admin/oldMenuBar.dart';
+import 'package:elli_admin/menu_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:elli_admin/firebase_handler.dart';
@@ -149,6 +150,6 @@ class _MyHomePageState extends State<MyHomePage> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                const MenuBar())); // TODO use pushReplacement when login has been implemented. That way, the user will not be able to return to this page by pressing the back arrow
+                const MenuBar1())); // TODO use pushReplacement when login has been implemented. That way, the user will not be able to return to this page by pressing the back arrow
   }
 }
