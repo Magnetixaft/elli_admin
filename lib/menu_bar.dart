@@ -78,6 +78,7 @@ class _MenuBarState extends State<MenuBar> {
               ],
             ),
             const VerticalDivider(),
+            //The rest of the page consists of the chosen widget
             Expanded(child: _widgetOptions.elementAt(_selectedIndex))
           ],
         ),
