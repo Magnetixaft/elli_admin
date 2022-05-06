@@ -1,16 +1,16 @@
 import 'package:elli_admin/tabs/config_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:elli_admin/tabs/home_view.dart';
+import 'package:elli_admin/tabs/home_tab.dart';
 
-class MenuBar1 extends StatefulWidget {
-  const MenuBar1({Key? key}) : super(key: key);
+class MenuBar extends StatefulWidget {
+  const MenuBar({Key? key}) : super(key: key);
 
   @override
-  _MenuBar1State createState() => _MenuBar1State();
+  _MenuBarState createState() => _MenuBarState();
 }
 
-class _MenuBar1State extends State<MenuBar1> {
+class _MenuBarState extends State<MenuBar> {
   int _selectedIndex = 0;
   bool isExtended = false;
 
@@ -23,6 +23,7 @@ class _MenuBar1State extends State<MenuBar1> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NavigationRail(
               groupAlignment: 0.0,
@@ -36,8 +37,6 @@ class _MenuBar1State extends State<MenuBar1> {
                   isExtended = !isExtended;
                 }),
               ),
-              trailing: IconButton(
-                  icon: Icon(Icons.logout_outlined), onPressed: () {}),
               destinations: const [
                 NavigationRailDestination(
                     icon: Icon(Icons.home), label: Text('Home')),
@@ -46,6 +45,11 @@ class _MenuBar1State extends State<MenuBar1> {
                 NavigationRailDestination(
                     icon: Icon(Icons.settings), label: Text('Config'))
               ],
+              trailing: IconButton(
+                  icon: Icon(Icons.logout_outlined),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
             ),
             const VerticalDivider(),
             Expanded(child: _widgetOptions.elementAt(_selectedIndex))

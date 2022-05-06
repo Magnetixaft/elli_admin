@@ -11,7 +11,6 @@ class HomeView extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _HomeViewState extends State<HomeView> {
-
   /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
   List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
@@ -21,7 +20,6 @@ class _HomeViewState extends State<HomeView> {
   String firstCompany = "Elicit AB";
   String firstOffice = "Centralen";
   String firstSpace = "Room XYZ";
-
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +33,6 @@ class _HomeViewState extends State<HomeView> {
           return const Center(child: CircularProgressIndicator());
         });
   }
-
 
   Widget _renderView() {
     return SingleChildScrollView(
@@ -65,11 +62,10 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       const Text(
                         'Company',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildCompanyMenu(companies), // TODO change parameter to database
+                      _buildCompanyMenu(
+                          companies), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -80,11 +76,10 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       const Text(
                         'Office',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildOfficesMenu(offices), // TODO change parameter to database
+                      _buildOfficesMenu(
+                          offices), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -95,11 +90,10 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       const Text(
                         'Space',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildSpacesMenu(spaces), // TODO change parameter to database
+                      _buildSpacesMenu(
+                          spaces), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -118,7 +112,13 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewCompany(),
-                      _buildCompanyCard(firstCompany, 87, 'Drottningtorget', 9, 3, 6),  // TODO remove temporary items and connect to database
+                      _buildCompanyCard(
+                          firstCompany,
+                          87,
+                          'Drottningtorget',
+                          9,
+                          3,
+                          6), // TODO remove temporary items and connect to database
                     ],
                   ),
                 ),
@@ -129,7 +129,8 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewOffice(),
-                      _buildOfficeCard(firstOffice, 'Drottningtorget 5, 411 03 Göteborg', 4, 35, 19)
+                      _buildOfficeCard(firstOffice,
+                          'Drottningtorget 5, 411 03 Göteborg', 4, 35, 19)
                     ],
                   ),
                 ),
@@ -181,8 +182,7 @@ class _HomeViewState extends State<HomeView> {
                     icon: const Icon(Icons.add),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -217,8 +217,7 @@ class _HomeViewState extends State<HomeView> {
                     icon: const Icon(Icons.add),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -253,8 +252,7 @@ class _HomeViewState extends State<HomeView> {
                     icon: const Icon(Icons.add),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -262,7 +260,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for company specifications
-  Widget _buildCompanyCard(String name, int orgNr, String address, int offices, int numberOfSpaces, int availableSpaces) {
+  Widget _buildCompanyCard(String name, int orgNr, String address, int offices,
+      int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -282,9 +281,7 @@ class _HomeViewState extends State<HomeView> {
                       Text(
                         name,
                         style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
                         width: 40,
@@ -316,8 +313,7 @@ class _HomeViewState extends State<HomeView> {
                   Text('Available work spaces: [$availableSpaces]'),
                   const SizedBox(height: 12)
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -325,7 +321,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for office specifications
-  Widget _buildOfficeCard(String name, String address, int spaces, int numberOfSpaces, int availableSpaces) {
+  Widget _buildOfficeCard(String name, String address, int spaces,
+      int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -345,9 +342,7 @@ class _HomeViewState extends State<HomeView> {
                       Text(
                         name,
                         style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
                         width: 40,
@@ -377,8 +372,7 @@ class _HomeViewState extends State<HomeView> {
                   Text('Available work spaces: [$availableSpaces]'),
                   const SizedBox(height: 12)
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -386,7 +380,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for space specifications
-  Widget _buildSpacesCard(String name, int numberOfSpaces, int availableSpaces) {
+  Widget _buildSpacesCard(
+      String name, int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -406,9 +401,7 @@ class _HomeViewState extends State<HomeView> {
                       Text(
                         name,
                         style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
                         width: 40,
@@ -435,8 +428,7 @@ class _HomeViewState extends State<HomeView> {
                   Text('Available work spaces: [$availableSpaces]'),
                   const SizedBox(height: 12)
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -449,15 +441,14 @@ class _HomeViewState extends State<HomeView> {
       // Initial Value
       value: firstCompany,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -479,15 +470,14 @@ class _HomeViewState extends State<HomeView> {
       // Initial Value
       value: firstOffice,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -509,15 +499,14 @@ class _HomeViewState extends State<HomeView> {
       // Initial Value
       value: firstSpace,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -532,5 +521,4 @@ class _HomeViewState extends State<HomeView> {
       },
     );
   }
-
 }
