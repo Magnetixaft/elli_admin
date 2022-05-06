@@ -39,9 +39,145 @@ class _ConfigTabState extends State<ConfigTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard("FAQ", "edit"),
-                      _buildCard("Add admin", "edit"),
-                      _buildCard("About", "edit")
+                      Container(
+                        width: 400,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "FAQ",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    //This is where the edit button lives
+                                    Container(
+                                      width: 120,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  _buildPopupDialog(
+                                                      context,
+                                                      "FAQ",
+                                                      "Add possibility to edit FAQ here"));
+                                        },
+                                        child: const Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            'edit',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            color: Colors.grey.shade100,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 400,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Admins",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  _buildPopupDialog(
+                                                      context,
+                                                      "Admins",
+                                                      "If we do login with firebase for admins, this would be the place to add new admins?"));
+                                        },
+                                        child: const Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            'edit',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            color: Colors.grey.shade100,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 400,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "About",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  _buildPopupDialog(
+                                                      context,
+                                                      "About",
+                                                      "Lorem ipsum dolor sit amet"));
+                                        },
+                                        child: const Align(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            'have a gander',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                            color: Colors.grey.shade100,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -54,32 +190,25 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
-  Widget _buildCard(String header, String subtitle) {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    header,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(subtitle),
-                  const SizedBox(height: 4),
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
+  Widget _buildPopupDialog(BuildContext context, String title, String text) {
+    return new AlertDialog(
+      title: Text(title),
+      content: new Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(text),
+        ],
       ),
+      actions: <Widget>[
+        new FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }
