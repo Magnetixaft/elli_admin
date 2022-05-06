@@ -97,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //                      },
                         ),
                         TextField(
+                          obscureText: true,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: 'Password',
