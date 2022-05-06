@@ -1,3 +1,5 @@
+//This class is currently not in use, see analytics_tab instead.
+
 import 'package:flutter/material.dart';
 
 class AnalyticsView extends StatefulWidget {
@@ -9,7 +11,6 @@ class AnalyticsView extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _AnalyticsViewState extends State<AnalyticsView> {
-
   /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
   List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
@@ -20,11 +21,9 @@ class _AnalyticsViewState extends State<AnalyticsView> {
   String firstOffice = "Centralen";
   String firstSpace = "Room XYZ";
 
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-
       /// The "Analytics" header
       child: Align(
         alignment: Alignment.topLeft,
@@ -51,11 +50,10 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                     children: [
                       const Text(
                         'Company',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildCompanyMenu(companies), // TODO change parameter to database
+                      _buildCompanyMenu(
+                          companies), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -66,11 +64,10 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                     children: [
                       const Text(
                         'Office',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildOfficesMenu(offices), // TODO change parameter to database
+                      _buildOfficesMenu(
+                          offices), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -81,11 +78,10 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                     children: [
                       const Text(
                         'Space',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildSpacesMenu(spaces), // TODO change parameter to database
+                      _buildSpacesMenu(
+                          spaces), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -103,8 +99,10 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('Weekday occupancy rate (3w avg.)', 'Monday: [#]%'),  // TODO remove temporary items
-                      _buildCard(' Comparisson covering % offices', '[Office centralen 45 % ]'),
+                      _buildCard('Weekday occupancy rate (3w avg.)',
+                          'Monday: [#]%'), // TODO remove temporary items
+                      _buildCard(' Comparisson covering % offices',
+                          '[Office centralen 45 % ]'),
                     ],
                   ),
                 ),
@@ -114,10 +112,15 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('Most booked space', '[Space 2 Open] , ', ),
+                      _buildCard(
+                        'Most booked space',
+                        '[Space 2 Open] , ',
+                      ),
                       _buildCard('Most common workday at office', '[Thursday]'),
-                      _buildCard('Comparisson covering % spaces ', '[Space 1  45 % ],                                                                      [Space 2 Open  65 % ],                                                   [Quiet room  55 % ]   '),
-                      _buildCard('Comparisson number of bookings last 2 weeks ', '[Last week  900 ],                                                              [2 weeks ago 812 ]                                                       [+88]'),
+                      _buildCard('Comparisson covering % spaces ',
+                          '[Space 1  45 % ],                                                                      [Space 2 Open  65 % ],                                                   [Quiet room  55 % ]   '),
+                      _buildCard('Comparisson number of bookings last 2 weeks ',
+                          '[Last week  900 ],                                                              [2 weeks ago 812 ]                                                       [+88]'),
                     ],
                   ),
                 ),
@@ -127,9 +130,12 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('[Most common workday at space]', '[Monday]  '),
-                      _buildCard('[Comparisson number of bookings last week]', '[Last week  102]                                                             [2 weeks ago 100]                                                        [Diffrence +  39]'),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                      _buildCard(
+                          '[Most common workday at space]', '[Monday]  '),
+                      _buildCard('[Comparisson number of bookings last week]',
+                          '[Last week  102]                                                             [2 weeks ago 100]                                                        [Diffrence +  39]'),
+                      _buildCard(
+                          '[Name of space]', 'Total number of seats: [#]'),
                     ],
                   ),
                 ),
@@ -159,9 +165,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                 children: [
                   Text(
                     header,
-                    style: const TextStyle(
-                        fontSize: 16
-                    ),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 4),
                   Text(subtitle),
@@ -169,8 +173,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                   Container(
                     width: 120,
                     child: TextButton(
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       child: const Align(
                         alignment: Alignment.center,
                         child: Text(
@@ -183,8 +186,7 @@ class _AnalyticsViewState extends State<AnalyticsView> {
                     ),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -197,15 +199,14 @@ class _AnalyticsViewState extends State<AnalyticsView> {
       // Initial Value
       value: firstCompany,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -227,15 +228,14 @@ class _AnalyticsViewState extends State<AnalyticsView> {
       // Initial Value
       value: firstOffice,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -257,15 +257,14 @@ class _AnalyticsViewState extends State<AnalyticsView> {
       // Initial Value
       value: firstSpace,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -280,5 +279,4 @@ class _AnalyticsViewState extends State<AnalyticsView> {
       },
     );
   }
-
 }
