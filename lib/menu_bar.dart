@@ -25,31 +25,57 @@ class _MenuBarState extends State<MenuBar> {
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NavigationRail(
-              groupAlignment: 0.0,
-              selectedIndex: _selectedIndex,
-              extended: isExtended,
-              onDestinationSelected: (_selectedIndex) =>
-                  setState(() => this._selectedIndex = _selectedIndex),
-              leading: IconButton(
-                icon: Icon(isExtended ? Icons.turn_left : Icons.turn_right),
-                onPressed: () => setState(() {
-                  isExtended = !isExtended;
-                }),
-              ),
-              destinations: const [
-                NavigationRailDestination(
-                    icon: Icon(Icons.home), label: Text('Home')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.bar_chart), label: Text('Analytics')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.settings), label: Text('Config'))
+            Stack(
+              children: [
+                NavigationRail(
+                  groupAlignment: 0.0,
+                  selectedIndex: _selectedIndex,
+                  extended: isExtended,
+                  onDestinationSelected: (_selectedIndex) =>
+                      setState(() => this._selectedIndex = _selectedIndex),
+                  leading: IconButton(
+                    icon: Icon(isExtended ? Icons.turn_left : Icons.turn_right),
+                    onPressed: () => setState(() {
+                      isExtended = !isExtended;
+                    }),
+                  ),
+                  destinations: const [
+                    NavigationRailDestination(
+                        icon: Icon(Icons.home), label: Text('Home')),
+                    NavigationRailDestination(
+                        icon: Icon(Icons.bar_chart), label: Text('Analytics')),
+                    NavigationRailDestination(
+                        icon: Icon(Icons.settings), label: Text('Config'))
+                  ],
+                ),
+                //This lets the trailing logout button be at the bottom.
+                Positioned(
+                    bottom: 10,
+                    left: 8,
+                    right: 0,
+                    //The text does not fit if the navigationRail is collapsed
+                    child: isExtended
+                        ? ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(Icons.logout_outlined),
+                            label: Text("Log out"),
+                            style: ElevatedButton.styleFrom(
+                                //textStyle: TextStyle(fontSize: 15),
+                                ),
+                          )
+                        : ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(Icons.logout_outlined),
+                            label: Text(""),
+                            style: ElevatedButton.styleFrom(
+                                //textStyle: TextStyle(fontSize: 15),
+                                ),
+                          ))
               ],
-              trailing: IconButton(
-                  icon: Icon(Icons.logout_outlined),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
             ),
             const VerticalDivider(),
             Expanded(child: _widgetOptions.elementAt(_selectedIndex))
@@ -57,3 +83,23 @@ class _MenuBarState extends State<MenuBar> {
         ),
       );
 }
+
+
+
+/*  The old logout button                
+IconButton(
+padding: const EdgeInsets.all(16.0),
+icon: const Icon(
+Icons.logout_outlined,
+semanticLabel: "Log out",
+),
+onPressed: () {
+Navigator.of(context).pop();
+}),
+
+trailing: IconButton(
+icon: const Icon(Icons.logout_outlined, semanticLabel: "Log out", ),
+onPressed: () {
+Navigator.of(context).pop();
+}),
+*/
