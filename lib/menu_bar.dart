@@ -50,7 +50,7 @@ class _MenuBarState extends State<MenuBar> {
                   ],
                 ),
                 //Place elli logo in here
-                Positioned(left: 0, right: 0, top: 100, child: Text("Elli")),
+                const Positioned(left: 0, right: 0, top: 100, child: Text("")),
                 //This lets the trailing logout button be at the bottom.
                 Positioned(
                     bottom: 10,
@@ -74,8 +74,6 @@ class _MenuBarState extends State<MenuBar> {
         ),
       );
 }
-
-
 
 /*  The old logout button 
                
