@@ -35,7 +35,8 @@ class _MenuBarState extends State<MenuBar> {
                   onDestinationSelected: (_selectedIndex) =>
                       setState(() => this._selectedIndex = _selectedIndex),
                   leading: IconButton(
-                    icon: Icon(isExtended ? Icons.turn_left : Icons.turn_right),
+                    icon: Icon(
+                        isExtended ? Icons.arrow_back : Icons.arrow_forward),
                     onPressed: () => setState(() {
                       isExtended = !isExtended;
                     }),
