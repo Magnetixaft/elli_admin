@@ -1,4 +1,4 @@
-import 'package:elli_admin/firebase_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_oauth/firebase_auth_oauth.dart';
 
@@ -31,7 +31,8 @@ class AuthenticationHandler {
 
   ///Gets list of users with admin privileges
   Future<List<String>> getAdmins() async{
-    return await FirebaseHandler.getInstance().getAdminList();
+      return await getAdminList();
+
   }
 
   ///Checks if user is logged in and has adming privileges
@@ -46,7 +47,7 @@ class AuthenticationHandler {
 
   ///Gets the currently signed in user
   Future<User?> getCurrentUser() async{
-    return await FirebaseAuth.instance.currentUser;
+    return FirebaseAuth.instance.currentUser;
   }
 
   ///Signs a user out
@@ -57,6 +58,16 @@ class AuthenticationHandler {
     } on FirebaseAuthException catch (e) {
       print(e.code);
     }
+  }
+
+  ///Gets a list of all users with admin privileges
+  Future<List<String>> getAdminList() async {
+    var data = await FirebaseFirestore.instance.collection('Admins').where('Permissions', isEqualTo: "all").get();
+    List<String> adminList = [];
+    for (var doc in data.docs) {
+      adminList.add(doc.id);
+    }
+    return adminList;
   }
 
 }

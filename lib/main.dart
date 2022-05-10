@@ -123,8 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ///Opens Azure popup and checks if user is admin, if true navigate to home
   Future<void> login() async {
-    //Since Firebase is not dependent on which admin is logged in, skip getting name
+
     if (await authenticationHandler.loginWithAzure() != null) {
+      //Since Firebase is not dependent on which admin is logged in, skip getting name
       FirebaseHandler.initialize("Admin");
       Navigator.pushReplacement(
           context,
@@ -136,8 +137,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ///Checks if user is logged in and is admin, if true navigate to home
   Future<void> checkLoggedIn() async {
-    //Since Firebase is not dependent on which admin is logged in, skip getting name
-    if (await authenticationHandler.isUserSignedIn() == true) {
+    if (await authenticationHandler.isUserSignedIn() == true ) {
+      //Since Firebase is not dependent on which admin is logged in, skip getting name
       FirebaseHandler.initialize("Admin");
       Navigator.pushReplacement(
           context,
