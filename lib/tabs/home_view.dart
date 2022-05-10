@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 
 import '../firebase_handler.dart';
 
@@ -11,122 +14,104 @@ class HomeView extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _HomeViewState extends State<HomeView> {
-
-  /// Temporary list of items for the dropdown menus
-  List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
-  List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
-  List<String> spaces = ["Room XYZ", "Room ABC", "Room 123"];
-
-  /// Temporary first items that is shown in the dropdown menus
-  String firstCompany = "Elicit AB";
-  String firstOffice = "Centralen";
-  String firstSpace = "Room XYZ";
+  var selectedCompany;
+  var selectedOffice;
+  var selectedRoom;
 
 
   @override
-
-    Widget build(BuildContext context) {
-      FirebaseHandler backend = FirebaseHandler.getInstance();
-      return FutureBuilder<void>(
-          future: backend.buildStaticModel(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return _renderView();
-            }
-            return const Center(child: CircularProgressIndicator());
-          });
-    }
-
-
+  Widget build(BuildContext context) {
+    FirebaseHandler backend = FirebaseHandler.getInstance();
+    return FutureBuilder<void>(
+        future: backend.buildStaticModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _renderView();
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
 
   Widget _renderView() {
+    getData();
     return SingleChildScrollView(
+      /// The "Home" header
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 10),
+            const Text("    Home",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                )),
+            const SizedBox(height: 24),
 
-    /// The "Home" header
-    child: Align(
-      alignment: Alignment.topLeft,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 10),
-          const Text("    Home",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              )),
-          const SizedBox(height: 24),
-
-          /// The dropdown menus and small header for each
-          Row(
-            children: [
-              Container(width: 80),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Company',
-                      style: TextStyle(
-                        fontSize: 16
+            /// The dropdown menus and small header for each
+            Row(
+              children: [
+                Container(width: 80),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Company',
+                        style: TextStyle(fontSize: 16),
                       ),
-                    ),
-                    _buildCompanyMenu(companies), // TODO change parameter to database
-                  ],
+                      _buildCompanyMenu() // TODO change parameter to database
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Office',
-                      style: TextStyle(
-                          fontSize: 16
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Office',
+                        style: TextStyle(fontSize: 16),
                       ),
-                    ),
-                    _buildOfficesMenu(offices), // TODO change parameter to database
-                  ],
+                      _buildOfficesMenu(), // TODO change parameter to database
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Space',
-                      style: TextStyle(
-                          fontSize: 16
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Space',
+                        style: TextStyle(fontSize: 16),
                       ),
-                    ),
-                    _buildSpacesMenu(spaces), // TODO change parameter to database
-                  ],
+                      _buildSpacesMenu(), // TODO change parameter to database
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
+              ],
+            ),
+            const SizedBox(height: 24),
 
-          /// The card section with all the items under each dropdown menu
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(width: 50),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildAddNewCompany(),
-                    _buildCard('Elicit AB', 'Org.nr: [#]'),  // TODO remove temporary items
-                    _buildCard('Elicit AB', 'Org.nr: [#]'),
-                  ],
+            /// The card section with all the items under each dropdown menu
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(width: 50),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildAddNewCompany(),
+                       // TODO Add cards
+                    ],
+                  ),
                 ),
-              ),
-
                 Container(width: 12),
                 Expanded(
                   flex: 1,
@@ -134,38 +119,39 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewOffice(),
-
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
+                      // TODO Add cards
                     ],
                   ),
                 ),
-              Container(width: 12),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                  _buildAddNewSpace(),
-                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                    _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                  ],
+                Container(width: 12),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildAddNewSpace(),
+                      // TODO Add cards
+                    ],
+                  ),
                 ),
-              ),
-              Container(width: 50)
-            ],
-          )
-        ],
+                Container(width: 50)
+              ],
+            )
+          ],
+        ),
       ),
-    ),
-        );
+    );
   }
 
-  /// This creates a card item for creating a new company
+  /// This creates a card item for adding a new company
   Widget _buildAddNewCompany() {
+    final nameInput = TextEditingController();
+    final orgInput = TextEditingController();
+    final addressInput = TextEditingController();
+    final officesInput = TextEditingController();
+    final totalSpacesInput = TextEditingController();
+    final availableSpacesInput = TextEditingController();
+
     return Container(
       width: 400,
       child: Padding(
@@ -181,7 +167,68 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      // TODO add new company to the database
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Add new company'),
+                              content: Column(
+                                children: <Widget>[
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Enter company name',
+                                    ),
+                                    controller: nameInput,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Organization number',
+                                    ),
+                                    controller: orgInput,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Address',
+                                    ),
+                                    controller: addressInput,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Offices',
+                                    ),
+                                    controller: officesInput,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Total number of work spaces',
+                                    ),
+                                    controller: totalSpacesInput,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Available work spaces',
+                                    ),
+                                    controller: availableSpacesInput,
+                                  ),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      // TODO add to database
+                                      addCompany(nameInput.text, officesInput.text);
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Add')),
+                              ],
+                            );
+                          });
                     },
                     label: const Text(
                       'Add new company',
@@ -192,18 +239,21 @@ class _HomeViewState extends State<HomeView> {
                     icon: const Icon(Icons.add),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
     );
-  }
+  } // TODO get done
 
-
-  /// This creates a card item for creating a new office
-
+  /// This creates a card item for adding a new office
   Widget _buildAddNewOffice() {
+    final officeNameInput = TextEditingController();
+    final officeAddressInput = TextEditingController();
+    final roomInput = TextEditingController();
+    final officeTotalSpacesInput = TextEditingController();
+    final officeAvailableSpacesInput = TextEditingController();
+
     return Container(
       width: 400,
       child: Padding(
@@ -219,8 +269,64 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      // TODO add new office to the database
-                    },
+                          showDialog(
+                          context: context,
+                          builder: (context)
+                          {
+                            return AlertDialog(
+                                title: const Text('Add new office'),
+                                content: Column(
+                                  children: <Widget>[
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Enter Office name',
+                                      ),
+                                      controller: officeNameInput,
+                                    ),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Address',
+                                      ),
+                                      controller: officeAddressInput,
+                                    ),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Number of rooms',
+                                      ),
+                                      controller: roomInput,
+                                    ),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Total number of work spaces',
+                                      ),
+                                      controller: officeTotalSpacesInput,
+                                    ),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Available work spaces',
+                                      ),
+                                      controller: officeAvailableSpacesInput,
+                                    ),
+                                  ],
+                                ),
+                                actions: <Widget>[
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        // TODO add to database
+                                        addOffice(officeNameInput.text, officeAddressInput.text, roomInput.text, officeTotalSpacesInput.text, officeAvailableSpacesInput.text);
+                                        _buildOfficeCard(officeNameInput.text, officeAddressInput.text, roomInput.text, officeTotalSpacesInput.text, officeAvailableSpacesInput.text);
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Add')),
+                                ],
+                            );
+                          });
+                          },
                     label: const Text(
                       'Add new office',
                       style: TextStyle(
@@ -230,17 +336,19 @@ class _HomeViewState extends State<HomeView> {
                     icon: const Icon(Icons.add),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
     );
   }
 
-  /// This creates a card item for creating a new space
-
+  /// This creates a card item for adding a new space
   Widget _buildAddNewSpace() {
+    final roomNameInput = TextEditingController();
+    final roomTotalSpacesInput = TextEditingController();
+    final roomAvailableSpacesInput = TextEditingController();
+
     return Container(
       width: 400,
       child: Padding(
@@ -256,7 +364,48 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      // TODO add new space to the database
+                      showDialog(
+                          context: context,
+                          builder: (context)
+                          {
+                            return AlertDialog(
+                              title: const Text('Add new company'),
+                              content: Column(
+                                children: <Widget>[
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Enter room name',
+                                    ),
+                                    controller: roomNameInput,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Total number of work spaces',
+                                    ),
+                                    controller: roomTotalSpacesInput,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Available work spaces',
+                                    ),
+                                    controller: roomAvailableSpacesInput,
+                                  ),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      // TODO add to database
+
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Add')),
+                              ],
+                            );
+                          });
                     },
                     label: const Text(
                       'Add new space',
@@ -267,17 +416,187 @@ class _HomeViewState extends State<HomeView> {
                     icon: const Icon(Icons.add),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
     );
+  } // TODO get done
+
+  /// This creates the dropdown menu for companies
+  Widget _buildCompanyMenu() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection("Divisions").snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            const Text("Loading.....");
+          } else {
+            List<DropdownMenuItem> companyItems = [];
+            for (int i = 0; i < snapshot.data!.docs.length; i++) {
+              DocumentSnapshot snap = snapshot.data!.docs[i];
+              companyItems.add(
+                DropdownMenuItem(
+                  child: Text(
+                    snap.id,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  value: snap.id,
+                ),
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  items: companyItems,
+                  onChanged: (company) {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'You have selected $company',
+                      ),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                    setState(() {
+                      selectedCompany = company;
+                    });
+                  },
+                  value: selectedCompany,
+                  isExpanded: false,
+                  hint: const Text(
+                    "Choose company",
+                    style: TextStyle(
+                        color: Colors.black,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+          return Container();
+        });
+}
+
+  /// This creates the dropdown menu for offices
+  Widget _buildOfficesMenu() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection("Divisions").doc(selectedCompany).collection('Offices').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            const Text("Loading.....");
+          } else {
+            List<DropdownMenuItem> companyItems = [];
+            for (int i = 0; i < snapshot.data!.docs.length; i++) {
+              DocumentSnapshot snap = snapshot.data!.docs[i];
+              companyItems.add(
+                DropdownMenuItem(
+                  child: Text(
+                    snap.id,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  value: snap.id,
+                ),
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  items: companyItems,
+                  onChanged: (office) {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'You have selected $office',
+                      ),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                    setState(() {
+                      selectedOffice = office;
+                    });
+                  },
+                  value: selectedOffice,
+                  isExpanded: false,
+                  hint: const Text(
+                    "Choose office",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+          return Container();
+        });
   }
 
+  /// This creates the dropdown menu for spaces
+  Widget _buildSpacesMenu() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('Rooms_2').where('Office', isEqualTo: selectedOffice).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            const Text("Loading.....");
+          } else {
+            List<DropdownMenuItem> companyItems = [];
+            for (int i = 0; i < snapshot.data!.docs.length; i++) {
+              DocumentSnapshot snap = snapshot.data!.docs[i];
+              companyItems.add(
+                DropdownMenuItem(
+                  child: Text(
+                    snap.id,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  value: snap.id,
+                ),
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  items: companyItems,
+                  onChanged: (room) {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'You have selected $room',
+                      ),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                    setState(() {
+                      selectedRoom = room;
+                    });
+                  },
+                  value: selectedRoom,
+                  isExpanded: false,
+                  hint: const Text(
+                    "Choose Room",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+          return Container();
+        });
+  }
 
   /// This creates a card item for company specifications
-  Widget _buildCompanyCard(String name, int orgNr, String address, int offices, int numberOfSpaces, int availableSpaces) {
+  Widget _buildCompanyCard(String name, int orgNr, String address, int offices,
+      int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -287,40 +606,6 @@ class _HomeViewState extends State<HomeView> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Padding(
-
-            
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  header,
-                  style: const TextStyle(
-                    fontSize: 16
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(subtitle),
-                const SizedBox(height: 4),
-                Container(
-                  width: 40,
-                  child: TextButton(
-                      onPressed: () {
-                        // TODO add function to edit
-                      },
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Edit',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                  ),
-                ),
-              ],
-            )
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,24 +616,23 @@ class _HomeViewState extends State<HomeView> {
                       Text(
                         name,
                         style: const TextStyle(
-                            fontSize: 16,
-                          fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
+
                       Container(
-                        width: 40,
-                        child: TextButton(
+                        height: 40,
+                        width: 75,
+                        child: ElevatedButton(
+                          child: const Text(
+                              'Delete'
+                          ),
                           onPressed: () {
-                            // TODO add function to edit
+                            setState(() {
+// TODO delete
+                            });
                           },
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Edit',
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.redAccent
                           ),
                         ),
                       ),
@@ -365,8 +649,7 @@ class _HomeViewState extends State<HomeView> {
                   Text('Available work spaces: [$availableSpaces]'),
                   const SizedBox(height: 12)
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -374,7 +657,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for office specifications
-  Widget _buildOfficeCard(String name, String address, int spaces, int numberOfSpaces, int availableSpaces) {
+  Widget _buildOfficeCard(String name, String address, String spaces,
+      String numberOfSpaces, String availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -394,24 +678,23 @@ class _HomeViewState extends State<HomeView> {
                       Text(
                         name,
                         style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
+
                       Container(
-                        width: 40,
-                        child: TextButton(
+                        height: 40,
+                        width: 75,
+                        child: ElevatedButton(
+                          child: const Text(
+                              'Delete'
+                          ),
                           onPressed: () {
-                            // TODO add function to edit
+                            setState(() {
+// TODO delete
+                            });
                           },
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Edit',
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.redAccent
                           ),
                         ),
                       ),
@@ -426,8 +709,7 @@ class _HomeViewState extends State<HomeView> {
                   Text('Available work spaces: [$availableSpaces]'),
                   const SizedBox(height: 12)
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -435,7 +717,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for space specifications
-  Widget _buildSpacesCard(String name, int numberOfSpaces, int availableSpaces) {
+  Widget _buildSpacesCard(
+      String name, int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -455,24 +738,23 @@ class _HomeViewState extends State<HomeView> {
                       Text(
                         name,
                         style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
+
                       Container(
-                        width: 40,
-                        child: TextButton(
+                        height: 40,
+                        width: 75,
+                        child: ElevatedButton(
+                          child: const Text(
+                              'Delete'
+                          ),
                           onPressed: () {
-                            // TODO add function to edit
+                            setState(() {
+                                  // TODO call delete
+                            });
                           },
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Edit',
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.redAccent
                           ),
                         ),
                       ),
@@ -484,103 +766,49 @@ class _HomeViewState extends State<HomeView> {
                   Text('Available work spaces: [$availableSpaces]'),
                   const SizedBox(height: 12)
                 ],
-              )
-
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
     );
   }
 
-  /// This creates the dropdown menu for companies
-  Widget _buildCompanyMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstCompany,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstCompany = newValue!;
-        });
-      },
-    );
+  Future<List> getData() async {
+    CollectionReference _collectionRef =
+    FirebaseFirestore.instance.collection('Divisions');
+    // Get docs from collection reference
+    QuerySnapshot querySnapshot = await _collectionRef.get();
+    // Get data from docs and convert map to List
+    final allData = querySnapshot.docs.map((doc) => doc.id).toList();
+    return allData;
   }
 
-  /// This creates the dropdown menu for offices
-  Widget _buildOfficesMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstOffice,
-
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstOffice = newValue!;
-        });
-      },
-    );
+  Future<void> addCompany(String name, String office) async {
+    FirebaseFirestore.instance
+        .collection('Divisions').doc(name).set({});
   }
 
-  /// This creates the dropdown menu for spaces
-  Widget _buildSpacesMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstSpace,
+  Future<void> addOffice(String name, String address, String rooms, String totalSpaces, String availableSpaces) async {
+      FirebaseFirestore.instance
+          .collection('Divisions').doc('Elicit').collection('Offices').doc(name)
+          .set({'Address': address, 'Rooms': rooms, 'Total spaces': totalSpaces, 'Available spaces': availableSpaces});
+  }
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+  Future<void> addRoom(String name, String address, String rooms, String totalSpaces, String availableSpaces, String office) async {
+    FirebaseFirestore.instance
+        .collection('Divisions').doc('Elicit').collection('Offices').doc(office)
+        .set({'Address': address, 'Rooms': rooms, 'Total spaces': totalSpaces, 'Available spaces': availableSpaces});
+  }
 
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstSpace = newValue!;
-        });
-      },
-    );
+  Future<List<String>> getRoomsFromOffice(String office) async {
+    var data = await FirebaseFirestore.instance.collection('Rooms_2').where('Office', isEqualTo: office).get();
+    List<String> roomsList = [];
+    for (var doc in data.docs) {
+      var docData = doc.data();
+      roomsList.add(docData["Name"]);
+    }
+    return roomsList;
   }
 
 }
