@@ -38,14 +38,15 @@ class AuthenticationHandler {
   Future<bool> isUserSignedIn() async {
     List<String> adminList = await getAdmins();
     if(FirebaseAuth.instance.currentUser != null && await adminList.contains(await FirebaseAuth.instance.currentUser?.email)){
-      return false;
-    }else {
       return true;
+    }else {
+      return false;
     }
   }
 
   ///Gets the currently signed in user
   Future<User?> getCurrentUser() async{
+    print(await FirebaseAuth.instance.currentUser);
     return await FirebaseAuth.instance.currentUser;
   }
 
