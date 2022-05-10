@@ -1,5 +1,4 @@
 import 'package:elli_admin/authentication_handler.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:elli_admin/firebase_handler.dart';
@@ -61,10 +60,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final userIdTextController = TextEditingController();
-  final userPasswordTextController = TextEditingController();
-  final AuthenticationHandler authenticationHandler = AuthenticationHandler.getInstance();
-//  final focusNodePassword = FocusNode();
+  final AuthenticationHandler authenticationHandler = AuthenticationHandler
+      .getInstance();
+
+  ///Checks loginstatus when page loads, skips login if true
   @override
   void initState() {
     super.initState();
@@ -83,9 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: Center(
                       child: Padding(
-                    padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
-                    child: Image.asset('assets/images/elicit_logo.png'),
-                  )),
+                        padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
+                        child: Image.asset('assets/images/elicit_logo.png'),
+                      )),
                 ),
                 Expanded(
                   child: Padding(
@@ -93,37 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Email or phone number',
-                          ),
-                          controller: userIdTextController,
-//                      onSubmitted: (_) {
-//                        // This moves the focus to the password field when the user presses "enter".
-//                        FocusScope.of(context).requestFocus(focusNodePassword);
-//                      },
-                        ),
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Password',
-                          ),
-                          controller: userPasswordTextController,
-//                      onSubmitted: (_) {
-//                        login();
-//                      },
-//                      focusNode: focusNodePassword,
-                        ),
-//                    Align(
-//                      alignment: Alignment.centerRight,
-//                      child: TextButton(
-//                        onPressed: () => {
-//                          print("Todo, Show modal"),
-//                        },
-//                        child: const Text("Forgot Password?"),
-//                      ),
-//                    ),
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -131,6 +99,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               onPressed: () => {login()},
                               child: const Text(
                                 "Login",
+                              )),
+                        ),
+                        //TODO remove, logout for testing
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                              onPressed: () => {logOut()},
+                              child: const Text(
+                                "logout",
                               )),
                         ),
                       ],
@@ -143,9 +121,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
+  ///Opens Azure popup and checks if user is admin, if true navigate to home
   Future<void> login() async {
-    FirebaseHandler.initialize(authenticationHandler.getCurrentUser().toString());
-    if(await authenticationHandler.signInUsingEmailPassword(email: userIdTextController.text, password: userPasswordTextController.text)!=null){
+    //Since Firebase is not dependent on which admin is logged in, skip getting name
+    FirebaseHandler.initialize("Admin");
+    if (await authenticationHandler.loginWithAzure() != null) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -154,8 +134,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  ///Checks if user is logged in and is admin, if true navigate to home
   Future<void> checkLoggedIn() async {
-    FirebaseHandler.initialize(authenticationHandler.getCurrentUser().toString());
+    //Since Firebase is not dependent on which admin is logged in, skip getting name
+    FirebaseHandler.initialize("Admin");
     if (await authenticationHandler.isUserSignedIn() == true) {
       Navigator.pushReplacement(
           context,
@@ -164,13 +146,8 @@ class _MyHomePageState extends State<MyHomePage> {
               const Home()));
     }
   }
-
+  //TODO remove, logout for testing
   Future<void> logOut() async {
     authenticationHandler.signOut();
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-            const MyHomePage(title: "Room Bookings")));
   }
 }
