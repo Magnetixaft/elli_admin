@@ -46,7 +46,6 @@ class AuthenticationHandler {
 
   ///Gets the currently signed in user
   Future<User?> getCurrentUser() async{
-    print(await FirebaseAuth.instance.currentUser);
     return await FirebaseAuth.instance.currentUser;
   }
 
