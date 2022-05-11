@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:elli_admin/firebase_handler.dart';
+import '../models/space.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+class AnalyticsTab extends StatefulWidget {
+  const AnalyticsTab({Key? key}) : super(key: key);
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<AnalyticsTab> createState() => _AnalyticsTabState();
 }
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
-class _HomeViewState extends State<HomeView> {
+class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
@@ -23,9 +25,10 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
 
-      /// The "Home" header
+      /// The "Analytics" header
       child: Align(
         alignment: Alignment.topLeft,
         child: Column(
@@ -33,7 +36,7 @@ class _HomeViewState extends State<HomeView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 10),
-            const Text("    Home",
+            const Text("    Analytics",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
@@ -52,7 +55,7 @@ class _HomeViewState extends State<HomeView> {
                       const Text(
                         'Company',
                         style: TextStyle(
-                          fontSize: 16
+                            fontSize: 16
                         ),
                       ),
                       _buildCompanyMenu(companies), // TODO change parameter to database
@@ -103,35 +106,33 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildAddNewCompany(),
-                      _buildCard('Elicit AB', 'Org.nr: [#]'),  // TODO remove temporary items
-                      _buildCard('Elicit AB', 'Org.nr: [#]'),
+                      _buildCard('Weekday occupancy rate (3w avg.)', 'Monday: [#]%),                                                                Tuesday: [#]%                                              Wednesday: [#]%                                                     Thursday: [#]%                                                          Friday: [#]%' ), //
+                      _buildCard('Comparisson covering % offices', '[Office centralen 45 % ]'),
+                      _buildCard('Most booked office', '[Office Jönköping]'),
                     ],
                   ),
                 ),
-                  Container(width: 12),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildAddNewOffice(),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                        _buildCard('Centralen', 'Drottningtorget 5, 411 03 Göteborg'),
-                      ],
-                    ),
-                  ),
                 Container(width: 12),
                 Expanded(
                   flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    _buildAddNewSpace(),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                      _buildCard('Most booked space', '[Space 2 Open] , ', ),
+                      _buildCard('Most common workday at office', '[Thursday]'),
+                      _buildCard('Comparisson covering % spaces ', '[Space 1  45 % ],                                                                      [Space 2 Open  65 % ],                                                   [Quiet room  55 % ]   '),
+                      _buildCard('Comparisson number of bookings last 2 weeks ', '[Last week  900 ],                                                              [2 weeks ago 812 ]                                                       [+88]'),
+                    ],
+                  ),
+                ),
+                Container(width: 12),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildCard('[Most common workday at space]', '[Monday]  '),
+                      _buildCard('[Comparisson number of bookings last week]', '[Last week  102]                                                             [2 weeks ago 100]                                                        [Diffrence +  39]'),
                       _buildCard('[Name of space]', 'Total number of seats: [#]'),
                     ],
                   ),
@@ -140,114 +141,6 @@ class _HomeViewState extends State<HomeView> {
               ],
             )
           ],
-        ),
-      ),
-    );
-  }
-
-  /// This creates a card item for creating a new company
-  Widget _buildAddNewCompany() {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      // TODO add new company to the database
-                    },
-                    label: const Text(
-                      'Add new company',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              )
-          ),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-  }
-
-  /// This creates a card item for creating a new office
-  Widget _buildAddNewOffice() {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      // TODO add new office to the database
-                    },
-                    label: const Text(
-                      'Add new office',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              )
-          ),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-  }
-
-  /// This creates a card item for creating a new space
-  Widget _buildAddNewSpace() {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextButton.icon(
-                    onPressed: () {
-                      // TODO add new space to the database
-                    },
-                    label: const Text(
-                      'Add new space',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              )
-          ),
-          color: Colors.grey.shade100,
         ),
       ),
     );
@@ -264,38 +157,37 @@ class _HomeViewState extends State<HomeView> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  header,
-                  style: const TextStyle(
-                    fontSize: 16
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    header,
+                    style: const TextStyle(
+                        fontSize: 16
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(subtitle),
-                const SizedBox(height: 4),
-                Container(
-                  width: 40,
-                  child: TextButton(
+                  const SizedBox(height: 4),
+                  Text(subtitle),
+                  const SizedBox(height: 4),
+                  Container(
+                    width: 120,
+                    child: TextButton(
                       onPressed: () {
-                        // TODO add function to edit
                       },
                       child: const Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'Edit',
+                          'avg. [value] kr',
                           style: TextStyle(
                             color: Colors.grey,
                           ),
                         ),
                       ),
+                    ),
                   ),
-                ),
-              ],
-            )
+                ],
+              )
           ),
           color: Colors.grey.shade100,
         ),

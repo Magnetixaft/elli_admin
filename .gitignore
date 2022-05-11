@@ -8,6 +8,9 @@
 .buildlog/
 .history
 .svn/
+test/
+.vscode/
+
 
 # IntelliJ related
 *.iml
@@ -45,4 +48,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 android/
-test/
+

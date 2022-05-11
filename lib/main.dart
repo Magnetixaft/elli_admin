@@ -2,8 +2,8 @@ import 'package:elli_admin/authentication_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:elli_admin/firebase_handler.dart';
-import 'package:elli_admin/home.dart';
 import 'package:elli_admin/theme_elicit.dart';
+import 'package:elli_admin/menu_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -131,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-              const Home()));
+              const MenuBar()));
     }
   }
 
@@ -144,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-              const Home()));
+              const MenuBar()));
     }
   }
   //TODO remove, logout for testing
