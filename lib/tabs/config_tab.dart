@@ -11,6 +11,9 @@ class ConfigTab extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _ConfigTabState extends State<ConfigTab> {
+  final userIdTextController = TextEditingController();
+  final userPasswordTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -39,7 +42,7 @@ class _ConfigTabState extends State<ConfigTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 400,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -57,7 +60,7 @@ class _ConfigTabState extends State<ConfigTab> {
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     //This is where the edit button lives
-                                    Container(
+                                    SizedBox(
                                       width: 120,
                                       child: TextButton(
                                         onPressed: () {
@@ -86,7 +89,7 @@ class _ConfigTabState extends State<ConfigTab> {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 400,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -103,7 +106,7 @@ class _ConfigTabState extends State<ConfigTab> {
                                       "Admins",
                                       style: TextStyle(fontSize: 16),
                                     ),
-                                    Container(
+                                    SizedBox(
                                       width: 120,
                                       child: TextButton(
                                         onPressed: () {
@@ -132,7 +135,7 @@ class _ConfigTabState extends State<ConfigTab> {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 400,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -145,11 +148,11 @@ class _ConfigTabState extends State<ConfigTab> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       "About",
                                       style: TextStyle(fontSize: 16),
                                     ),
-                                    Container(
+                                    SizedBox(
                                       width: 120,
                                       child: TextButton(
                                         onPressed: () {
@@ -193,22 +196,97 @@ class _ConfigTabState extends State<ConfigTab> {
   Widget _buildPopupDialog(BuildContext context, String title, String text) {
     return AlertDialog(
       title: Text(title),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(text),
-        ],
-      ),
+      content: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Center(
+            child: Container(
+              width: 700,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Name',
+                            ),
+                            controller: userIdTextController,
+                          ),
+                          TextField(
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Email',
+                            ),
+                            controller: userPasswordTextController,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                                onPressed: () => {},
+                                child: const Text(
+                                  "Add",
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          textColor: Theme.of(context).primaryColor,
           child: const Text('Close'),
         ),
       ],
     );
   }
 }
+
+class _admin {
+
+
+
+  
+}
+
+/*
+Widget _editTitleTextField() {
+  if (_isEditingText)
+    return Center(
+      child: TextField(
+        onSubmitted: (newValue){
+          setState(() {
+            initialText = newValue;
+            _isEditingText =false;
+          });
+        },
+        autofocus: true,
+        controller: _editingController,
+      ),
+    );
+  return InkWell(
+    onTap: () {
+      setState(() {
+        _isEditingText = true;
+      });
+    },
+    child: Text(
+  initialText,
+  style: TextStyle(
+    color: Colors.black,
+    fontSize: 18.0,
+  ),
+ );
+}
+*/

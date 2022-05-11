@@ -11,7 +11,6 @@ class AnalyticsTab extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _AnalyticsTabState extends State<AnalyticsTab> {
-
   /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
   List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
@@ -22,12 +21,9 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
   String firstOffice = "Centralen";
   String firstSpace = "Room XYZ";
 
-
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
-
       /// The "Analytics" header
       child: Align(
         alignment: Alignment.topLeft,
@@ -54,11 +50,10 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     children: [
                       const Text(
                         'Company',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildCompanyMenu(companies), // TODO change parameter to database
+                      _buildCompanyMenu(
+                          companies), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -69,11 +64,10 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     children: [
                       const Text(
                         'Office',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildOfficesMenu(offices), // TODO change parameter to database
+                      _buildOfficesMenu(
+                          offices), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -84,11 +78,10 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     children: [
                       const Text(
                         'Space',
-                        style: TextStyle(
-                            fontSize: 16
-                        ),
+                        style: TextStyle(fontSize: 16),
                       ),
-                      _buildSpacesMenu(spaces), // TODO change parameter to database
+                      _buildSpacesMenu(
+                          spaces), // TODO change parameter to database
                     ],
                   ),
                 ),
@@ -106,8 +99,10 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('Weekday occupancy rate (3w avg.)', 'Monday: [#]%),                                                                Tuesday: [#]%                                              Wednesday: [#]%                                                     Thursday: [#]%                                                          Friday: [#]%' ), //
-                      _buildCard('Comparisson covering % offices', '[Office centralen 45 % ]'),
+                      _buildCard('Weekday occupancy rate (3w avg.)',
+                          'Monday: [#]%),                                                                Tuesday: [#]%                                              Wednesday: [#]%                                                     Thursday: [#]%                                                          Friday: [#]%'), //
+                      _buildCard('Comparisson covering % offices',
+                          '[Office centralen 45 % ]'),
                       _buildCard('Most booked office', '[Office Jönköping]'),
                     ],
                   ),
@@ -118,10 +113,15 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('Most booked space', '[Space 2 Open] , ', ),
+                      _buildCard(
+                        'Most booked space',
+                        '[Space 2 Open] , ',
+                      ),
                       _buildCard('Most common workday at office', '[Thursday]'),
-                      _buildCard('Comparisson covering % spaces ', '[Space 1  45 % ],                                                                      [Space 2 Open  65 % ],                                                   [Quiet room  55 % ]   '),
-                      _buildCard('Comparisson number of bookings last 2 weeks ', '[Last week  900 ],                                                              [2 weeks ago 812 ]                                                       [+88]'),
+                      _buildCard('Comparisson covering % spaces ',
+                          '[Space 1  45 % ],                                                                      [Space 2 Open  65 % ],                                                   [Quiet room  55 % ]   '),
+                      _buildCard('Comparisson number of bookings last 2 weeks ',
+                          '[Last week  900 ],                                                              [2 weeks ago 812 ]                                                       [+88]'),
                     ],
                   ),
                 ),
@@ -131,9 +131,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('[Most common workday at space]', '[Monday]  '),
-                      _buildCard('[Comparisson number of bookings last week]', '[Last week  102]                                                             [2 weeks ago 100]                                                        [Diffrence +  39]'),
-                      _buildCard('[Name of space]', 'Total number of seats: [#]'),
+                      _buildCard(
+                          '[Most common workday at space]', '[Monday]  '),
+                      _buildCard('[Comparisson number of bookings last week]',
+                          '[Last week  102]                                                             [2 weeks ago 100]                                                        [Diffrence +  39]'),
+                      _buildCard(
+                          '[Name of space]', 'Total number of seats: [#]'),
                     ],
                   ),
                 ),
@@ -163,9 +166,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                 children: [
                   Text(
                     header,
-                    style: const TextStyle(
-                        fontSize: 16
-                    ),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 4),
                   Text(subtitle),
@@ -173,8 +174,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   Container(
                     width: 120,
                     child: TextButton(
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       child: const Align(
                         alignment: Alignment.center,
                         child: Text(
@@ -187,8 +187,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     ),
                   ),
                 ],
-              )
-          ),
+              )),
           color: Colors.grey.shade100,
         ),
       ),
@@ -201,15 +200,14 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       // Initial Value
       value: firstCompany,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -231,15 +229,14 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       // Initial Value
       value: firstOffice,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -261,15 +258,14 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       // Initial Value
       value: firstSpace,
 
-      style: const TextStyle(
-          fontWeight: FontWeight.bold
-      ),
+      style: const TextStyle(fontWeight: FontWeight.bold),
 
       // Down Arrow Icon
       icon: const Icon(Icons.keyboard_arrow_down),
 
       // Array list of items
-      items: list.map((String items) {  // TODO change to get from database instead of static list
+      items: list.map((String items) {
+        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -284,5 +280,4 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       },
     );
   }
-
 }
