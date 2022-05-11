@@ -431,7 +431,7 @@ class _HomeViewState extends State<HomeView> {
           if (!snapshot.hasData) {
             const Text("Loading.....");
           } else {
-            List<DropdownMenuItem> companyItems = [];
+            List<DropdownMenuItem<String>> companyItems = [];
             for (int i = 0; i < snapshot.data!.docs.length; i++) {
               DocumentSnapshot snap = snapshot.data!.docs[i];
               companyItems.add(
@@ -461,6 +461,8 @@ class _HomeViewState extends State<HomeView> {
                     Scaffold.of(context).showSnackBar(snackBar);
                     setState(() {
                       selectedCompany = company;
+                      selectedOffice = null;
+                      selectedRoom = null;
                     });
                   },
                   value: selectedCompany,
@@ -488,7 +490,7 @@ class _HomeViewState extends State<HomeView> {
           if (!snapshot.hasData) {
             const Text("Loading.....");
           } else {
-            List<DropdownMenuItem> companyItems = [];
+            List<DropdownMenuItem<String>> companyItems = [];
             for (int i = 0; i < snapshot.data!.docs.length; i++) {
               DocumentSnapshot snap = snapshot.data!.docs[i];
               companyItems.add(
@@ -518,6 +520,7 @@ class _HomeViewState extends State<HomeView> {
                     Scaffold.of(context).showSnackBar(snackBar);
                     setState(() {
                       selectedOffice = office;
+                      selectedRoom = null;
                     });
                   },
                   value: selectedOffice,
@@ -545,7 +548,7 @@ class _HomeViewState extends State<HomeView> {
           if (!snapshot.hasData) {
             const Text("Loading.....");
           } else {
-            List<DropdownMenuItem> companyItems = [];
+            List<DropdownMenuItem<String>> companyItems = [];
             for (int i = 0; i < snapshot.data!.docs.length; i++) {
               DocumentSnapshot snap = snapshot.data!.docs[i];
               companyItems.add(
