@@ -22,9 +22,6 @@ class _HomeViewState extends State<HomeView> {
     setState(() {});
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     FirebaseHandler backend = FirebaseHandler.getInstance();
@@ -38,6 +35,7 @@ class _HomeViewState extends State<HomeView> {
         });
   }
 
+  /// Renders the layout of the whole homepage
   Widget _renderView() {
     return SingleChildScrollView(
       /// The "Home" header
@@ -152,7 +150,7 @@ class _HomeViewState extends State<HomeView> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  FirebaseHandler.getInstance().removeRoom(selectedRoom);
+                                  FirebaseHandler.getInstance().removeRoom(int.parse(selectedRoom.toString()));
                                 });
                               },
                               style: ElevatedButton.styleFrom(
@@ -456,8 +454,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ],
                   ),
-                  Text('Org.nr: [$info]'),
-                  const SizedBox(height: 12)
+                  Text('Org.nr: [$info]')
                 ],
               )),
           color: Colors.grey.shade100,
@@ -655,7 +652,6 @@ class _HomeViewState extends State<HomeView> {
                   Text('$address'),
                   const SizedBox(height: 24),
                   Text('Description: $description'),
-                  const SizedBox(height: 12),
                 ],
               )),
           color: Colors.grey.shade100,
@@ -860,9 +856,7 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   const SizedBox(height: 24),
                   Text('Total number of work spaces: $numberOfSpaces'),
-                  const SizedBox(height: 12),
                   Text('Available work spaces: $availableSpaces'),
-                  const SizedBox(height: 12)
                 ],
               )),
           color: Colors.grey.shade100,
