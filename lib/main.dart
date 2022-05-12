@@ -20,6 +20,10 @@ void main() async {
   runApp(MyApp());
 }
 
+/// The main widget for ELLI admin
+///
+/// This widget is presented when the app is started and, whilst Firebase is initializing, a [CircularProgressIndicator] i returned.
+/// Once Firebase is initialized, [MyHomePage] is returned.
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
@@ -51,6 +55,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// The login page
+///
+/// A login page that navigates to [Home] when login is successful.
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -63,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final AuthenticationHandler authenticationHandler = AuthenticationHandler
       .getInstance();
 
-  ///Checks loginstatus when page loads, skips login if true
+  // Checks loginstatus when page loads, skips login if true
   @override
   void initState() {
     super.initState();
@@ -121,7 +128,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  ///Opens Azure popup and checks if user is admin, if true navigate to home
+  /// Logs the user in using Azure.
+  /// 
+  /// Navigates to [MenuBar] when login is successful. Initializes the [FirebaseHandler] using encrypted email from AuthenticationHandler
   Future<void> login() async {
 
     if (await authenticationHandler.loginWithAzure() != null) {
@@ -135,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  ///Checks if user is logged in and is admin, if true navigate to home
+  /// Checks if user is logged in and is admin, if true navigate to home
   Future<void> checkLoggedIn() async {
     if (await authenticationHandler.isUserSignedIn() == true ) {
       //Since Firebase is not dependent on which admin is logged in, skip getting name
@@ -147,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const MenuBar()));
     }
   }
-  //TODO remove, logout for testing
+  // TODO remove, logout for testing
   Future<void> logOut() async {
     authenticationHandler.signOut();
   }

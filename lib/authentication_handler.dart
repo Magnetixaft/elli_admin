@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_oauth/firebase_auth_oauth.dart';
 
+/// A singleton handler for Azure-login functionality.
 class AuthenticationHandler {
   static final AuthenticationHandler _instance = AuthenticationHandler._();
   AuthenticationHandler._();
