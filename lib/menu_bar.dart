@@ -3,6 +3,9 @@ import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_tab.dart';
 
+/// The home page for the ELLI admin console.
+/// 
+/// Allows the user to navigate between the tabs [HomeView], [AnalyticsTab] and [ConfigTab]
 class MenuBar extends StatefulWidget {
   const MenuBar({Key? key}) : super(key: key);
 
