@@ -1,7 +1,4 @@
-import 'dart:html';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +21,8 @@ class _HomeViewState extends State<HomeView> {
   callback() {
     setState(() {});
   }
+
+
 
 
   @override
@@ -69,7 +68,30 @@ class _HomeViewState extends State<HomeView> {
                         'Company',
                         style: TextStyle(fontSize: 16),
                       ),
-                      _buildCompanyMenu()
+                      Row(
+                        children: [
+                          _buildCompanyMenu(),
+                          const SizedBox(width: 16),
+                          Container(
+                            height: 40,
+                            width: 75,
+                            child: ElevatedButton(
+                              child: const Text(
+                                  'Delete'
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  FirebaseHandler.getInstance().removeDivision(selectedDivision);
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.redAccent
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
                     ],
                   ),
                 ),
@@ -82,7 +104,29 @@ class _HomeViewState extends State<HomeView> {
                         'Office',
                         style: TextStyle(fontSize: 16),
                       ),
-                      _buildOfficesMenu()
+                      Row(
+                        children: [
+                          _buildOfficesMenu(),
+                          const SizedBox(width: 16),
+                          Container(
+                            height: 40,
+                            width: 75,
+                            child: ElevatedButton(
+                              child: const Text(
+                                  'Delete'
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  FirebaseHandler.getInstance().removeOffice(selectedDivision, selectedOffice);
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.redAccent
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -95,7 +139,29 @@ class _HomeViewState extends State<HomeView> {
                         'Space',
                         style: TextStyle(fontSize: 16),
                       ),
-                      _buildSpacesMenu()
+                      Row(
+                        children: [
+                          _buildSpacesMenu(),
+                          SizedBox(width: 16),
+                          Container(
+                            height: 40,
+                            width: 75,
+                            child: ElevatedButton(
+                              child: const Text(
+                                  'Delete'
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  FirebaseHandler.getInstance().removeRoom(selectedRoom);
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.redAccent
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -127,12 +193,12 @@ class _HomeViewState extends State<HomeView> {
                                       shrinkWrap: true,
                                       itemCount: snapshot.data!.docs.length,
                                       itemBuilder: (context, index) {
-                                        return _buildCompanyCard('name', 'info', 'address');
+                                        return _buildCompanyCard(snapshot.data!.docs[index].id, snapshot.data!.docs[index]['Info']);
                                       },
                                     );
                                   } else if (snapshot.connectionState == ConnectionState.done &&
                                       !snapshot.hasData) {
-                                    return Text('not found');
+                                    return Text('Not Found');
                                   }
                                   else {
                                     return Container();
@@ -164,12 +230,12 @@ class _HomeViewState extends State<HomeView> {
                                       shrinkWrap: true,
                                       itemCount: snapshot.data!.docs.length,
                                       itemBuilder: (context, index) {
-                                        return _buildOfficeCard('name', 'address', 'description');
+                                        return _buildOfficeCard(snapshot.data!.docs[index].id, snapshot.data!.docs[index]['Address'], snapshot.data!.docs[index]['Description']);
                                       },
                                     );
                                   } else if (snapshot.connectionState == ConnectionState.done &&
                                       !snapshot.hasData) {
-                                    return Text('not found');
+                                    return const Text('Not Found');
                                   }
                                   else {
                                     return Container();
@@ -201,13 +267,13 @@ class _HomeViewState extends State<HomeView> {
                                         shrinkWrap: true,
                                         itemCount: snapshot.data!.docs.length,
                                         itemBuilder: (context, index) {
-                                          return _buildSpacesCard('name', 3, 7);
+                                          return _buildSpacesCard(snapshot.data!.docs[index]['Name'], 4, 3);
                                         },
                                       );
                                     } else if (snapshot.connectionState ==
                                         ConnectionState.done &&
                                         !snapshot.hasData) {
-                                      return Text('not found');
+                                      return const Text('Not Found');
                                     }
                                     else {
                                       return Container();
@@ -233,7 +299,7 @@ class _HomeViewState extends State<HomeView> {
   /// This creates the dropdown menu for companies
   Widget _buildCompanyMenu() {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection("Divisions").snapshots(),
+        stream: FirebaseFirestore.instance.collection('Divisions').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             const Text("Loading.....");
@@ -267,7 +333,7 @@ class _HomeViewState extends State<HomeView> {
                     );
                     Scaffold.of(context).showSnackBar(snackBar);
                     setState(() {
-                      selectedDivision = company;
+                      selectedDivision = company!;
                       selectedOffice = null;
                       selectedRoom = null;
                     });
@@ -335,9 +401,14 @@ class _HomeViewState extends State<HomeView> {
                               actions: <Widget>[
                                 ElevatedButton(
                                     onPressed: () async {
-                                      FirebaseHandler handler = FirebaseHandler.getInstance();
-                                      handler.saveDivision(divisionName.text, info.text);
-                                      Navigator.of(context).pop();
+                                      if (divisionName.text.isNotEmpty &&
+                                          info.text.isNotEmpty) {
+                                        FirebaseHandler.getInstance().saveDivision(divisionName.text, info.text);
+                                        Navigator.of(context).pop();
+                                      }
+                                      else {
+                                        return;
+                                      }
                                     },
                                     child: const Text('Add')),
                               ],
@@ -361,7 +432,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for company specifications
-  Widget _buildCompanyCard(String name, String info, String address) {
+  Widget _buildCompanyCard(String name, String info) {
     return Container(
       width: 400,
       child: Padding(
@@ -383,29 +454,9 @@ class _HomeViewState extends State<HomeView> {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-
-                      Container(
-                        height: 40,
-                        width: 75,
-                        child: ElevatedButton(
-                          child: const Text(
-                              'Delete'
-                          ),
-                          onPressed: () {
-                            setState(() {
-// TODO delete
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.redAccent
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                   Text('Org.nr: [$info]'),
-                  const SizedBox(height: 24),
-                  Text('[$address]'),
                   const SizedBox(height: 12)
                 ],
               )),
@@ -537,9 +588,23 @@ class _HomeViewState extends State<HomeView> {
                                 actions: <Widget>[
                                   ElevatedButton(
                                       onPressed: () async {
-                                        Navigator.of(context).pop();
-                                        Office office = Office(officeAddress.text, officeDescription.text);
-                                        FirebaseHandler.getInstance().saveOffice(selectedDivision, officeName.text, office);
+                                        if (officeName.text.isNotEmpty &&
+                                            officeAddress.text.isNotEmpty &&
+                                            officeDescription.text.isNotEmpty &&
+                                            contactInfo.text.isNotEmpty) {
+
+                                          Navigator.of(context).pop();
+                                          Office office = Office(
+                                              officeAddress.text,
+                                              officeDescription.text);
+                                          FirebaseHandler.getInstance()
+                                              .saveOffice(
+                                              selectedDivision, officeName.text,
+                                              office);
+                                        }
+                                        else {
+                                          return;
+                                        }
                                       },
                                       child: const Text('Add')),
                                 ],
@@ -585,29 +650,11 @@ class _HomeViewState extends State<HomeView> {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-
-                      Container(
-                        height: 40,
-                        width: 75,
-                        child: ElevatedButton(
-                          child: const Text(
-                              'Delete'
-                          ),
-                          onPressed: () {
-                            setState(() {
-// TODO delete
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.redAccent
-                          ),
-                        ),
-                      ),
                     ],
                   ),
-                  Text('[$address]'),
+                  Text('$address'),
                   const SizedBox(height: 24),
-                  Text('Description: [$description]'),
+                  Text('Description: $description'),
                   const SizedBox(height: 12),
                 ],
               )),
@@ -750,21 +797,19 @@ class _HomeViewState extends State<HomeView> {
                               actions: <Widget>[
                                 ElevatedButton(
                                     onPressed: () async {
-                                      /*var equipmentString = equipment.text;
-                                      List<String> smack = equipmentString.split(",");
+                                      if (roomNameInput.text.isNotEmpty &&
+                                          roomNr.text.isNotEmpty &&
+                                          description.text.isNotEmpty &&
+                                          workspaces.text.isNotEmpty &&
+                                          equipment.text.isNotEmpty) {
 
-                                      var listMap = Map<int, List<String>>();
+                                        // TODO save room
 
-
-                                      Room room = Room(myMap, room.timeslots, description.text, selectedOffice, roomNameInput.text);
-                                      FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
-
-                                       */
-
-
-                                      Navigator.of(context).pop();
-
-
+                                        Navigator.of(context).pop();
+                                      }
+                                      else {
+                                        return;
+                                      }
                                     },
                                     child: const Text('Add')),
                               ],
@@ -811,30 +856,12 @@ class _HomeViewState extends State<HomeView> {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-
-                      Container(
-                        height: 40,
-                        width: 75,
-                        child: ElevatedButton(
-                          child: const Text(
-                              'Delete'
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              // TODO call delete
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.redAccent
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  Text('Total number of work spaces: [$numberOfSpaces]'),
+                  Text('Total number of work spaces: $numberOfSpaces'),
                   const SizedBox(height: 12),
-                  Text('Available work spaces: [$availableSpaces]'),
+                  Text('Available work spaces: $availableSpaces'),
                   const SizedBox(height: 12)
                 ],
               )),
@@ -844,36 +871,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-
-  Future<List> getData() async {
-    CollectionReference _collectionRef =
-    FirebaseFirestore.instance.collection('Divisions');
-    // Get docs from collection reference
-    QuerySnapshot querySnapshot = await _collectionRef.get();
-    // Get data from docs and convert map to List
-    final allData = querySnapshot.docs.map((doc) => doc.id).toList();
-    return allData;
-  }
-
-  Future<void> addCompany(String name, String office) async {
-    FirebaseFirestore.instance
-        .collection('Divisions').doc(name).set({});
-  }
-
-  Future<void> addOffice(String name, String address, String rooms, String totalSpaces, String availableSpaces) async {
-      FirebaseFirestore.instance
-          .collection('Divisions').doc(selectedDivision).collection('Offices').doc(name)
-          .set({'Address': address, 'Rooms': rooms, 'Total spaces': totalSpaces, 'Available spaces': availableSpaces});
-  }
-
-  // TODO add special equipment
-  Future<void> addRoom(String name, String address, String rooms, String totalSpaces, String availableSpaces, String office) async {
-    FirebaseFirestore.instance
-        .collection('Rooms_2').doc(name)
-        .set({'Address': address, 'Rooms': rooms, 'Total spaces': totalSpaces, 'Available spaces': availableSpaces});
-  }
-
-  Future<List<String>> getRoomsFromOffice(String office) async {
+  /*Future<List<String>> getRoomsFromOffice(String office) async {
     var data = await FirebaseFirestore.instance.collection('Rooms_2').where('Office', isEqualTo: office).get();
     List<String> roomsList = [];
     for (var doc in data.docs) {
@@ -881,32 +879,6 @@ class _HomeViewState extends State<HomeView> {
       roomsList.add(docData["Name"]);
     }
     return roomsList;
-  }
-
-
-
-  /*List<Widget> buildOfficeList(List<Office>? offices) {
-
-    if (offices == null) {
-      return [const Text('No offices found')];
-    }
-
-
-    var temp = <Widget>[];
-
-
-    for (Office office in offices) {
-
-      if (office != null) {
-        temp.add(_buildOfficeCard(
-          selectedOffice,
-            office.address.toString(),
-            office.description.toString(),
-            office.contactInfo.toString()
-            ));
-      }
-    }
-    return temp;
   }
 
    */
