@@ -12,12 +12,12 @@ class ConfigTab extends StatefulWidget {
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _ConfigTabState extends State<ConfigTab> {
   final userIdTextController = TextEditingController();
-  final userPasswordTextController = TextEditingController();
+  final userPasswordTextController =
+      TextEditingController(text: "example@email.no");
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      /// The "Analytics" header
       child: Align(
         alignment: Alignment.topLeft,
         child: Column(
@@ -31,8 +31,6 @@ class _ConfigTabState extends State<ConfigTab> {
                   fontSize: 30,
                 )),
             const SizedBox(height: 24),
-
-            /// The card section with all the items under each dropdown menu
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -196,6 +194,28 @@ class _ConfigTabState extends State<ConfigTab> {
   Widget _buildPopupDialog(BuildContext context, String title, String text) {
     return AlertDialog(
       title: Text(title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(text),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+/*
+  Widget _buildPopupDialog(BuildContext context, String title, String text) {
+    return AlertDialog(
+      title: Text(title),
       content: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Center(
@@ -209,6 +229,7 @@ class _ConfigTabState extends State<ConfigTab> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          const Text("Name"),
                           TextField(
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
@@ -217,12 +238,11 @@ class _ConfigTabState extends State<ConfigTab> {
                             controller: userIdTextController,
                           ),
                           TextField(
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Email',
-                            ),
                             controller: userPasswordTextController,
+                            decoration: const InputDecoration(
+                              label: Text("Email"),
+                              border: OutlineInputBorder(),
+                            ),
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -251,13 +271,7 @@ class _ConfigTabState extends State<ConfigTab> {
       ],
     );
   }
-}
-
-class _admin {
-
-
-
-  
+  */
 }
 
 /*
@@ -290,3 +304,7 @@ Widget _editTitleTextField() {
  );
 }
 */
+
+/*
+
+  */

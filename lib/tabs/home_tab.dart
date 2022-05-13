@@ -11,6 +11,22 @@ class HomeView extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _HomeViewState extends State<HomeView> {
+  //Controllers for the text fields in the different editors
+
+  final companyNameTextController = TextEditingController();
+  final companyOrgNrTextController = TextEditingController();
+  final companyAddressTextController = TextEditingController();
+
+  final officeNameTextController = TextEditingController();
+  final officeAddressTextController = TextEditingController();
+  final officePhoneTextController = TextEditingController();
+  final officeEmailTextController = TextEditingController();
+
+  final spaceNameTextController = TextEditingController();
+  final spaceAddressTextController = TextEditingController();
+
+  final worSpaceNameTextController = TextEditingController();
+
   /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
   List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
@@ -287,7 +303,10 @@ class _HomeViewState extends State<HomeView> {
                         width: 40,
                         child: TextButton(
                           onPressed: () {
-                            // TODO add function to edit
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    _buildEditCompany(context, true));
                           },
                           child: const Align(
                             alignment: Alignment.center,
@@ -519,6 +538,250 @@ class _HomeViewState extends State<HomeView> {
           firstSpace = newValue!;
         });
       },
+    );
+  }
+
+  ///Creates the popup for edititng or adding a company.
+  Widget _buildEditCompany(BuildContext context, bool edit) {
+    return AlertDialog(
+      title: edit ? const Text("Edit company") : const Text("New company"),
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          SizedBox(
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.save),
+                label: const Text("Save changes"),
+              )),
+          TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              label: Text('Name'),
+            ),
+            controller: companyNameTextController,
+          ),
+          TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              label: Text('Org.nr'),
+            ),
+            controller: companyOrgNrTextController,
+          ),
+          TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              label: Text('Address'),
+            ),
+            controller: companyAddressTextController,
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  ///Creates the popup for editing or adding an office.
+  Widget _buildEditOffice(BuildContext context, bool edit) {
+    return AlertDialog(
+      title: edit ? const Text("Edit office") : const Text("New office"),
+      content: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Center(
+            child: SizedBox(
+              width: 700,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton.icon(
+                                onPressed: () {},
+                                icon: const Icon(Icons.save),
+                                label: const Text("Save changes"),
+                              )),
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Name',
+                            ),
+                            controller: officeNameTextController,
+                          ),
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Address',
+                            ),
+                            controller: officeAddressTextController,
+                          ),
+                          const Text(
+                            "Contact Information",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Phone number',
+                            ),
+                            controller: officePhoneTextController,
+                          ),
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Email',
+                            ),
+                            controller: officeEmailTextController,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  ///Creates the popup for editing or adding a space
+  Widget _buildEditSpace(BuildContext context, bool edit) {
+    return AlertDialog(
+      title: edit ? const Text("Edit space") : const Text("New space"),
+      content: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Center(
+            child: SizedBox(
+              width: 700,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton.icon(
+                                onPressed: () {},
+                                icon: const Icon(Icons.save),
+                                label: const Text("Save changes"),
+                              )),
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Name',
+                            ),
+                            controller: spaceNameTextController,
+                          ),
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Number of work spaces',
+                            ),
+                            controller: spaceAddressTextController,
+                          ),
+                          const Text(
+                            "Time slots",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          //TODO add functionality for adding/editing time slots
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  ///Creates the popup for editing or adding a work space
+  Widget _buildEditWorkSpace(BuildContext context, bool edit) {
+    return AlertDialog(
+      title:
+          edit ? const Text("Edit work space") : const Text("New work space"),
+      content: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Center(
+            child: SizedBox(
+              width: 700,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton.icon(
+                                onPressed: () {},
+                                icon: const Icon(Icons.save),
+                                label: const Text("Save changes"),
+                              )),
+                          TextField(
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Name',
+                            ),
+                            controller: worSpaceNameTextController,
+                          ),
+                          const Text(
+                            "Attributes",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          //TODO add functionality for adding/editing functionality.
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }
