@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -192,6 +191,16 @@ class FirebaseHandler {
         document.reference.delete();
       }
     });
+  }
+
+  ///Gets a list of all users with admin privileges
+  Future<List<String>> getAdminList() async {
+    var data = await FirebaseFirestore.instance.collection('Admins').where('Permissions', isEqualTo: "all").get();
+    List<String> adminList = [];
+    for (var doc in data.docs) {
+      adminList.add(doc.id);
+    }
+    return adminList;
   }
 
 // ----------------------------------------------------------------

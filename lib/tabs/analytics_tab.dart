@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
 import '../models/space.dart';
 
+/// A tab for viewing analytics for ELLI
 class AnalyticsTab extends StatefulWidget {
   const AnalyticsTab({Key? key}) : super(key: key);
 
@@ -9,7 +10,7 @@ class AnalyticsTab extends StatefulWidget {
   State<AnalyticsTab> createState() => _AnalyticsTabState();
 }
 
-//Widget for selecting office, picking day, picking room and then booking a timeslot
+// Widget for selecting office, picking day, picking room and then booking a timeslot
 class _AnalyticsTabState extends State<AnalyticsTab> {
   /// Temporary list of items for the dropdown menus
   List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
@@ -149,7 +150,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
     );
   }
 
-  /// This creates a card item
+  /// Returns a a card item
   Widget _buildCard(String header, String subtitle) {
     return Container(
       width: 400,
