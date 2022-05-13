@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Singleton class to communicate with Firebase.
@@ -43,13 +42,19 @@ class FirebaseHandler {
   }
 
   Future<void> _buildDivision() async {
-    var divisionsData = await FirebaseFirestore.instance.collection('Divisions').get();
+    var divisionsData =
+        await FirebaseFirestore.instance.collection('Divisions').get();
     for (var divisonData in divisionsData.docs) {
-      var officesData = await FirebaseFirestore.instance.collection('Divisions').doc(divisonData.id).collection('Offices').get();
+      var officesData = await FirebaseFirestore.instance
+          .collection('Divisions')
+          .doc(divisonData.id)
+          .collection('Offices')
+          .get();
 
       var offices = <String, Office>{};
       for (var office in officesData.docs) {
-        offices[office.id] = Office(office.data()['Address'], office.data()['Description']);
+        offices[office.id] =
+            Office(office.data()['Address'], office.data()['Description']);
       }
 
       _divisions[divisonData.id] = Division(offices);
@@ -58,7 +63,8 @@ class FirebaseHandler {
   }
 
   Future<void> _buildRooms() async {
-    var roomsData = await FirebaseFirestore.instance.collection('Rooms_2').get();
+    var roomsData =
+        await FirebaseFirestore.instance.collection('Rooms_2').get();
     for (var room in roomsData.docs) {
       var workspaces = <int, List<String>>{};
       for (var workspace in room.data()['Workspaces'].entries) {
@@ -71,7 +77,12 @@ class FirebaseHandler {
         timeslots.add({'start': times[0], 'end': times[1]});
       }
 
-      _rooms[int.parse(room.id)] = Room(workspaces, timeslots, room.data()['Description'], room.data()['Office'], room.data()['Name']);
+      _rooms[int.parse(room.id)] = Room(
+          workspaces,
+          timeslots,
+          room.data()['Description'],
+          room.data()['Office'],
+          room.data()['Name']);
     }
     return;
   }
@@ -99,17 +110,27 @@ class FirebaseHandler {
 
   /// Returns all rooms in the selected office
   Map<int, Room> getRooms() {
-    return Map.fromEntries(_rooms.entries.where((entry) => entry.value.office == _office));
+    return Map.fromEntries(
+        _rooms.entries.where((entry) => entry.value.office == _office));
   }
 
   /// Returns a list of all bookings made by the current user as Booking objects.
   Future<List<Booking>> getUserBookings_2() async {
-    var data = await FirebaseFirestore.instance.collection('Bookings_2').where('UserId', isEqualTo: _username).get();
+    var data = await FirebaseFirestore.instance
+        .collection('Bookings_2')
+        .where('UserId', isEqualTo: _username)
+        .get();
     List<Booking> bookingList = [];
     for (var doc in data.docs) {
       var docData = doc.data();
-      bookingList.add(Booking(DateTime.fromMicrosecondsSinceEpoch(docData['Day'].microsecondsSinceEpoch), docData['UserId'], docData['RoomNr'],
-          docData['WorkspaceNr'], docData['Timeslot'], docData['RepeatedBooking']));
+      bookingList.add(Booking(
+          DateTime.fromMicrosecondsSinceEpoch(
+              docData['Day'].microsecondsSinceEpoch),
+          docData['UserId'],
+          docData['RoomNr'],
+          docData['WorkspaceNr'],
+          docData['Timeslot'],
+          docData['RepeatedBooking']));
     }
     bookingList.sort((a, b) {
       if (a.day.compareTo(b.day) == 0) {
@@ -160,21 +181,31 @@ class FirebaseHandler {
       return start + "-" + end;
     });
 
-    FirebaseFirestore.instance.collection('Rooms_2').doc(roomNr.toString()).set(<String, dynamic>{
+    FirebaseFirestore.instance
+        .collection('Rooms_2')
+        .doc(roomNr.toString())
+        .set(<String, dynamic>{
       'Office': room.office,
       'Name': room.name,
-      'Workspaces': room.workspaces.map((key, value) => MapEntry(key.toString(), value)),
+      'Workspaces':
+          room.workspaces.map((key, value) => MapEntry(key.toString(), value)),
       'Description': room.description,
       'Timeslots': timeslots
     });
   }
 
   ///Adds a booking to Firebase.
-  Future<void> addBooking(int roomNr, DateTime day, int timeslot, int workspaceNr) async {
+  Future<void> addBooking(
+      int roomNr, DateTime day, int timeslot, int workspaceNr) async {
     if (_username != "") {
-      FirebaseFirestore.instance
-          .collection('Bookings_2')
-          .add({'UserId': _username, 'Timeslot': timeslot, 'Day': day, 'WorkspaceNr': workspaceNr, 'RoomNr': roomNr, 'RepeatedBooking': false});
+      FirebaseFirestore.instance.collection('Bookings_2').add({
+        'UserId': _username,
+        'Timeslot': timeslot,
+        'Day': day,
+        'WorkspaceNr': workspaceNr,
+        'RoomNr': roomNr,
+        'RepeatedBooking': false
+      });
     }
   }
 
@@ -195,12 +226,114 @@ class FirebaseHandler {
 
   ///Gets a list of all users with admin privileges
   Future<List<String>> getAdminList() async {
-    var data = await FirebaseFirestore.instance.collection('Admins').where('Permissions', isEqualTo: "all").get();
+    var data = await FirebaseFirestore.instance
+        .collection('Admins')
+        .where('Permissions', isEqualTo: "all")
+        .get();
     List<String> adminList = [];
     for (var doc in data.docs) {
       adminList.add(doc.id);
     }
     return adminList;
+  }
+
+  // ---------------- Modifiers ------------
+
+  Future<void> addAdmin(String adminHashId, String permissions) async {
+    await FirebaseFirestore.instance
+        .collection('Admins')
+        .doc(adminHashId)
+        .set({'Permissions': permissions});
+    return;
+  }
+
+  Future<void> removeAdmin(String adminHashId) async {
+    await FirebaseFirestore.instance
+        .collection('Admins')
+        .doc(adminHashId)
+        .delete();
+    return;
+  }
+
+  Future<void> saveDivision(String divisionName, String info) async {
+    await FirebaseFirestore.instance
+        .collection('Divisions')
+        .doc(divisionName)
+        .set({'Info': info});
+    return;
+  }
+
+  Future<void> removeDivision(String divisionName) async {
+    var offices = await FirebaseFirestore.instance
+        .collection('Divisions')
+        .doc(divisionName)
+        .collection('Offices')
+        .get();
+    for (var office in offices.docs) {
+      office.reference.delete();
+    }
+    await FirebaseFirestore.instance
+        .collection('Divisions')
+        .doc(divisionName)
+        .delete();
+    return;
+  }
+
+  Future<void> saveOffice(
+      String divisionName, String officeName, Office office) async {
+    await FirebaseFirestore.instance
+        .collection('Divisions')
+        .doc(divisionName)
+        .collection('Offices')
+        .doc(officeName)
+        .set({'Address': office.address, 'Description': office.description});
+  }
+
+  Future<void> removeOffice(String divisionName, String officeName) async {
+    await FirebaseFirestore.instance
+        .collection('Divisions')
+        .doc(divisionName)
+        .collection('Offices')
+        .doc(officeName)
+        .delete();
+    return;
+  }
+
+  /// Adds a room to Firebase.
+  Future<void> saveRoom(int roomNr, Room room) async {
+    var timeslots = room.timeslots.map((timesMap) {
+      var start = timesMap['start'] ?? "";
+      var end = timesMap['end'] ?? "";
+      return start + "-" + end;
+    }).toList();
+
+    FirebaseFirestore.instance
+        .collection('Rooms_2')
+        .doc(roomNr.toString())
+        .set(<String, dynamic>{
+      'Office': room.office,
+      'Name': room.name,
+      'Workspaces':
+          room.workspaces.map((key, value) => MapEntry(key.toString(), value)),
+      'Description': room.description,
+      'Timeslots': timeslots
+    });
+  }
+
+  /// Removes a room from Firebase and deletes all corresponding bookings
+  Future<void> removeRoom(int roomNr) async {
+    await FirebaseFirestore.instance
+        .collection('Rooms_2')
+        .doc(roomNr.toString())
+        .delete();
+    var allBookingsInThatRoom = await FirebaseFirestore.instance
+        .collection('Bookings_2')
+        .where('RoomNr', isEqualTo: roomNr)
+        .get();
+    for (var booking in allBookingsInThatRoom.docs) {
+      booking.reference.delete();
+    }
+    return;
   }
 
 // ----------------------------------------------------------------
@@ -214,7 +347,8 @@ class Room {
   final String office;
   final String name;
 
-  Room(this.workspaces, this.timeslots, this.description, this.office, this.name);
+  Room(this.workspaces, this.timeslots, this.description, this.office,
+      this.name);
 
   @override
   String toString() {
@@ -265,7 +399,8 @@ class Booking {
   final int timeslot;
   final bool repeatedBooking;
 
-  Booking(this.day, this.personID, this.roomNr, this.workspaceNr, this.timeslot, this.repeatedBooking);
+  Booking(this.day, this.personID, this.roomNr, this.workspaceNr, this.timeslot,
+      this.repeatedBooking);
 
   @override
   String toString() {
