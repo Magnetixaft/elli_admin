@@ -1,8 +1,9 @@
+import 'package:elli_admin/authentication_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:elli_admin/firebase_handler.dart';
-import 'package:elli_admin/home.dart';
-import 'package:elli_admin/theme_elicit.dart';
+import 'package:elli_admin/theme.dart';
+import 'package:elli_admin/menu_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,10 @@ void main() async {
   runApp(MyApp());
 }
 
+/// The main widget for ELLI admin
+///
+/// This widget is presented when the app is started and, whilst Firebase is initializing, a [CircularProgressIndicator] i returned.
+/// Once Firebase is initialized, [MyHomePage] is returned.
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
@@ -26,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Room Bookings',
-      theme: elicitTheme(),
+      theme: ElliTheme.lightTheme,
       home: FutureBuilder(
         //Initializes Firebase
         future: Firebase.initializeApp(),
@@ -50,6 +55,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// The login page
+///
+/// A login page that navigates to [Home] when login is successful.
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -59,9 +67,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final userIdTextController = TextEditingController();
-  final userPasswordTextController = TextEditingController();
-//  final focusNodePassword = FocusNode();
+  final AuthenticationHandler authenticationHandler = AuthenticationHandler
+      .getInstance();
+
+  // Checks loginstatus when page loads, skips login if true
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) => checkLoggedIn());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: Center(
                       child: Padding(
-                    padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
-                    child: Image.asset('assets/images/elicit_logo.png'),
-                  )),
+                        padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
+                        child: Image.asset('assets/images/elicit_logo.png'),
+                      )),
                 ),
                 Expanded(
                   child: Padding(
@@ -85,37 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Email or phone number',
-                          ),
-                          controller: userIdTextController,
-//                      onSubmitted: (_) {
-//                        // This moves the focus to the password field when the user presses "enter".
-//                        FocusScope.of(context).requestFocus(focusNodePassword);
-//                      },
-                        ),
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Password',
-                          ),
-                          controller: userPasswordTextController,
-//                      onSubmitted: (_) {
-//                        login();
-//                      },
-//                      focusNode: focusNodePassword,
-                        ),
-//                    Align(
-//                      alignment: Alignment.centerRight,
-//                      child: TextButton(
-//                        onPressed: () => {
-//                          print("Todo, Show modal"),
-//                        },
-//                        child: const Text("Forgot Password?"),
-//                      ),
-//                    ),
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -125,12 +108,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                 "Login",
                               )),
                         ),
-//                    TextButton(
-//                      onPressed: () => {
-//                        print("Todo, Show modal"),
-//                      },
-//                      child: const Text("Create an account"),
-//                    ),
+                        //TODO remove, logout for testing
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                              onPressed: () => {logOut()},
+                              child: const Text(
+                                "logout",
+                              )),
+                        ),
                       ],
                     ),
                   ),
@@ -141,14 +128,36 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
-  void login() {
-    // TODO login using Firebase Auth
-    String userId = userIdTextController.text;
-    FirebaseHandler.initialize(userId);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                const Home())); // TODO use pushReplacement when login has been implemented. That way, the user will not be able to return to this page by pressing the back arrow
+  /// Logs the user in using Azure.
+  /// 
+  /// Navigates to [MenuBar] when login is successful. Initializes the [FirebaseHandler] using encrypted email from AuthenticationHandler
+  Future<void> login() async {
+
+    if (await authenticationHandler.loginWithAzure() != null) {
+      //Since Firebase is not dependent on which admin is logged in, skip getting name
+      FirebaseHandler.initialize("Admin");
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const MenuBar()));
+    }
+  }
+
+  /// Checks if user is logged in and is admin, if true navigate to home
+  Future<void> checkLoggedIn() async {
+    if (await authenticationHandler.isUserSignedIn() == true ) {
+      //Since Firebase is not dependent on which admin is logged in, skip getting name
+      FirebaseHandler.initialize("Admin");
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              const MenuBar()));
+    }
+  }
+  // TODO remove, logout for testing
+  Future<void> logOut() async {
+    authenticationHandler.signOut();
   }
 }

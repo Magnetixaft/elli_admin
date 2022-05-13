@@ -1,3 +1,6 @@
+/// A class representing a work space
+/// 
+/// Has a [description], [nrOfSeats] and a specific location
 class Space {
   final int roomNr;
   final int nrOfSeats;

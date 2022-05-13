@@ -1,10 +1,11 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-import '../firebase_handler.dart';
-
+/// A tab for viewing offices, rooms and booking
+/// 
+/// Allows the user to add and remove offices, rooms, timeslots and workspaces
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -14,6 +15,7 @@ class HomeView extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _HomeViewState extends State<HomeView> {
+
   var selectedDivision;
   var selectedOffice;
   var selectedRoom;
@@ -22,6 +24,7 @@ class _HomeViewState extends State<HomeView> {
     setState(() {});
   }
 
+
   @override
   Widget build(BuildContext context) {
     FirebaseHandler backend = FirebaseHandler.getInstance();
@@ -29,7 +32,9 @@ class _HomeViewState extends State<HomeView> {
         future: backend.buildStaticModel(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-          return _renderView();
+
+            return _renderView();
+
           }
           return const Center(child: CircularProgressIndicator());
         });
@@ -66,12 +71,14 @@ class _HomeViewState extends State<HomeView> {
                         'Company',
                         style: TextStyle(fontSize: 16),
                       ),
+
                       Row(
                         children: [
                           _buildCompanyMenu(),
                           const SizedBox(width: 16),
                         ],
                       ),
+
                     ],
                   ),
                 ),
@@ -84,12 +91,14 @@ class _HomeViewState extends State<HomeView> {
                         'Office',
                         style: TextStyle(fontSize: 16),
                       ),
+
                       Row(
                         children: [
                           _buildOfficesMenu(),
                           const SizedBox(width: 16)
                         ],
                       ),
+
                     ],
                   ),
                 ),
@@ -102,12 +111,14 @@ class _HomeViewState extends State<HomeView> {
                         'Space',
                         style: TextStyle(fontSize: 16),
                       ),
+
                       Row(
                         children: [
                           _buildRoomMenu(),
                           const SizedBox(width: 16),
                         ],
                       ),
+
                     ],
                   ),
                 ),
@@ -126,6 +137,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewCompany(),
+
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -163,6 +175,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ],
                       )
+
                     ],
                   ),
                 ),
@@ -173,6 +186,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildAddNewOffice(),
+
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -214,6 +228,7 @@ class _HomeViewState extends State<HomeView> {
                       )
                         ],
                       ),
+
                 ),
                 Container(width: 12),
                 Expanded(
@@ -221,6 +236,7 @@ class _HomeViewState extends State<HomeView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
                       _buildAddNewRoom(),
                       Column(
                         mainAxisSize: MainAxisSize.min,
@@ -262,6 +278,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ],
                       )
+
                     ],
                   ),
                 ),
@@ -273,6 +290,7 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
+
 
 
   /// This creates the dropdown menu for companies
@@ -341,6 +359,7 @@ class _HomeViewState extends State<HomeView> {
 
     return Container(
       width: double.infinity,
+
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
         child: Card(
@@ -354,6 +373,7 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
+
                       showDialog(
                           context: context,
                           builder: (context) {
@@ -393,6 +413,7 @@ class _HomeViewState extends State<HomeView> {
                               ],
                             );
                           });
+
                     },
                     label: const Text(
                       'Add new company',
@@ -410,8 +431,10 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+
   /// This creates a card item for company specifications
   Widget _buildCompanyCard(String name, String info) {
+
     return Container(
       width: 400,
       child: Padding(
@@ -421,6 +444,7 @@ class _HomeViewState extends State<HomeView> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Padding(
+
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -490,10 +514,12 @@ class _HomeViewState extends State<HomeView> {
                 ],
               )),
           color: Colors.white,
+
         ),
       ),
     );
   }
+
 
 
   /// This creates the dropdown menu for offices
@@ -563,6 +589,7 @@ class _HomeViewState extends State<HomeView> {
 
     return Container(
       width: double.infinity,
+
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
         child: Card(
@@ -576,6 +603,7 @@ class _HomeViewState extends State<HomeView> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
+
                           showDialog(
                           context: context,
                           builder: (context)
@@ -642,6 +670,7 @@ class _HomeViewState extends State<HomeView> {
                           },
                     label: const Text(
                       'Add new office',
+
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -656,8 +685,10 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+
   /// This creates a card item for office specifications
   Widget _buildOfficeCard(String name, String address, String description) {
+
     return Container(
       width: 400,
       child: Padding(
@@ -680,6 +711,7 @@ class _HomeViewState extends State<HomeView> {
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
+
                         height: 40,
                         width: 75,
                         child: TextButton(
@@ -727,21 +759,25 @@ class _HomeViewState extends State<HomeView> {
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.transparent
+
                           ),
                         ),
                       ),
                     ],
                   ),
+
                   Text(address),
                   const SizedBox(height: 24),
                   Text('Description: $description'),
                 ],
               )),
           color: Colors.white,
+
         ),
       ),
     );
   }
+
 
 
   /// This creates the dropdown menu for spaces
@@ -814,6 +850,7 @@ class _HomeViewState extends State<HomeView> {
 
     return Container(
       width: double.infinity,
+
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
         child: Card(
@@ -821,6 +858,7 @@ class _HomeViewState extends State<HomeView> {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: Padding(
+
               padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -908,6 +946,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     icon: const Icon(Icons.add),
                   ),
+
                 ],
               )),
           color: Colors.grey.shade100,
@@ -917,7 +956,9 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for space specifications
+
   Widget _buildRoomCard(
+
       String name, int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
@@ -941,6 +982,7 @@ class _HomeViewState extends State<HomeView> {
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
+
                         height: 40,
                         width: 75,
                         child: TextButton(
@@ -988,21 +1030,26 @@ class _HomeViewState extends State<HomeView> {
                           },
                           style: ElevatedButton.styleFrom(
                               primary: Colors.transparent
+
                           ),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
+
                   Text('Total number of work spaces: $numberOfSpaces'),
                   Text('Available work spaces: $availableSpaces'),
                 ],
               )),
           color: Colors.white,
+
         ),
       ),
     );
   }
 
 
+
 }
+
