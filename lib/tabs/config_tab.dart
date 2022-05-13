@@ -111,10 +111,7 @@ class _ConfigTabState extends State<ConfigTab> {
                                           showDialog(
                                               context: context,
                                               builder: (BuildContext context) =>
-                                                  _buildPopupDialog(
-                                                      context,
-                                                      "Admins",
-                                                      "If we do login with firebase for admins, this would be the place to add new admins?"));
+                                                  _buildAdminEdit(context));
                                         },
                                         child: const Align(
                                           alignment: Alignment.center,
@@ -212,10 +209,10 @@ class _ConfigTabState extends State<ConfigTab> {
       ],
     );
   }
-/*
-  Widget _buildPopupDialog(BuildContext context, String title, String text) {
+
+  Widget _buildAdminEdit(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
+      title: const Text("Administrators"),
       content: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Center(
@@ -271,7 +268,6 @@ class _ConfigTabState extends State<ConfigTab> {
       ],
     );
   }
-  */
 }
 
 /*
