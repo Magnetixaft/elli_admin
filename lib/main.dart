@@ -67,8 +67,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final AuthenticationHandler authenticationHandler = AuthenticationHandler
-      .getInstance();
+  final AuthenticationHandler authenticationHandler =
+      AuthenticationHandler.getInstance();
 
   // Checks loginstatus when page loads, skips login if true
   @override
@@ -89,9 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 Expanded(
                   child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
-                        child: Image.asset('assets/images/elicit_logo.png'),
-                      )),
+                    padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
+                    child: Image.asset('assets/images/elicit_logo.png'),
+                  )),
                 ),
                 Expanded(
                   child: Padding(
@@ -109,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               )),
                         ),
                         //TODO remove, logout for testing
+                        /*
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -118,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 "logout",
                               )),
                         ),
+                        */
                       ],
                     ),
                   ),
@@ -129,33 +131,27 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Logs the user in using Azure.
-  /// 
+  ///
   /// Navigates to [MenuBar] when login is successful. Initializes the [FirebaseHandler] using encrypted email from AuthenticationHandler
   Future<void> login() async {
-
     if (await authenticationHandler.loginWithAzure() != null) {
       //Since Firebase is not dependent on which admin is logged in, skip getting name
       FirebaseHandler.initialize("Admin");
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-              const MenuBar()));
+          context, MaterialPageRoute(builder: (context) => const MenuBar()));
     }
   }
 
   /// Checks if user is logged in and is admin, if true navigate to home
   Future<void> checkLoggedIn() async {
-    if (await authenticationHandler.isUserSignedIn() == true ) {
+    if (await authenticationHandler.isUserSignedIn() == true) {
       //Since Firebase is not dependent on which admin is logged in, skip getting name
       FirebaseHandler.initialize("Admin");
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-              const MenuBar()));
+          context, MaterialPageRoute(builder: (context) => const MenuBar()));
     }
   }
+
   // TODO remove, logout for testing
   Future<void> logOut() async {
     authenticationHandler.signOut();
