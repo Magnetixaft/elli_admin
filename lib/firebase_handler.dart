@@ -239,11 +239,12 @@ class FirebaseHandler {
 
   // ---------------- Modifiers ------------
 
-  Future<void> addAdmin(String adminHashId, String permissions) async {
+  Future<void> addAdmin(
+      String adminHashId, String permissions, String name) async {
     await FirebaseFirestore.instance
         .collection('Admins')
         .doc(adminHashId)
-        .set({'Permissions': permissions});
+        .set({'Permissions': permissions, 'name': name});
     return;
   }
 
