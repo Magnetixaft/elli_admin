@@ -1,10 +1,12 @@
+import 'package:elli_admin/main.dart';
 import 'package:elli_admin/tabs/config_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_tab.dart';
+import 'package:elli_admin/authentication_handler.dart';
 
 /// The home page for the ELLI admin console.
-/// 
+///
 /// Allows the user to navigate between the tabs [HomeView], [AnalyticsTab] and [ConfigTab]
 class MenuBar extends StatefulWidget {
   const MenuBar({Key? key}) : super(key: key);
@@ -22,6 +24,9 @@ class _MenuBarState extends State<MenuBar> {
     const AnalyticsTab(),
     const ConfigTab()
   ];
+
+  final AuthenticationHandler authenticationHandler =
+      AuthenticationHandler.getInstance();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -63,6 +68,7 @@ class _MenuBarState extends State<MenuBar> {
                     //The text does not fit if the navigationRail is collapsed
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        logOut();
                         Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.logout_outlined),
@@ -77,6 +83,9 @@ class _MenuBarState extends State<MenuBar> {
           ],
         ),
       );
+  Future<void> logOut() async {
+    authenticationHandler.signOut();
+  }
 }
 
 /*  The old logout button 
