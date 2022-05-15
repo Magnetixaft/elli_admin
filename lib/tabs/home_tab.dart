@@ -17,32 +17,9 @@ class HomeView extends StatefulWidget {
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
 class _HomeViewState extends State<HomeView> {
-<<<<<<< HEAD
-  //Controllers for the text fields in the different editors
-
-  final companyNameTextController = TextEditingController();
-  final companyOrgNrTextController = TextEditingController();
-  final companyAddressTextController = TextEditingController();
-
-  final officeNameTextController = TextEditingController();
-  final officeAddressTextController = TextEditingController();
-  final officePhoneTextController = TextEditingController();
-  final officeEmailTextController = TextEditingController();
-
-  final spaceNameTextController = TextEditingController();
-  final spaceAddressTextController = TextEditingController();
-
-  final worSpaceNameTextController = TextEditingController();
-
-  /// Temporary list of items for the dropdown menus
-  List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
-  List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
-  List<String> spaces = ["Room XYZ", "Room ABC", "Room 123"];
-=======
   var selectedDivision;
   var selectedOffice;
   var selectedRoom;
->>>>>>> origin
 
   callback() {
     setState(() {});
@@ -908,7 +885,6 @@ class _HomeViewState extends State<HomeView> {
                                         Room room = Room(workspaces, timeslots, description.text, selectedOffice, roomNameInput.text);
                                         FirebaseHandler.getInstance().saveRoom(selectedRoom, room);
                                         // TODO save room
-
                                          */
 
                                         Navigator.of(context).pop();
@@ -937,134 +913,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-<<<<<<< HEAD
-  /// This creates a card item for company specifications
-  Widget _buildCompanyCard(String name, int orgNr, String address, int offices,
-      int numberOfSpaces, int availableSpaces) {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                        width: 40,
-                        child: TextButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    _buildEditCompany(context, true));
-                          },
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Edit',
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text('Org.nr: [$orgNr]'),
-                  const SizedBox(height: 24),
-                  Text('[$address]'),
-                  const SizedBox(height: 12),
-                  Text('Offices: [$offices]'),
-                  const SizedBox(height: 12),
-                  Text('Total number of work spaces: [$numberOfSpaces]'),
-                  const SizedBox(height: 12),
-                  Text('Available work spaces: [$availableSpaces]'),
-                  const SizedBox(height: 12)
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-  }
-
-  /// This creates a card item for office specifications
-  Widget _buildOfficeCard(String name, String address, int spaces,
-      int numberOfSpaces, int availableSpaces) {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                        width: 40,
-                        child: TextButton(
-                          onPressed: () {
-                            // TODO add function to edit
-                          },
-                          child: const Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Edit',
-                              style: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text('[$address]'),
-                  const SizedBox(height: 24),
-                  Text('Spaces: [$spaces]'),
-                  const SizedBox(height: 12),
-                  Text('Total number of work spaces: [$numberOfSpaces]'),
-                  const SizedBox(height: 12),
-                  Text('Available work spaces: [$availableSpaces]'),
-                  const SizedBox(height: 12)
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-  }
-
-=======
->>>>>>> origin
   /// This creates a card item for space specifications
-
   Widget _buildRoomCard(String name, int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
@@ -1151,95 +1000,9 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
-<<<<<<< HEAD
-
-  /// This creates the dropdown menu for companies
-  Widget _buildCompanyMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstCompany,
-
-      style: const TextStyle(fontWeight: FontWeight.bold),
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {
-        // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstCompany = newValue!;
-        });
-      },
-    );
-  }
-
-  /// This creates the dropdown menu for offices
-  Widget _buildOfficesMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstOffice,
-
-      style: const TextStyle(fontWeight: FontWeight.bold),
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {
-        // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstOffice = newValue!;
-        });
-      },
-    );
-  }
-
-  /// This creates the dropdown menu for spaces
-  Widget _buildSpacesMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstSpace,
-
-      style: const TextStyle(fontWeight: FontWeight.bold),
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {
-        // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstSpace = newValue!;
-        });
-      },
-    );
-  }
-
+}
+  
+  /*
   ///Creates the popup for edititng or adding a company.
   Widget _buildEditCompany(BuildContext context, bool edit) {
     return AlertDialog(
@@ -1483,6 +1246,5 @@ class _HomeViewState extends State<HomeView> {
       ],
     );
   }
-=======
->>>>>>> origin
-}
+  */
+
