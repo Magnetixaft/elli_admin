@@ -17,7 +17,7 @@ class MenuBar extends StatefulWidget {
 
 class _MenuBarState extends State<MenuBar> {
   int _selectedIndex = 0;
-  bool isExtended = false;
+  bool isExtended = true;
 
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
@@ -68,8 +68,13 @@ class _MenuBarState extends State<MenuBar> {
                     //The text does not fit if the navigationRail is collapsed
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyHomePage(
+                                      title: '',
+                                    )));
                         logOut();
-                        Navigator.of(context).pop();
                       },
                       icon: const Icon(Icons.logout_outlined),
                       label:
