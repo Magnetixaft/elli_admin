@@ -3,7 +3,7 @@ import 'package:elli_admin/firebase_handler.dart';
 import '../models/space.dart';
 
 /// A tab for viewing the admin config settings for ELLI
-/// 
+///
 /// Allows an admin to edit the FAQ and About sections, as well as add other admins
 class ConfigTab extends StatefulWidget {
   const ConfigTab({Key? key}) : super(key: key);
