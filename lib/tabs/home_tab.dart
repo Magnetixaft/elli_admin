@@ -810,7 +810,7 @@ class _HomeViewState extends State<HomeView> {
     final roomNr = TextEditingController();
     final description = TextEditingController();
     final workspaces = TextEditingController();
-    final equipment = TextEditingController();
+    final timeslotInput = TextEditingController();
 
     return Container(
       width: double.infinity,
@@ -866,9 +866,9 @@ class _HomeViewState extends State<HomeView> {
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
                                       hintText:
-                                          'Enter equipment with "," between each',
+                                          'Enter timeslot',
                                     ),
-                                    controller: equipment,
+                                    controller: timeslotInput,
                                   ),
                                 ],
                               ),
@@ -879,21 +879,30 @@ class _HomeViewState extends State<HomeView> {
                                           roomNr.text.isNotEmpty &&
                                           description.text.isNotEmpty &&
                                           workspaces.text.isNotEmpty &&
-                                          equipment.text.isNotEmpty) {
-                                        equipment.text.split(',');
-                                        /*
-                                        Room room = Room(workspaces, timeslots, description.text, selectedOffice, roomNameInput.text);
-                                        FirebaseHandler.getInstance().saveRoom(selectedRoom, room);
-                                        // TODO save room
+                                          timeslotInput.text.isNotEmpty) {
 
-                                         */
 
+                                        int count = 1;
+                                        List<String> list = ['', ''];
+                                        var workspaces = <int, List<String>>{count: list};
+
+
+                                        var timeslots = <Map<String, String>>[
+                                          {'hej': 'san'}
+                                        ];
+
+
+                                        Room room = Room(workspaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
+                                        FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
                                         Navigator.of(context).pop();
-                                      } else {
+                                        }
+
+                                        // TODO save room
+                                       else {
                                         return;
                                       }
                                     },
-                                    child: const Text('Add')),
+                                    child: const Text('Add'))
                               ],
                             );
                           });
