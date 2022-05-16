@@ -333,13 +333,30 @@ class FirebaseHandler {
   /// Returns the name of the currently selected division.
   String getSelectedDivision() => _division;
 
+  ///Gets a list of all users with admin privileges
+  Future<List<String>> getAdminList() async {
+    var data = await FirebaseFirestore.instance
+        .collection('Admins')
+        .where('Permissions', isEqualTo: "all")
+        .get();
+    List<String> adminList = [];
+    for (var doc in data.docs) {
+      adminList.add(doc.id);
+    }
+    return adminList;
+  }
+
   // ---------------- Modifiers ------------
 
   /// Adds an admin to Firebase
-  Future<void> addAdmin(String adminHashId, String permissions) async {
-    await FirebaseFirestore.instance.collection('Admins').doc(adminHashId).set({'Permissions': permissions});
+  Future<void> addAdmin(String adminHashId, String permissions, String name) async {
+    await FirebaseFirestore.instance
+        .collection('Admins')
+        .doc(adminHashId)
+        .set({'Permissions': permissions, 'Name': name});
     return;
   }
+
 
   /// Removes an admin from Firebase
   Future<void> removeAdmin(String adminHashId) async {
