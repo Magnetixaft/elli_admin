@@ -1,29 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:elli_admin/firebase_handler.dart';
-import '../models/space.dart';
 
-/// A tab for viewing analytics for ELLI
+import '../firebase_handler.dart';
+
+/// A tab for viewing offices, rooms and booking
+///
+/// Allows the user to add and remove offices, rooms, timeslots and workspaces
 class AnalyticsTab extends StatefulWidget {
   const AnalyticsTab({Key? key}) : super(key: key);
 
   @override
-  State<AnalyticsTab> createState() => _AnalyticsTabState();
+  State<AnalyticsTab> createState() => _AnalyticsTab();
 }
 
-// Widget for selecting office, picking day, picking room and then booking a timeslot
-class _AnalyticsTabState extends State<AnalyticsTab> {
-  /// Temporary list of items for the dropdown menus
-  List<String> companies = ["Elicit AB", "AgileQueen", "Wickman AB"];
-  List<String> offices = ["Centralen", "Stockholm", "Jönköping"];
-  List<String> spaces = ["Room XYZ", "Room ABC", "Room 123"];
+//Widget for selecting office, picking day, picking room and then booking a timeslot
+class _AnalyticsTab extends State<AnalyticsTab> {
+  var selectedDivision;
+  var selectedOffice;
+  var selectedRoom;
 
-  /// Temporary first items that is shown in the dropdown menus
-  String firstCompany = "Elicit AB";
-  String firstOffice = "Centralen";
-  String firstSpace = "Room XYZ";
+  callback() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    FirebaseHandler backend = FirebaseHandler.getInstance();
+    return FutureBuilder<void>(
+        future: backend.buildStaticModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return _renderView();
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
+
+  /// Renders the layout of the whole homepage
+  Widget _renderView() {
     return SingleChildScrollView(
       /// The "Analytics" header
       child: Align(
@@ -33,7 +49,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 10),
-            const Text("    Analytics",
+            const Text("    Home",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
@@ -53,8 +69,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         'Company',
                         style: TextStyle(fontSize: 16),
                       ),
-                      _buildCompanyMenu(
-                          companies), // TODO change parameter to database
+                      Row(
+                        children: [
+                          _buildCompanyMenu(),
+                          const SizedBox(width: 16),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -67,8 +87,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         'Office',
                         style: TextStyle(fontSize: 16),
                       ),
-                      _buildOfficesMenu(
-                          offices), // TODO change parameter to database
+                      Row(
+                        children: [
+                          _buildOfficesMenu(),
+                          const SizedBox(width: 16)
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -78,11 +102,15 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Space',
+                        'Room',
                         style: TextStyle(fontSize: 16),
                       ),
-                      _buildSpacesMenu(
-                          spaces), // TODO change parameter to database
+                      Row(
+                        children: [
+                          _buildRoomMenu(),
+                          const SizedBox(width: 16),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -100,11 +128,45 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard('Weekday occupancy rate (3w avg.)',
-                          'Monday: [#]%),                                                                Tuesday: [#]%                                              Wednesday: [#]%                                                     Thursday: [#]%                                                          Friday: [#]%'), //
-                      _buildCard('Comparisson covering % offices',
-                          '[Office centralen 45 % ]'),
-                      _buildCard('Most booked office', '[Office Jönköping]'),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection("Divisions")
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.data!.docs.length,
+                                      itemBuilder: (context, index) {
+                                        if (selectedDivision == null) {
+                                          return Container();
+                                        } else {
+                                          if (selectedDivision ==
+                                              snapshot.data!.docs[index].id) {
+                                            return _buildCompanyCard(
+                                                selectedDivision, 'info');
+                                          } else {
+                                            return Container();
+                                          }
+                                        }
+                                      },
+                                    );
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.done &&
+                                      !snapshot.hasData) {
+                                    return const Text('Not Found');
+                                  } else {
+                                    return Container();
+                                  }
+                                }),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -114,15 +176,50 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard(
-                        'Most booked space',
-                        '[Space 2 Open] , ',
-                      ),
-                      _buildCard('Most common workday at office', '[Thursday]'),
-                      _buildCard('Comparisson covering % spaces ',
-                          '[Space 1  45 % ],                                                                      [Space 2 Open  65 % ],                                                   [Quiet room  55 % ]   '),
-                      _buildCard('Comparisson number of bookings last 2 weeks ',
-                          '[Last week  900 ],                                                              [2 weeks ago 812 ]                                                       [+88]'),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection("Divisions")
+                                    .doc(selectedDivision)
+                                    .collection('Offices')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: snapshot.data!.docs.length,
+                                        itemBuilder: (context, index) {
+                                          if (selectedOffice == null) {
+                                            return Container();
+                                          } else {
+                                            if (selectedOffice ==
+                                                snapshot.data!.docs[index].id) {
+                                              return _buildOfficeCard(
+                                                  selectedOffice,
+                                                  snapshot.data!.docs[index]
+                                                  ['Address'],
+                                                  snapshot.data!.docs[index]
+                                                  ['Description']);
+                                            } else {
+                                              return Container();
+                                            }
+                                          }
+                                        });
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.done &&
+                                      !snapshot.hasData) {
+                                    return const Text('Not Found');
+                                  } else {
+                                    return Container();
+                                  }
+                                }),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -132,12 +229,47 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCard(
-                          '[Most common workday at space]', '[Monday]  '),
-                      _buildCard('[Comparisson number of bookings last week]',
-                          '[Last week  102]                                                             [2 weeks ago 100]                                                        [Diffrence +  39]'),
-                      _buildCard(
-                          '[Name of space]', 'Total number of seats: [#]'),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('Rooms_2')
+                                    .where('Office', isEqualTo: selectedOffice)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData &&
+                                      selectedOffice != null) {
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: snapshot.data!.docs.length,
+                                      itemBuilder: (context, index) {
+                                        if (selectedOffice == null) {
+                                          return Container();
+                                        } else {
+                                          if (selectedRoom ==
+                                              snapshot.data!.docs[index].id) {
+                                            return _buildRoomCard(
+                                                selectedRoom, 4, 3);
+                                          } else {
+                                            return Container();
+                                          }
+                                        }
+                                      },
+                                    );
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.done &&
+                                      !snapshot.hasData) {
+                                    return const Text('Not Found');
+                                  } else {
+                                    return Container();
+                                  }
+                                }),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -150,8 +282,64 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
     );
   }
 
-  /// Returns a a card item
-  Widget _buildCard(String header, String subtitle) {
+  /// This creates the dropdown menu for companies
+  Widget _buildCompanyMenu() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('Divisions').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            const Text("Loading.....");
+          } else {
+            List<DropdownMenuItem<String>> companyItems = [];
+            for (int i = 0; i < snapshot.data!.docs.length; i++) {
+              DocumentSnapshot snap = snapshot.data!.docs[i];
+              companyItems.add(
+                DropdownMenuItem(
+                  child: Text(
+                    snap.id,
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  value: snap.id,
+                ),
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  items: companyItems,
+                  onChanged: (company) {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'You have selected $company',
+                      ),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                    setState(() {
+                      selectedDivision = company!;
+                      selectedOffice = null;
+                      selectedRoom = null;
+                    });
+                  },
+                  value: selectedDivision,
+                  isExpanded: false,
+                  hint: const Text(
+                    "Choose Company",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            );
+          }
+          return Container();
+        });
+  }
+
+
+  /// This creates a card item for company specifications
+  Widget _buildCompanyCard(String name, String info) {
     return Container(
       width: 400,
       child: Padding(
@@ -165,120 +353,212 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    header,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(subtitle),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: 120,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'avg. [value] kr',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                    ),
+                    ],
                   ),
+                  Text('Org.nr: [$info]')
                 ],
               )),
-          color: Colors.grey.shade100,
+          color: Colors.white,
         ),
       ),
     );
   }
 
-  /// This creates the dropdown menu for companies
-  Widget _buildCompanyMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstCompany,
-
-      style: const TextStyle(fontWeight: FontWeight.bold),
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {
-        // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstCompany = newValue!;
+  /// This creates the dropdown menu for offices
+  Widget _buildOfficesMenu() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("Divisions")
+            .doc(selectedDivision)
+            .collection('Offices')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            const Text("Loading.....");
+          } else {
+            List<DropdownMenuItem<String>> companyItems = [];
+            for (int i = 0; i < snapshot.data!.docs.length; i++) {
+              DocumentSnapshot snap = snapshot.data!.docs[i];
+              companyItems.add(
+                DropdownMenuItem(
+                  child: Text(
+                    snap.id,
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  value: snap.id,
+                ),
+              );
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  items: companyItems,
+                  onChanged: (office) {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'You have selected $office',
+                      ),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                    setState(() {
+                      selectedOffice = office;
+                      selectedRoom = null;
+                    });
+                  },
+                  value: selectedOffice,
+                  isExpanded: false,
+                  hint: const Text(
+                    "Choose Office",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            );
+          }
+          return Container();
         });
-      },
-    );
   }
 
-  /// This creates the dropdown menu for offices
-  Widget _buildOfficesMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstOffice,
 
-      style: const TextStyle(fontWeight: FontWeight.bold),
+  /// This creates a card item for office specifications
+  Widget _buildOfficeCard(String name, String address, String description) {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
 
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {
-        // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstOffice = newValue!;
-        });
-      },
+                    ],
+                  ),
+                  Text(address),
+                  const SizedBox(height: 24),
+                  Text('Description: $description'),
+                ],
+              )),
+          color: Colors.white,
+        ),
+      ),
     );
   }
 
   /// This creates the dropdown menu for spaces
-  Widget _buildSpacesMenu(List<String> list) {
-    return DropdownButton(
-      // Initial Value
-      value: firstSpace,
-
-      style: const TextStyle(fontWeight: FontWeight.bold),
-
-      // Down Arrow Icon
-      icon: const Icon(Icons.keyboard_arrow_down),
-
-      // Array list of items
-      items: list.map((String items) {
-        // TODO change to get from database instead of static list
-        return DropdownMenuItem(
-          value: items,
-          child: Text(items),
-        );
-      }).toList(),
-      // After selecting the desired option,it will
-      // change button value to selected value
-      onChanged: (String? newValue) {
-        setState(() {
-          firstSpace = newValue!;
+  Widget _buildRoomMenu() {
+    return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('Rooms_2')
+            .where('Office', isEqualTo: selectedOffice)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            const Text("Loading.....");
+          } else {
+            List<DropdownMenuItem<String>> companyItems = [];
+            for (int i = 0; i < snapshot.data!.docs.length; i++) {
+              DocumentSnapshot snap = snapshot.data!.docs[i];
+              if (selectedOffice != null) {
+                companyItems.add(
+                  DropdownMenuItem(
+                    child: Text(
+                      snap.id,
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                    value: snap.id,
+                  ),
+                );
+              }
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton(
+                  items: companyItems,
+                  onChanged: (room) {
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'You have selected $room',
+                      ),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                    setState(() {
+                      selectedRoom = room;
+                    });
+                  },
+                  value: selectedRoom,
+                  isExpanded: false,
+                  hint: const Text(
+                    "Choose Room",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            );
+          }
+          return Container();
         });
-      },
+  }
+
+  /// This creates a card item for space specifications
+  Widget _buildRoomCard(String name, int numberOfSpaces, int availableSpaces) {
+    return Container(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Text('Total number of work spaces: $numberOfSpaces'),
+                  Text('Available work spaces: $availableSpaces'),
+                ],
+              )),
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }
