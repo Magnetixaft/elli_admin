@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
-import '../models/space.dart';
 
 /// A tab for viewing analytics for ELLI
 class AnalyticsTab extends StatefulWidget {
@@ -82,22 +81,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                             ],
                           ),
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(''),
-                              // const Text(
-                              //   'Space',
-                              //   style: TextStyle(
-                              //       fontSize: 16
-                              //   ),
-                              // ),
-                              // _buildSpacesMenu(spaces),
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 24),
@@ -116,14 +99,16 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    _buildOfficeCard(snapshot.data!.officeUse),
                                     _buildRoomCard(snapshot.data!.roomUse),
                                     _buildWorkspaceCard(snapshot.data!.workspaceUse),
                                     _buildUseRateCard(snapshot.data!.usageRate),
+                                    _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
                                   ],
                                 );
                               }
                               else {
-                                return Text(' ');
+                                return const Text(' ');
                               }
                             }
                           ),
@@ -141,33 +126,18 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                                       _buildRoomCard(snapshot.data!.roomUse),
                                       _buildWorkspaceCard(snapshot.data!.workspaceUse),
                                       _buildUseRateCard(snapshot.data!.usageRate),
+                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
                                     ],
                                   );
                                 }
                                 else {
-                                  return Text(' ');
+                                  return const Text(' ');
                                 }
                               }
                           ),
                         ),
-                        Container(width: 12),
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildCard('[Most common workday at space]', '[Monday]  '),
-                              _buildCard('[Comparisson number of bookings last week]',
-                                  '[Last week  102]                                                             [2 weeks ago 100]                                                        [Diffrence +  39]'),
-                              _buildCard('[Name of space]', 'Total number of seats: [#]'),
-                            ],
-                          ),
-                        ),
-                        Container(width: 50)
                       ],
                     ),
-
-                    ElevatedButton(onPressed: backend.generateReportCard, child: Text('Debug')),
                   ],
                 ),
               ),
@@ -178,9 +148,14 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
         });
   }
 
-  /// Returns a a card item
-  Widget _buildCard(String header, String subtitle) {
-    return Container(
+  /// Returns a card with information about offices
+  Widget _buildOfficeCard(List<MapEntry<String, int>> officeUse) {
+
+    if(officeUse.length > 5) {
+      officeUse = officeUse.sublist(0, 5);
+    }
+
+    return SizedBox(
       width: 400,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -193,28 +168,18 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    header,
-                    style: const TextStyle(fontSize: 16),
+                  const Text(
+                    'Most Booked Offices',
+                    style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 4),
-                  Text(subtitle),
-                  const SizedBox(height: 4),
-                  Container(
-                    width: 120,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'avg. [value] kr',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  ...officeUse.map((officePair) {
+                    return Row(children: [
+                      Text(officePair.key),
+                      const Spacer(flex: 1,),
+                      Text('${officePair.value.toString()} bookings')
+                    ],);
+                  },)
                 ],
               )),
           color: Colors.grey.shade100,
@@ -230,7 +195,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       roomUse = roomUse.sublist(0, 5);
     }
 
-    return Container(
+    return SizedBox(
       width: 400,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -271,7 +236,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       workspaceUse = workspaceUse.sublist(0, 10);
     }
 
-    return Container(
+    return SizedBox(
       width: 400,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -307,7 +272,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
   }
 
   Widget _buildUseRateCard(double useRate) {
-    return Container(
+    return SizedBox(
       width: 400,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -321,11 +286,40 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Usage rate',
+                    'Usage Rate',
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
                       '${(useRate * 100).toStringAsFixed(1)} %', style: const TextStyle(fontSize: 36))
+                ],
+              )),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  /// Returns a card with information about offices
+  Widget _buildFutureBookingsCard(int numberOfFutureBookings) {
+
+    return SizedBox(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Number of Future Bookings',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text('$numberOfFutureBookings Future bookings', style: const TextStyle(fontSize: 36))
                 ],
               )),
           color: Colors.grey.shade100,
@@ -347,7 +341,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
       // Array list of items
       items: backend.getDivisions().keys.map((String items) {
-        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -387,7 +380,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
       // Array list of items
       items: officeList.map((String items) {
-        // TODO change to get from database instead of static list
         return DropdownMenuItem(
           value: items,
           child: Text(items),
@@ -405,33 +397,4 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       },
     );
   }
-
-  // /// This creates the dropdown menu for spaces
-  // Widget _buildSpacesMenu(List<String> list) {
-  //   return DropdownButton(
-  //     // Initial Value
-  //     value: firstSpace,
-  //
-  //     style: const TextStyle(fontWeight: FontWeight.bold),
-  //
-  //     // Down Arrow Icon
-  //     icon: const Icon(Icons.keyboard_arrow_down),
-  //
-  //     // Array list of items
-  //     items: list.map((String items) {
-  //       // TODO change to get from database instead of static list
-  //       return DropdownMenuItem(
-  //         value: items,
-  //         child: Text(items),
-  //       );
-  //     }).toList(),
-  //     // After selecting the desired option,it will
-  //     // change button value to selected value
-  //     onChanged: (String? newValue) {
-  //       setState(() {
-  //         firstSpace = newValue!;
-  //       });
-  //     },
-  //   );
-  // }
 }
