@@ -1,16 +1,24 @@
-# elli_admin
+# AgileQueen
 
-A new Flutter project.
+Group: Queen
+DAT257 Agile Software Project Management
 
-## Getting Started
+## About Elli
 
-This project is a starting point for a Flutter application.
+Elli is a office space booking app created as part of the course DAT257 at Chalmers University of Technology. It consists of a web-based admin console, available in this repository, and a smartphone application available [here](https://github.com/Magnetixaft/AgileQueen).
 
-A few resources to get you started if this is your first Flutter project:
+## Compiling and running
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+In order to run Elli you must compile the source code yourself.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### From source code
+
+Requirements:
+- Flutter SDK version 2.10.4
+- A web browser with debug functionality, such as Google Chrome or Microsoft Edge.
+
+Run from source:
+1. Clone the repository: `git clone https://github.com/Magnetixaft/elli_admin`
+2. Fetch Flutter packages: `flutter pub get`
+3. Make sure your web browser of choice is selected as output platform an run the app: `flutter run --release`
+    1. If you wish to enable debug functions when running, use `flutter run --debug`
