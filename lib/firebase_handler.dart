@@ -244,7 +244,7 @@ class FirebaseHandler {
     await FirebaseFirestore.instance
         .collection('Admins')
         .doc(adminHashId)
-        .set({'Permissions': permissions, 'name': name});
+        .set({'Permissions': permissions, 'Name': name});
     return;
   }
 
