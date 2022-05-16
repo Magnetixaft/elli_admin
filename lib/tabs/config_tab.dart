@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
 import '../models/space.dart';
@@ -12,14 +13,27 @@ class ConfigTab extends StatefulWidget {
   State<ConfigTab> createState() => _ConfigTabState();
 }
 
-//Widget for selecting office, picking day, picking room and then booking a timeslot
 class _ConfigTabState extends State<ConfigTab> {
-  final userIdTextController = TextEditingController();
-  final userPasswordTextController =
-      TextEditingController(text: "example@email.no");
+  var selectedAdmin;
+
+  callback() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    FirebaseHandler backend = FirebaseHandler.getInstance();
+    return FutureBuilder<void>(
+        future: backend.buildStaticModel(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return buildView(context);
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
+  }
+
+  Widget buildView(BuildContext context) {
     return SingleChildScrollView(
       child: Align(
         alignment: Alignment.topLeft,
@@ -215,6 +229,223 @@ class _ConfigTabState extends State<ConfigTab> {
 
   Widget _buildAdminEdit(BuildContext context) {
     return AlertDialog(
+      title: const Text(
+          "Administrators                                                                             "),
+      content: Scaffold(
+          body: Center(
+        child: Container(
+          width: 400,
+          child: Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('Admins')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              const Text("Loading.....");
+                            } else {
+                              List<DropdownMenuItem<String>> adminItems = [];
+                              for (int i = 0;
+                                  i < snapshot.data!.docs.length;
+                                  i++) {
+                                DocumentSnapshot snap = snapshot.data!.docs[i];
+                                adminItems.add(
+                                  DropdownMenuItem(
+                                    child: Text(
+                                      snap.id,
+                                      style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    value: snap.id,
+                                  ),
+                                );
+                              }
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  DropdownButton(
+                                    items: adminItems,
+                                    onChanged: (admin) {
+                                      final snackBar = SnackBar(
+                                        content: Text(
+                                          'You have selected $admin',
+                                        ),
+                                      );
+                                      Scaffold.of(context)
+                                          .showSnackBar(snackBar);
+                                      setState(() {
+                                        selectedAdmin = admin;
+                                      });
+                                    },
+                                    value: selectedAdmin,
+                                    isExpanded: false,
+                                    hint: const Text(
+                                      "Choose Admin",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            return Container();
+                          }),
+                      _buildAddNewAdmin(context),
+                      _buildDeleteSelectedAdmin(context),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      )),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDeleteSelectedAdmin(BuildContext context) {
+    final name = TextEditingController();
+    final email = TextEditingController();
+
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        FirebaseHandler.getInstance()
+                            .removeAdmin(selectedAdmin);
+                        selectedAdmin = null;
+                      });
+
+                      Navigator.of(context).pop();
+                    },
+                    label: const Text(
+                      'Delete selected admin',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    icon: const Icon(Icons.delete),
+                  ),
+                ],
+              )),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddNewAdmin(BuildContext context) {
+    final name = TextEditingController();
+    final email = TextEditingController();
+
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextButton.icon(
+                    onPressed: () {
+                      showDialog(
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Add administrator'),
+                              content: Column(
+                                children: <Widget>[
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Enter admin name',
+                                    ),
+                                    controller: name,
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'Email',
+                                    ),
+                                    controller: email,
+                                  ),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                    onPressed: () async {
+                                      if (name.text.isNotEmpty &&
+                                          email.text.isNotEmpty) {
+                                        FirebaseHandler.getInstance().addAdmin(
+                                            email.text, "all", name.text);
+                                        Navigator.of(context).pop();
+                                      } else {
+                                        return;
+                                      }
+                                    },
+                                    child: const Text('Add')),
+                              ],
+                            );
+                          },
+                          context: context);
+                    },
+                    label: const Text(
+                      'Add new admin',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              )),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+/*
+Widget _buildAdminEdit(BuildContext context) {
+    return AlertDialog(
       title: const Text("Administrators"),
       content: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -271,7 +502,7 @@ class _ConfigTabState extends State<ConfigTab> {
       ],
     );
   }
-}
+*/
 
 /*
 Widget _editTitleTextField() {
