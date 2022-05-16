@@ -341,6 +341,23 @@ class FirebaseHandler {
 
 }
 
+class Admin {
+  final String adminHashId;
+  final String name;
+  final String permissions;
+
+  Admin(this.adminHashId, this.name, this.permissions);
+
+  @override
+  String toString() {
+    return 'Room{adminHashId: $adminHashId, name: $name, permissions: $permissions}';
+  }
+
+  String getName() {
+    return name;
+  }
+}
+
 class Room {
   final Map<int, List<String>> workspaces;
   final List<Map<String, String>> timeslots;
