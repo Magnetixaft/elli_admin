@@ -32,6 +32,7 @@ class _ConfigTabState extends State<ConfigTab> {
         });
   }
 
+  ///Builds the config_tab Widget.
   Widget buildView(BuildContext context) {
     return SingleChildScrollView(
       child: Align(
@@ -71,6 +72,7 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  ///Builds the Admin card from where the admin pop up can be opened.
   Widget _buildAdminCard(BuildContext context) {
     return SizedBox(
       width: 400,
@@ -118,6 +120,7 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  ///Builds the About card.
   Widget _buildAboutCard(BuildContext context) {
     return SizedBox(
       width: 400,
