@@ -1,10 +1,12 @@
+import 'package:elli_admin/main.dart';
 import 'package:elli_admin/tabs/config_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_tab.dart';
+import 'package:elli_admin/authentication_handler.dart';
 
 /// The home page for the ELLI admin console.
-/// 
+///
 /// Allows the user to navigate between the tabs [HomeView], [AnalyticsTab] and [ConfigTab]
 class MenuBar extends StatefulWidget {
   const MenuBar({Key? key}) : super(key: key);
@@ -15,13 +17,16 @@ class MenuBar extends StatefulWidget {
 
 class _MenuBarState extends State<MenuBar> {
   int _selectedIndex = 0;
-  bool isExtended = false;
+  bool isExtended = true;
 
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
     AnalyticsTab(),
     const ConfigTab()
   ];
+
+  final AuthenticationHandler authenticationHandler =
+      AuthenticationHandler.getInstance();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -38,7 +43,8 @@ class _MenuBarState extends State<MenuBar> {
                   onDestinationSelected: (_selectedIndex) =>
                       setState(() => this._selectedIndex = _selectedIndex),
                   leading: IconButton(
-                    icon: Icon(isExtended ? Icons.turn_left : Icons.turn_right),
+                    icon: Icon(
+                        isExtended ? Icons.arrow_back : Icons.arrow_forward),
                     onPressed: () => setState(() {
                       isExtended = !isExtended;
                     }),
@@ -53,7 +59,13 @@ class _MenuBarState extends State<MenuBar> {
                   ],
                 ),
                 //Place elli logo in here
-                const Positioned(left: 0, right: 0, top: 100, child: Text("")),
+                Positioned(
+                    left: 10,
+                    right: 0,
+                    top: 100,
+                    child: isExtended
+                        ? const Text("This is where the elli logo should live")
+                        : const Text("")),
                 //This lets the trailing logout button be at the bottom.
                 Positioned(
                     bottom: 10,
@@ -62,7 +74,13 @@ class _MenuBarState extends State<MenuBar> {
                     //The text does not fit if the navigationRail is collapsed
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyHomePage(
+                                      title: '',
+                                    )));
+                        logOut();
                       },
                       icon: const Icon(Icons.logout_outlined),
                       label:
@@ -76,6 +94,9 @@ class _MenuBarState extends State<MenuBar> {
           ],
         ),
       );
+  Future<void> logOut() async {
+    authenticationHandler.signOut();
+  }
 }
 
 /*  The old logout button 
