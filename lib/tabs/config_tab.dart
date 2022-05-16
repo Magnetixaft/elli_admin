@@ -4,7 +4,7 @@ import 'package:elli_admin/firebase_handler.dart';
 
 /// A tab for viewing the admin config settings for ELLI
 ///
-/// Allows an admin to edit the FAQ and About sections, as well as add other admins
+/// Allows an admin to edit the Admin priviliges, and view the about section.
 class ConfigTab extends StatefulWidget {
   const ConfigTab({Key? key}) : super(key: key);
 
@@ -193,82 +193,79 @@ class _ConfigTabState extends State<ConfigTab> {
     return AlertDialog(
       title: const Text(
           "Administrators                                                                             "),
-      content: Scaffold(
-          body: Center(
-        child: Container(
-          width: 400,
-          child: Column(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('Admins')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              const Text("Loading.....");
-                            } else {
-                              List<DropdownMenuItem<String>> adminItems = [];
-                              for (int i = 0;
-                                  i < snapshot.data!.docs.length;
-                                  i++) {
-                                DocumentSnapshot snap = snapshot.data!.docs[i];
-                                adminItems.add(
-                                  DropdownMenuItem(
-                                    child: Text(
-                                      snap.id,
-                                      style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    value: snap.id,
+      content: SizedBox(
+        width: double.infinity,
+        child: Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('Admins')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            const Text("Loading.....");
+                          } else {
+                            List<DropdownMenuItem<String>> adminItems = [];
+                            for (int i = 0;
+                                i < snapshot.data!.docs.length;
+                                i++) {
+                              DocumentSnapshot snap = snapshot.data!.docs[i];
+                              adminItems.add(
+                                DropdownMenuItem(
+                                  child: Text(
+                                    snap.id,
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                );
-                              }
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  DropdownButton(
-                                    items: adminItems,
-                                    onChanged: (admin) {
-                                      setState(() {
-                                        selectedAdmin = admin;
-                                      });
-                                      Navigator.of(context).pop();
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) =>
-                                              _buildAdminEdit(context));
-                                    },
-                                    value: selectedAdmin,
-                                    isExpanded: false,
-                                    hint: const Text(
-                                      "Choose Admin",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
+                                  value: snap.id,
+                                ),
                               );
                             }
-                            return Container();
-                          }),
-                      _buildAddNewAdmin(context),
-                      _buildDeleteSelectedAdmin(context),
-                    ],
-                  ),
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                DropdownButton(
+                                  items: adminItems,
+                                  onChanged: (admin) {
+                                    setState(() {
+                                      selectedAdmin = admin;
+                                    });
+                                    Navigator.of(context).pop();
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            _buildAdminEdit(context));
+                                  },
+                                  value: selectedAdmin,
+                                  isExpanded: false,
+                                  hint: const Text(
+                                    "Choose Admin",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Container();
+                        }),
+                    _buildAddNewAdmin(context),
+                    _buildDeleteSelectedAdmin(context),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      )),
+      ),
       actions: <Widget>[
         TextButton(
           onPressed: () {
@@ -282,10 +279,7 @@ class _ConfigTabState extends State<ConfigTab> {
   }
 
   Widget _buildDeleteSelectedAdmin(BuildContext context) {
-    final name = TextEditingController();
-    final email = TextEditingController();
-
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -328,7 +322,7 @@ class _ConfigTabState extends State<ConfigTab> {
     final name = TextEditingController();
     final email = TextEditingController();
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
@@ -495,7 +489,3 @@ Widget _editTitleTextField() {
  );
 }
 */
-
-/*
-
-  */
