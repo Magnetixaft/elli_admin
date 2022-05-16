@@ -19,7 +19,7 @@ class _MenuBarState extends State<MenuBar> {
 
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
-    const AnalyticsTab(),
+    AnalyticsTab(),
     const ConfigTab()
   ];
 
