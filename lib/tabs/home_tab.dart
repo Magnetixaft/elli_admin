@@ -328,7 +328,7 @@ class _HomeViewState extends State<HomeView> {
                   value: selectedDivision,
                   isExpanded: false,
                   hint: const Text(
-                    "Choose company",
+                    "Choose Company",
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
@@ -402,7 +402,7 @@ class _HomeViewState extends State<HomeView> {
                           });
                     },
                     label: const Text(
-                      'Add new company',
+                      'Add new Company',
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -548,7 +548,7 @@ class _HomeViewState extends State<HomeView> {
                   value: selectedOffice,
                   isExpanded: false,
                   hint: const Text(
-                    "Choose office",
+                    "Choose Office",
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
@@ -643,7 +643,7 @@ class _HomeViewState extends State<HomeView> {
                           });
                     },
                     label: const Text(
-                      'Add new office',
+                      'Add new Office',
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -810,6 +810,7 @@ class _HomeViewState extends State<HomeView> {
     final roomNr = TextEditingController();
     final description = TextEditingController();
     final workspaces = TextEditingController();
+    final equipment = TextEditingController();
     final timeslotInput = TextEditingController();
 
     return Container(
@@ -865,6 +866,20 @@ class _HomeViewState extends State<HomeView> {
                                   TextField(
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
+                                      hintText: 'Equipmnent',
+                                    ),
+                                    controller: equipment,
+                                  ),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        // TODO add new inputs
+
+                                      },
+                                      child: const Text('Add new workspace'),
+                                  ),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      border: OutlineInputBorder(),
                                       hintText:
                                           'Enter timeslot',
                                     ),
@@ -882,22 +897,27 @@ class _HomeViewState extends State<HomeView> {
                                           timeslotInput.text.isNotEmpty) {
 
 
-                                        int count = 1;
-                                        List<String> list = ['', ''];
+                                        // adds special equipment to a workspace
+                                        List<String> list = [];
+                                        int count = 1; // increases when add new button is clicked
                                         var workspaces = <int, List<String>>{count: list};
+                                        var gear = equipment.text.split(',');
+                                        for (var i in gear) {
+                                          list.add(i);
+                                        }
 
-
+                                        // splits timeslots into start and end
+                                        var slot = timeslotInput.text.split('-');
                                         var timeslots = <Map<String, String>>[
-                                          {'': ''}
+                                          {'start': slot[0], 'end': slot[1]}
                                         ];
-
 
                                         Room room = Room(workspaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
                                         FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
                                         Navigator.of(context).pop();
                                         }
 
-                                        // TODO save room
+                                        // TODO add more workspaces and timeslots
                                        else {
                                         return;
                                       }
@@ -924,7 +944,6 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for space specifications
-
   Widget _buildRoomCard(String name, int numberOfSpaces, int availableSpaces) {
     return Container(
       width: 400,
