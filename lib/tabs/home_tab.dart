@@ -102,7 +102,7 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Space',
+                        'Room',
                         style: TextStyle(fontSize: 16),
                       ),
                       Row(
@@ -888,7 +888,7 @@ class _HomeViewState extends State<HomeView> {
 
 
                                         var timeslots = <Map<String, String>>[
-                                          {'hej': 'san'}
+                                          {'': ''}
                                         ];
 
 
@@ -908,7 +908,7 @@ class _HomeViewState extends State<HomeView> {
                           });
                     },
                     label: const Text(
-                      'Add new space',
+                      'Add new room',
                       style: TextStyle(
                         color: Colors.black,
                       ),
