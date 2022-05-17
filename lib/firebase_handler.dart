@@ -256,6 +256,17 @@ class FirebaseHandler {
     return;
   }
 
+  Future<List<Admin>> getAllAdmins() async {
+    var adminList = <Admin>[];
+    var allAdmins = await FirebaseFirestore.instance.collection('Admins').get();
+
+    for (var admin in allAdmins.docs) {
+      adminList.add(
+          Admin(admin.id, admin.data()['Name'], admin.data()['Permissions']));
+    }
+    return adminList;
+  }
+
   Future<void> saveDivision(String divisionName, String info) async {
     await FirebaseFirestore.instance
         .collection('Divisions')
