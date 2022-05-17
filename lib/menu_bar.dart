@@ -22,7 +22,7 @@ class _MenuBarState extends State<MenuBar> {
   ///The list of different widgets than can be rached from the navigation bar.
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
-    const AnalyticsTab(),
+    AnalyticsTab(),
     const ConfigTab()
   ];
 

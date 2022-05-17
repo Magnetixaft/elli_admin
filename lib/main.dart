@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final AuthenticationHandler authenticationHandler =
       AuthenticationHandler.getInstance();
 
-  // Checks loginstatus when page loads, skips login if true
+  /// Checks if admin is signed in when page loads, skips login if true
   @override
   void initState() {
     super.initState();
@@ -108,18 +108,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 "Login",
                               )),
                         ),
-                        //TODO remove, logout for testing
-                        /*
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: ElevatedButton(
-                              onPressed: () => {logOut()},
-                              child: const Text(
-                                "logout",
-                              )),
-                        ),
-                        */
                       ],
                     ),
                   ),
@@ -132,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Logs the user in using Azure.
   ///
-  /// Navigates to [MenuBar] when login is successful. Initializes the [FirebaseHandler] using encrypted email from AuthenticationHandler
+  /// Navigates to [MenuBar] when login is successful. Initializes the [FirebaseHandler]
   Future<void> login() async {
     if (await authenticationHandler.loginWithAzure() != null) {
       //Since Firebase is not dependent on which admin is logged in, skip getting name
@@ -142,7 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  /// Checks if user is logged in and is admin, if true navigate to home
+  /// Checks if user is logged in and is admin
+  ///
+  /// Navigates to [MenuBar] when if true is successful. Initializes the [FirebaseHandler]
   Future<void> checkLoggedIn() async {
     if (await authenticationHandler.isUserSignedIn() == true) {
       //Since Firebase is not dependent on which admin is logged in, skip getting name
@@ -152,8 +142,4 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  // TODO remove, logout for testing
-  Future<void> logOut() async {
-    authenticationHandler.signOut();
-  }
 }
