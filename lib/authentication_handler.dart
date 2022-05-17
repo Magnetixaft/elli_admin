@@ -23,6 +23,7 @@ class AuthenticationHandler {
       if(adminList.contains(user?.email)){
         return user;
       }else{
+        print("User does not have Admin privileges");
         return null;
       }
     } on FirebaseAuthException catch (e){

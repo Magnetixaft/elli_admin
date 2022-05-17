@@ -20,7 +20,7 @@ class FirebaseHandler {
 
   FirebaseHandler._(); // Hidden constructor
 
-  /// Initializes the singleton with a username
+  /// Initializes the singleton with a username, only needs "Admin" at the moment.
   static void initialize(String username) {
     _instance._username = username.toLowerCase();
   }
@@ -41,6 +41,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Gets data related to divisions to [buildStaticModel]
   Future<void> _buildDivision() async {
     var divisionsData =
         await FirebaseFirestore.instance.collection('Divisions').get();
@@ -62,6 +63,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Gets data related to rooms to [buildStaticModel]
   Future<void> _buildRooms() async {
     var roomsData =
         await FirebaseFirestore.instance.collection('Rooms_2').get();
@@ -239,6 +241,7 @@ class FirebaseHandler {
 
   // ---------------- Modifiers ------------
 
+  ///Adds an admin, needs "all" [permissions] in order to get admin privileges
   Future<void> addAdmin(
       String adminHashId, String permissions, String name) async {
     await FirebaseFirestore.instance
@@ -248,6 +251,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Removes an admin using email as [adminHashId]
   Future<void> removeAdmin(String adminHashId) async {
     await FirebaseFirestore.instance
         .collection('Admins')
@@ -256,6 +260,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Saves a division
   Future<void> saveDivision(String divisionName, String info) async {
     await FirebaseFirestore.instance
         .collection('Divisions')
@@ -264,6 +269,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Removes a division, given name of division
   Future<void> removeDivision(String divisionName) async {
     var offices = await FirebaseFirestore.instance
         .collection('Divisions')
@@ -280,6 +286,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Saves an office
   Future<void> saveOffice(
       String divisionName, String officeName, Office office) async {
     await FirebaseFirestore.instance
@@ -290,6 +297,7 @@ class FirebaseHandler {
         .set({'Address': office.address, 'Description': office.description});
   }
 
+  ///Removes an office, given a name of division and name of office
   Future<void> removeOffice(String divisionName, String officeName) async {
     await FirebaseFirestore.instance
         .collection('Divisions')
@@ -340,7 +348,7 @@ class FirebaseHandler {
 // ----------------------------------------------------------------
 
 }
-
+///Object related to Room
 class Room {
   final Map<int, List<String>> workspaces;
   final List<Map<String, String>> timeslots;
@@ -369,6 +377,7 @@ class Room {
   }
 }
 
+///Object related to Division
 class Division {
   final Map<String, Office> offices;
 
@@ -380,6 +389,7 @@ class Division {
   }
 }
 
+///Object related to Office
 class Office {
   final String address;
   final String description;
