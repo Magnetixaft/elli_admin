@@ -935,25 +935,15 @@ class _HomeViewState extends State<HomeView> {
                                             roomNr.text.isNotEmpty &&
                                             description.text.isNotEmpty) {
 
-                                          // Gets text from the inputs
-                                          String text = _controllers
-                                              .where((element) => element.text != "")
-                                              .fold("", (acc, element) => acc += "${element.text}\n");
 
-                                          List<String> list = [];
-
-                                          int space = 1;
-                                          var workspaces = <int, List<String>>{space: list};
-
-                                          // Adds the input text to a list. Splits with ,
-                                          var gear = text.split(',');
-                                          for (var i in gear) {
-                                            list.add(i);
-                                          }
-
+                                          Map <int, List<String>> workSpaces = Map();
                                           // iterates through the inputs
-                                          for (var j in _controllers) {
-                                            // do something
+                                          for (var j =0; j<_controllers.length; j++) {
+
+                                            // Gets text from the inputs
+                                            String text = _controllers[j].text;
+                                            List<String> parsedEquipment= text.split(", ");
+                                            workSpaces[j] = parsedEquipment;
                                           }
 
 
@@ -965,7 +955,7 @@ class _HomeViewState extends State<HomeView> {
                                             {'start': slot_2[0], 'end': slot_2[1]}
                                           ];
 
-                                          Room room = Room(workspaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
+                                          Room room = Room(workSpaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
                                           FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
                                           Navigator.of(context).pop();
                                           }
