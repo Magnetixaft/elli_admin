@@ -3,24 +3,24 @@ import 'package:elli_admin/tabs/config_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_tab.dart';
-import 'package:elli_admin/authentication_handler.dart';
+import 'package:elli_admin/handlers/authentication_handler.dart';
 
 /// The home page for the ELLI admin console.
 ///
-/// Allows the user to navigate between the tabs [HomeView], [AnalyticsTab] and [ConfigTab]
-class MenuBar extends StatefulWidget {
-  const MenuBar({Key? key}) : super(key: key);
+/// Allows the user to navigate between the tabs [HomeTab], [AnalyticsTab] and [ConfigTab]
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
-  _MenuBarState createState() => _MenuBarState();
+  _HomeState createState() => _HomeState();
 }
 
-class _MenuBarState extends State<MenuBar> {
+class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   bool isExtended = true;
 
   final List<Widget> _widgetOptions = <Widget>[
-    const HomeView(),
+    const HomeTab(),
     AnalyticsTab(),
     const ConfigTab()
   ];
@@ -77,7 +77,7 @@ class _MenuBarState extends State<MenuBar> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyHomePage(
+                                builder: (context) => const LoginPage(
                                       title: '',
                                     )));
                         logOut();

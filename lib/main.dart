@@ -1,9 +1,9 @@
-import 'package:elli_admin/authentication_handler.dart';
+import 'package:elli_admin/handlers/authentication_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:elli_admin/firebase_handler.dart';
-import 'package:elli_admin/theme.dart';
-import 'package:elli_admin/menu_bar.dart';
+import 'package:elli_admin/handlers/firebase_handler.dart';
+import 'package:elli_admin/themes/theme.dart';
+import 'package:elli_admin/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,15 +17,15 @@ void main() async {
           messagingSenderId: "883336254219",
           appId: "1:883336254219:web:7d2de78527260bb27e080e"));
 
-  runApp(MyApp());
+  runApp(ElliAdmin());
 }
 
 /// The main widget for ELLI admin
 ///
 /// This widget is presented when the app is started and, whilst Firebase is initializing, a [CircularProgressIndicator] i returned.
-/// Once Firebase is initialized, [MyHomePage] is returned.
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+/// Once Firebase is initialized, [LoginPage] is returned.
+class ElliAdmin extends StatelessWidget {
+  ElliAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           //Checks connection to Firebase and when done loads HomePage
           if (snapshot.connectionState == ConnectionState.done) {
             print("Firebase initialized correctly");
-            return const MyHomePage(
+            return const LoginPage(
               title: "Room Bookings",
             );
           }
@@ -58,15 +58,15 @@ class MyApp extends StatelessWidget {
 /// The login page
 ///
 /// A login page that navigates to [Home] when login is successful.
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _LoginPageState extends State<LoginPage> {
   final AuthenticationHandler authenticationHandler =
       AuthenticationHandler.getInstance();
 
@@ -120,25 +120,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// Logs the user in using Azure.
   ///
-  /// Navigates to [MenuBar] when login is successful. Initializes the [FirebaseHandler]
+  /// Navigates to [Home] when login is successful. Initializes the [FirebaseHandler]
   Future<void> login() async {
     if (await authenticationHandler.loginWithAzure() != null) {
       //Since Firebase is not dependent on which admin is logged in, skip getting name
       FirebaseHandler.initialize("Admin");
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const MenuBar()));
+          context, MaterialPageRoute(builder: (context) => const Home()));
     }
   }
 
   /// Checks if user is logged in and is admin
   ///
-  /// Navigates to [MenuBar] when if true is successful. Initializes the [FirebaseHandler]
+  /// Navigates to [Home] when if true is successful. Initializes the [FirebaseHandler]
   Future<void> checkLoggedIn() async {
     if (await authenticationHandler.isUserSignedIn() == true) {
       //Since Firebase is not dependent on which admin is logged in, skip getting name
       FirebaseHandler.initialize("Admin");
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const MenuBar()));
+          context, MaterialPageRoute(builder: (context) => const Home()));
     }
   }
 

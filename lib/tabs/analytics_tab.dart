@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:elli_admin/firebase_handler.dart';
+import 'package:elli_admin/handlers/firebase_handler.dart';
 
 /// A tab for viewing analytics for ELLI
 class AnalyticsTab extends StatefulWidget {

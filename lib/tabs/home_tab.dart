@@ -3,20 +3,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../firebase_handler.dart';
+import '../handlers/firebase_handler.dart';
 
 /// A tab for viewing offices, rooms and booking
 ///
 /// Allows the user to add and remove offices, rooms, timeslots and workspaces
-class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+class HomeTab extends StatefulWidget {
+  const HomeTab({Key? key}) : super(key: key);
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<HomeTab> createState() => _HomeTabState();
 }
 
 //Widget for selecting office, picking day, picking room and then booking a timeslot
-class _HomeViewState extends State<HomeView> {
+class _HomeTabState extends State<HomeTab> {
   var selectedDivision;
   var selectedOffice;
   var selectedRoom;
