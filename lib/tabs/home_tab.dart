@@ -955,7 +955,7 @@ class _HomeViewState extends State<HomeView> {
                                             {'start': slot_2[0], 'end': slot_2[1]}
                                           ];
 
-                                          Room room = Room(workSpaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
+                                          Room room = Room(int.parse(roomNr.text), workSpaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
                                           FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
                                           Navigator.of(context).pop();
                                           }
