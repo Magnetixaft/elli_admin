@@ -14,26 +14,19 @@ class ConfigTab extends StatefulWidget {
 
 class _ConfigTabState extends State<ConfigTab> {
   var selectedAdmin;
+  late List<Admin> adminList;
 
   callback() {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    FirebaseHandler backend = FirebaseHandler.getInstance();
-    return FutureBuilder<void>(
-        future: backend.buildStaticModel(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return buildView(context);
-          }
-          return const Center(child: CircularProgressIndicator());
-        });
+  void getAdmins() {
+    adminList = FirebaseHandler.getInstance().getAllAdmins() as List<Admin>;
   }
 
   ///Builds the config_tab Widget.
-  Widget buildView(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Align(
         alignment: Alignment.topLeft,
@@ -99,7 +92,7 @@ class _ConfigTabState extends State<ConfigTab> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) =>
-                                _buildAdminEdit(context));
+                                _buildAdminEdit2(context));
                       },
                       child: const Align(
                         alignment: Alignment.center,
@@ -120,76 +113,17 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
-  ///Builds the About card.
-  Widget _buildAboutCard(BuildContext context) {
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "About",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: TextButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                _buildPopupDialog(context, "About",
-                                    "Lorem ipsum dolor sit amet"));
-                      },
-                      child: const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'have a gander',
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-  }
-
-  ///Builds a general template pop up dialog box with a title,
-  ///and one string of content.
-  Widget _buildPopupDialog(BuildContext context, String title, String text) {
-    return AlertDialog(
-      title: Text(title),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(text),
-        ],
-      ),
-      actions: <Widget>[
-        FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text('Close'),
-        ),
-      ],
-    );
+  Widget _buildAdminEdit2(BuildContext context) {
+    return FutureBuilder<List<Admin>>(
+        future: FirebaseHandler.getInstance().getAllAdmins(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const AlertDialog(
+              title: Text("Administrators"),
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
   }
 
   Widget _buildAdminEdit(BuildContext context) {
@@ -367,8 +301,9 @@ class _ConfigTabState extends State<ConfigTab> {
                                     onPressed: () async {
                                       if (name.text.isNotEmpty &&
                                           email.text.isNotEmpty) {
-                                        FirebaseHandler.getInstance().addAdmin(
-                                            email.text, "all", name.text);
+                                        await FirebaseHandler.getInstance()
+                                            .addAdmin(
+                                                email.text, "all", name.text);
                                         Navigator.of(context).pop();
                                       } else {
                                         return;
@@ -393,6 +328,80 @@ class _ConfigTabState extends State<ConfigTab> {
           color: Colors.grey.shade100,
         ),
       ),
+    );
+  }
+
+  /*--- The methods used for creating the "About" - card---*/
+
+  ///Builds the About card.
+  Widget _buildAboutCard(BuildContext context) {
+    return SizedBox(
+      width: 400,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "About",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(
+                    width: 120,
+                    child: TextButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                _buildPopupDialog(context, "About",
+                                    "Lorem ipsum dolor sit amet"));
+                      },
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          'have a gander',
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )),
+          color: Colors.grey.shade100,
+        ),
+      ),
+    );
+  }
+
+  ///Builds a general template pop up dialog box with a title,
+  ///and one string of content.
+  Widget _buildPopupDialog(BuildContext context, String title, String text) {
+    return AlertDialog(
+      title: Text(title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(text),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }
