@@ -21,6 +21,18 @@ class _HomeViewState extends State<HomeView> {
   var selectedOffice;
   var selectedRoom;
 
+  /// Lists that hold textinputs
+  List<TextEditingController> _controllers = [];
+  List<TextField> _fields = [];
+
+  @override
+  void dispose() {
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   callback() {
     setState(() {});
   }
@@ -806,12 +818,12 @@ class _HomeViewState extends State<HomeView> {
 
   /// This creates a card item for adding a new space
   Widget _buildAddNewRoom() {
+    String timeslot_1 = "06:30-12:00";
+    String timeslot_2 = "13:00-17:00";
+
     final roomNameInput = TextEditingController();
     final roomNr = TextEditingController();
     final description = TextEditingController();
-    final workspaces = TextEditingController();
-    final equipment = TextEditingController();
-    final timeslotInput = TextEditingController();
 
     return Container(
       width: double.infinity,
@@ -833,85 +845,95 @@ class _HomeViewState extends State<HomeView> {
                           builder: (context) {
                             return AlertDialog(
                               title: const Text('Add new room'),
-                              content: Column(
-                                children: <Widget>[
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter room name',
-                                    ),
-                                    controller: roomNameInput,
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter room number',
-                                    ),
-                                    controller: roomNr,
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Description',
-                                    ),
-                                    controller: description,
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Workspaces',
-                                    ),
-                                    controller: workspaces,
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Equipmnent',
-                                    ),
-                                    controller: equipment,
-                                  ),
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        // TODO add new inputs
+                              content: StatefulBuilder(
+                                builder: (context, setState) {
+                                  return SingleChildScrollView(
+                                    child: Column(
+                                      children: <Widget>[
+                                        TextField(
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: 'Enter room name',
+                                          ),
+                                          controller: roomNameInput,
+                                        ),
+                                        TextField(
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: 'Enter room number',
+                                          ),
+                                          controller: roomNr,
+                                        ),
+                                        TextField(
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: 'Description',
+                                          ),
+                                          controller: description,
+                                        ),
 
-                                      },
-                                      child: const Text('Add new workspace'),
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText:
-                                          'Enter timeslot',
+                                        /// Button for adding new inputs
+                                        ListTile(
+                                          title: const Icon(Icons.add),
+                                          onTap: () {
+                                            final controller = TextEditingController();
+                                            final field = TextField(
+                                              controller: controller,
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: "Enter equipment for workspace",
+                                              ),
+                                            );
+                                            setState(() {
+                                              // adds the new input to a list in the top
+                                              _controllers.add(controller);
+                                              _fields.add(field);
+                                            });
+                                          },
+                                        ),
+                                        /// Calls the list with the inputs
+                                        _dynamicList(),
+                                      ],
                                     ),
-                                    controller: timeslotInput,
-                                  ),
-                                ],
-                              ),
+                                  );
+                                }),
+
+
                               actions: <Widget>[
                                 ElevatedButton(
                                     onPressed: () async {
                                       if (roomNameInput.text.isNotEmpty &&
                                           roomNr.text.isNotEmpty &&
-                                          description.text.isNotEmpty &&
-                                          workspaces.text.isNotEmpty &&
+                                          description.text.isNotEmpty) {
 
-                                          timeslotInput.text.isNotEmpty) {
+                                        // Gets text from the inputs
+                                        String text = _controllers
+                                            .where((element) => element.text != "")
+                                            .fold("", (acc, element) => acc += "${element.text}\n");
 
-
-                                        // adds special equipment to a workspace
                                         List<String> list = [];
-                                        int count = 1; // increases when add new button is clicked
-                                        var workspaces = <int, List<String>>{count: list};
-                                        var gear = equipment.text.split(',');
+
+                                        int space = 1;
+                                        var workspaces = <int, List<String>>{space: list};
+
+                                        // Adds the input text to a list. Splits with ,
+                                        var gear = text.split(',');
                                         for (var i in gear) {
                                           list.add(i);
                                         }
 
+                                        // iterates through the inputs
+                                        for (var j in _controllers) {
+                                          // do something
+                                        }
 
-                                        // splits timeslots into start and end
-                                        var slot = timeslotInput.text.split('-');
+
+                                        // split timeslots into start and end
+                                        var slot_1 = timeslot_1.split('-');
+                                        var slot_2 = timeslot_2.split('-');
                                         var timeslots = <Map<String, String>>[
-                                          {'start': slot[0], 'end': slot[1]}
+                                          {'start': slot_1[0], 'end': slot_1[1]},
+                                          {'start': slot_2[0], 'end': slot_2[1]}
                                         ];
 
                                         Room room = Room(workspaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
@@ -1032,7 +1054,75 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
+
+  Widget _dynamicList() {
+    return Container(
+      width: 300,
+        height: 200,
+        child: ListView.builder(
+          itemCount: _fields.length,
+          itemBuilder: (context, index) {
+            return Container(
+              margin: EdgeInsets.all(5),
+              child: _fields[index],
+            );
+          },
+        )
+    );
+  }
+
+  /*Widget _buildTimeslots() {
+
+    bool isChecked = false;
+    return CheckboxListTile(
+      title: Text(timeslot),
+      controlAffinity: ListTileControlAffinity.leading,
+      value: isChecked,
+      onChanged: (v) {
+        setState(() {
+          isChecked = v!;
+        });
+      },
+    );
+  }
+
+   */
+
+  /*Widget _addTile() {
+    return ListTile(
+      title: Icon(Icons.add),
+      onTap: () {
+        final controller = TextEditingController();
+        final field = TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Enter equipment for workspace: $c",
+          ),
+        );
+
+        setState(() {
+          _controllers.add(controller);
+          _fields.add(field);
+        });
+      },
+    );
+  }
+
+   */
+
+
+
+
 }
+
+
+
+
+
+
+
+
   
   /*
   ///Creates the popup for edititng or adding a company.
