@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:elli_admin/firebase_handler.dart';
+import 'package:elli_admin/handlers/firebase_handler.dart';
 
 /// A tab for viewing the admin config settings for ELLI
 ///

@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../firebase_handler.dart';
+import '../handlers/firebase_handler.dart';
 
 /// A tab for viewing offices, rooms and booking
 ///
