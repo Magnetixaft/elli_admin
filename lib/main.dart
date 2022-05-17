@@ -90,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Center(
                       child: Padding(
                     padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
-                    child: Image.asset('assets/images/elicit_logo.png'),
+                    child: Image.asset('assets/images/elli_logo.png'),
                   )),
                 ),
                 Expanded(
@@ -141,5 +141,4 @@ class _MyHomePageState extends State<MyHomePage> {
           context, MaterialPageRoute(builder: (context) => const MenuBar()));
     }
   }
-
 }

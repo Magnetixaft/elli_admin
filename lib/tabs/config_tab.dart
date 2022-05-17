@@ -14,14 +14,9 @@ class ConfigTab extends StatefulWidget {
 
 class _ConfigTabState extends State<ConfigTab> {
   var selectedAdmin;
-  late List<Admin> adminList;
 
   callback() {
     setState(() {});
-  }
-
-  void getAdmins() {
-    adminList = FirebaseHandler.getInstance().getAllAdmins() as List<Admin>;
   }
 
   ///Builds the config_tab Widget.
