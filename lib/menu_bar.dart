@@ -19,9 +19,10 @@ class _MenuBarState extends State<MenuBar> {
   int _selectedIndex = 0;
   bool isExtended = true;
 
+  ///The list of different widgets than can be rached from the navigation bar.
   final List<Widget> _widgetOptions = <Widget>[
     const HomeView(),
-    const AnalyticsTab(),
+    AnalyticsTab(),
     const ConfigTab()
   ];
 
@@ -58,20 +59,22 @@ class _MenuBarState extends State<MenuBar> {
                         icon: Icon(Icons.settings), label: Text('Config'))
                   ],
                 ),
-                //Place elli logo in here
+                //
                 Positioned(
                     left: 10,
                     right: 0,
                     top: 100,
                     child: isExtended
-                        ? const Text("This is where the elli logo should live")
+                        ? SizedBox(
+                            child: Image.asset('assets/images/elli_logo.png'),
+                            height: 60,
+                          )
                         : const Text("")),
-                //This lets the trailing logout button be at the bottom.
+                //This lets the trailing logout button at the bottom.
                 Positioned(
                     bottom: 10,
                     left: 8,
                     right: 0,
-                    //The text does not fit if the navigationRail is collapsed
                     child: ElevatedButton.icon(
                       onPressed: () {
                         Navigator.pushReplacement(
@@ -83,6 +86,7 @@ class _MenuBarState extends State<MenuBar> {
                         logOut();
                       },
                       icon: const Icon(Icons.logout_outlined),
+                      //The text does not fit if the navigationRail is collapsed
                       label:
                           isExtended ? const Text("Log out") : const Text(""),
                     ))
@@ -98,58 +102,3 @@ class _MenuBarState extends State<MenuBar> {
     authenticationHandler.signOut();
   }
 }
-
-/*  The old logout button 
-               
-IconButton(
-padding: const EdgeInsets.all(16.0),
-icon: const Icon(
-Icons.logout_outlined,
-semanticLabel: "Log out",
-),
-onPressed: () {
-Navigator.of(context).pop();
-}),
-*/
-
-/*The old trailing logout
-
-trailing: IconButton(
-icon: const Icon(Icons.logout_outlined, semanticLabel: "Log out", ),
-onPressed: () {
-Navigator.of(context).pop();
-}),
-*/
-
-/*  For some reason I thought this would work...
-  
-  Widget _buildPopupDialog(BuildContext context) {
-    return AlertDialog(
-      title: const Text("Log out!"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const <Widget>[
-          Text("You sure bro!?!"),
-        ],
-      ),
-      actions: <Widget>[
-        FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text('Nope!'),
-        ),
-        FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-          },
-          textColor: Theme.of(context).primaryColor,
-          child: const Text('Yeah!'),
-        ),
-      ],
-    );
-  }
-  */
