@@ -20,7 +20,7 @@ class FirebaseHandler {
 
   FirebaseHandler._(); // Hidden constructor
 
-  /// Initializes the singleton with a username
+  /// Initializes the singleton with a username, only needs "Admin" at the moment.
   static void initialize(String username) {
     _instance._username = username.toLowerCase();
   }
@@ -41,6 +41,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Gets data related to divisions to [buildStaticModel]
   Future<void> _buildDivision() async {
     var divisionsData = await FirebaseFirestore.instance.collection('Divisions').get();
     for (var divisionData in divisionsData.docs) {
@@ -56,6 +57,7 @@ class FirebaseHandler {
     return;
   }
 
+  ///Gets data related to rooms to [buildStaticModel]
   Future<void> _buildRooms() async {
     var roomsData = await FirebaseFirestore.instance.collection('Rooms_2').get();
     for (var room in roomsData.docs) {
@@ -348,8 +350,9 @@ class FirebaseHandler {
 
   // ---------------- Modifiers ------------
 
-  /// Adds an admin to Firebase
-  Future<void> addAdmin(String adminHashId, String permissions, String name) async {
+  ///Adds an admin, needs "all" [permissions] in order to get admin privileges
+  Future<void> addAdmin(
+      String adminHashId, String permissions, String name) async {
     await FirebaseFirestore.instance
         .collection('Admins')
         .doc(adminHashId)
@@ -357,20 +360,20 @@ class FirebaseHandler {
     return;
   }
 
-
-  /// Removes an admin from Firebase
+  ///Removes an admin using email as [adminHashId]
   Future<void> removeAdmin(String adminHashId) async {
     await FirebaseFirestore.instance.collection('Admins').doc(adminHashId).delete();
     return;
   }
 
-  /// Adds a division to Firebase
+
+  ///Saves a division
   Future<void> saveDivision(String divisionName, String info) async {
     await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).set({'Info': info});
     return;
   }
 
-  /// Removes a division from Firebase //TODO Remove offices!
+  ///Removes a division, given name of division
   Future<void> removeDivision(String divisionName) async {
     var offices = await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').get();
     for (var office in offices.docs) {
@@ -390,7 +393,7 @@ class FirebaseHandler {
         .set({'Address': office.address, 'Description': office.description});
   }
 
-  /// Removes an office from Firebase  //TODO REMOVE ALL ROOMS!!!!
+  ///Removes an office, given a name of division and name of office
   Future<void> removeOffice(String divisionName, String officeName) async {
     await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').doc(officeName).delete();
     return;
@@ -519,6 +522,7 @@ class Room {
   }
 }
 
+
 /// Immutable dataclass which models a corporate division
 class Division {
   /// Contains all the division's offices. Office name is key.
@@ -531,6 +535,7 @@ class Division {
     return 'Division{offices: $offices}';
   }
 }
+
 
 /// Immutable dataclass which models an office
 class Office {
