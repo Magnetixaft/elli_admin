@@ -375,41 +375,48 @@ class _HomeViewState extends State<HomeView> {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Add new company'),
-                              content: Column(
-                                children: <Widget>[
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter company name',
-                                    ),
-                                    controller: divisionName,
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(350, 180, 350, 180),
+                              child: AlertDialog(
+                                title: const Text('Add new company'),
+                                content: Padding(
+                                  padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                  child: Column(
+                                    children: <Widget>[
+                                      TextField(
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Enter company name',
+                                        ),
+                                        controller: divisionName,
+                                      ),
+                                      SizedBox(height: 8),
+                                      TextField(
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Organization number',
+                                        ),
+                                        controller: info,
+                                      ),
+                                    ],
                                   ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Organization number',
-                                    ),
-                                    controller: info,
-                                  ),
+                                ),
+                                actions: <Widget>[
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        if (divisionName.text.isNotEmpty &&
+                                            info.text.isNotEmpty) {
+                                          FirebaseHandler.getInstance()
+                                              .saveDivision(
+                                                  divisionName.text, info.text);
+                                          Navigator.of(context).pop();
+                                        } else {
+                                          return;
+                                        }
+                                      },
+                                      child: const Text('Add')),
                                 ],
                               ),
-                              actions: <Widget>[
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      if (divisionName.text.isNotEmpty &&
-                                          info.text.isNotEmpty) {
-                                        FirebaseHandler.getInstance()
-                                            .saveDivision(
-                                                divisionName.text, info.text);
-                                        Navigator.of(context).pop();
-                                      } else {
-                                        return;
-                                      }
-                                    },
-                                    child: const Text('Add')),
-                              ],
                             );
                           });
                     },
@@ -597,60 +604,69 @@ class _HomeViewState extends State<HomeView> {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Add new office'),
-                              content: Column(
-                                children: <Widget>[
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter office name',
-                                    ),
-                                    controller: officeName,
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(350, 120, 350, 120),
+                              child: AlertDialog(
+                                title: const Text('Add new office'),
+                                content: Padding(
+                                  padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                  child: Column(
+                                    children: <Widget>[
+                                      TextField(
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Enter office name',
+                                        ),
+                                        controller: officeName,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      TextField(
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Enter address',
+                                        ),
+                                        controller: officeAddress,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      TextField(
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Enter description',
+                                        ),
+                                        controller: officeDescription,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      TextField(
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(),
+                                          hintText: 'Enter contact info',
+                                        ),
+                                        controller: contactInfo,
+                                      ),
+                                    ],
                                   ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter address',
-                                    ),
-                                    controller: officeAddress,
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter description',
-                                    ),
-                                    controller: officeDescription,
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter contact info',
-                                    ),
-                                    controller: contactInfo,
-                                  ),
+                                ),
+                                actions: <Widget>[
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        if (officeName.text.isNotEmpty &&
+                                            officeAddress.text.isNotEmpty &&
+                                            officeDescription.text.isNotEmpty &&
+                                            contactInfo.text.isNotEmpty) {
+                                          Navigator.of(context).pop();
+                                          Office office = Office(
+                                              officeAddress.text,
+                                              officeDescription.text);
+                                          FirebaseHandler.getInstance()
+                                              .saveOffice(selectedDivision,
+                                                  officeName.text, office);
+                                        } else {
+                                          return;
+                                        }
+                                      },
+                                      child: const Text('Add')),
                                 ],
                               ),
-                              actions: <Widget>[
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      if (officeName.text.isNotEmpty &&
-                                          officeAddress.text.isNotEmpty &&
-                                          officeDescription.text.isNotEmpty &&
-                                          contactInfo.text.isNotEmpty) {
-                                        Navigator.of(context).pop();
-                                        Office office = Office(
-                                            officeAddress.text,
-                                            officeDescription.text);
-                                        FirebaseHandler.getInstance()
-                                            .saveOffice(selectedDivision,
-                                                officeName.text, office);
-                                      } else {
-                                        return;
-                                      }
-                                    },
-                                    child: const Text('Add')),
-                              ],
                             );
                           });
                     },
@@ -843,111 +859,125 @@ class _HomeViewState extends State<HomeView> {
                       showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Add new room'),
-                              content: StatefulBuilder(
-                                builder: (context, setState) {
-                                  return SingleChildScrollView(
-                                    child: Column(
-                                      children: <Widget>[
-                                        TextField(
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            hintText: 'Enter room name',
-                                          ),
-                                          controller: roomNameInput,
-                                        ),
-                                        TextField(
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            hintText: 'Enter room number',
-                                          ),
-                                          controller: roomNr,
-                                        ),
-                                        TextField(
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            hintText: 'Description',
-                                          ),
-                                          controller: description,
-                                        ),
-
-                                        /// Button for adding new inputs
-                                        ListTile(
-                                          title: const Icon(Icons.add),
-                                          onTap: () {
-                                            final controller = TextEditingController();
-                                            final field = TextField(
-                                              controller: controller,
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(350, 0, 350, 0),
+                              child: AlertDialog(
+                                title: const Text('Add new room'),
+                                content: StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return SingleChildScrollView(
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                        child: Column(
+                                          children: <Widget>[
+                                            TextField(
                                               decoration: const InputDecoration(
                                                 border: OutlineInputBorder(),
-                                                labelText: "Enter equipment for workspace",
+                                                hintText: 'Enter room name',
                                               ),
-                                            );
-                                            setState(() {
-                                              // adds the new input to a list in the top
-                                              _controllers.add(controller);
-                                              _fields.add(field);
-                                            });
-                                          },
+                                              controller: roomNameInput,
+                                            ),
+                                            const SizedBox(height: 8),
+                                            TextField(
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                hintText: 'Enter room number',
+                                              ),
+                                              controller: roomNr,
+                                            ),
+                                            const SizedBox(height: 8),
+                                            TextField(
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                hintText: 'Description',
+                                              ),
+                                              controller: description,
+                                            ),
+                                            const SizedBox(height: 8),
+
+                                            /// Button for adding new inputs
+                                            ListTile(
+                                              title: const Text('Add new workspace'),
+                                              onTap: () {
+                                                final controller = TextEditingController();
+                                                final field = TextField(
+                                                  controller: controller,
+                                                  decoration: const InputDecoration(
+                                                    border: OutlineInputBorder(),
+                                                    labelText: "Enter equipment for workspace",
+                                                    contentPadding: EdgeInsets.all(10),
+                                                  ),
+                                                );
+                                                setState(() {
+                                                  // adds the new input to a list in the top
+                                                  _controllers.add(controller);
+                                                  _fields.add(field);
+                                                });
+                                              },
+                                              tileColor: Colors.grey[100],
+                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                                            ),
+                                            const SizedBox(height: 6),
+
+
+                                            /// Calls the list with the inputs
+                                            _dynamicList(),
+                                          ],
                                         ),
-                                        /// Calls the list with the inputs
-                                        _dynamicList(),
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                      ),
+                                    );
+                                  }),
+
+                                  actions: <Widget>[
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        if (roomNameInput.text.isNotEmpty &&
+                                            roomNr.text.isNotEmpty &&
+                                            description.text.isNotEmpty) {
+
+                                          // Gets text from the inputs
+                                          String text = _controllers
+                                              .where((element) => element.text != "")
+                                              .fold("", (acc, element) => acc += "${element.text}\n");
+
+                                          List<String> list = [];
+
+                                          int space = 1;
+                                          var workspaces = <int, List<String>>{space: list};
+
+                                          // Adds the input text to a list. Splits with ,
+                                          var gear = text.split(',');
+                                          for (var i in gear) {
+                                            list.add(i);
+                                          }
+
+                                          // iterates through the inputs
+                                          for (var j in _controllers) {
+                                            // do something
+                                          }
 
 
-                              actions: <Widget>[
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      if (roomNameInput.text.isNotEmpty &&
-                                          roomNr.text.isNotEmpty &&
-                                          description.text.isNotEmpty) {
+                                          // split timeslots into start and end
+                                          var slot_1 = timeslot_1.split('-');
+                                          var slot_2 = timeslot_2.split('-');
+                                          var timeslots = <Map<String, String>>[
+                                            {'start': slot_1[0], 'end': slot_1[1]},
+                                            {'start': slot_2[0], 'end': slot_2[1]}
+                                          ];
 
-                                        // Gets text from the inputs
-                                        String text = _controllers
-                                            .where((element) => element.text != "")
-                                            .fold("", (acc, element) => acc += "${element.text}\n");
+                                          Room room = Room(workspaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
+                                          FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
+                                          Navigator.of(context).pop();
+                                          }
 
-                                        List<String> list = [];
-
-                                        int space = 1;
-                                        var workspaces = <int, List<String>>{space: list};
-
-                                        // Adds the input text to a list. Splits with ,
-                                        var gear = text.split(',');
-                                        for (var i in gear) {
-                                          list.add(i);
+                                          // TODO add more workspaces and timeslots
+                                         else {
+                                          return;
                                         }
-
-                                        // iterates through the inputs
-                                        for (var j in _controllers) {
-                                          // do something
-                                        }
-
-
-                                        // split timeslots into start and end
-                                        var slot_1 = timeslot_1.split('-');
-                                        var slot_2 = timeslot_2.split('-');
-                                        var timeslots = <Map<String, String>>[
-                                          {'start': slot_1[0], 'end': slot_1[1]},
-                                          {'start': slot_2[0], 'end': slot_2[1]}
-                                        ];
-
-                                        Room room = Room(workspaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
-                                        FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
-                                        Navigator.of(context).pop();
-                                        }
-
-                                        // TODO add more workspaces and timeslots
-                                       else {
-                                        return;
-                                      }
-                                    },
-                                    child: const Text('Add'))
-                              ],
+                                      },
+                                      child: const Text('Add'))
+                                ],
+                              ),
                             );
                           });
                     },
@@ -1056,18 +1086,23 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _dynamicList() {
-    return Container(
-      width: 300,
-        height: 200,
-        child: ListView.builder(
-          itemCount: _fields.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: EdgeInsets.all(5),
-              child: _fields[index],
-            );
-          },
-        )
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+            width: 560,
+            height: 160,
+            child: ListView.builder(
+              itemCount: _fields.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.all(5),
+                  child: _fields[index],
+                );
+              },
+            )
+        ),
+      ],
     );
   }
 
