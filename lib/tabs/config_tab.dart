@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
 
+import '../theme.dart';
+
 /// A tab for viewing the admin config settings for ELLI
 ///
 /// Allows an admin to edit the Admin priviliges, and view the about section.
@@ -32,9 +34,10 @@ class _ConfigTabState extends State<ConfigTab> {
             const SizedBox(height: 10),
             const Text("    Config",
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                )),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    fontFamily: 'Poppins',
+                    color: ElliColors.pink)),
             const SizedBox(height: 24),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,

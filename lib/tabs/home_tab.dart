@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../firebase_handler.dart';
+import '../theme.dart';
 
 /// A tab for viewing offices, rooms and booking
 ///
@@ -51,9 +52,10 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(height: 10),
             const Text("    Home",
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                )),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    fontFamily: 'Poppins',
+                    color: ElliColors.pink)),
             const SizedBox(height: 24),
 
             /// The dropdown menus and small header for each
@@ -871,17 +873,15 @@ class _HomeViewState extends State<HomeView> {
                                     controller: equipment,
                                   ),
                                   ElevatedButton(
-                                      onPressed: () {
-                                        // TODO add new inputs
-
-                                      },
-                                      child: const Text('Add new workspace'),
+                                    onPressed: () {
+                                      // TODO add new inputs
+                                    },
+                                    child: const Text('Add new workspace'),
                                   ),
                                   TextField(
                                     decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
-                                      hintText:
-                                          'Enter timeslot',
+                                      hintText: 'Enter timeslot',
                                     ),
                                     controller: timeslotInput,
                                   ),
@@ -894,33 +894,40 @@ class _HomeViewState extends State<HomeView> {
                                           roomNr.text.isNotEmpty &&
                                           description.text.isNotEmpty &&
                                           workspaces.text.isNotEmpty &&
-
                                           timeslotInput.text.isNotEmpty) {
-
-
                                         // adds special equipment to a workspace
                                         List<String> list = [];
-                                        int count = 1; // increases when add new button is clicked
-                                        var workspaces = <int, List<String>>{count: list};
+                                        int count =
+                                            1; // increases when add new button is clicked
+                                        var workspaces = <int, List<String>>{
+                                          count: list
+                                        };
                                         var gear = equipment.text.split(',');
                                         for (var i in gear) {
                                           list.add(i);
                                         }
 
-
                                         // splits timeslots into start and end
-                                        var slot = timeslotInput.text.split('-');
+                                        var slot =
+                                            timeslotInput.text.split('-');
                                         var timeslots = <Map<String, String>>[
                                           {'start': slot[0], 'end': slot[1]}
                                         ];
 
-                                        Room room = Room(int.parse(roomNr.text), workspaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
-                                        FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
+                                        Room room = Room(
+                                            int.parse(roomNr.text),
+                                            workspaces,
+                                            timeslots.toList(),
+                                            description.text,
+                                            selectedOffice,
+                                            roomNameInput.text);
+                                        FirebaseHandler.getInstance().saveRoom(
+                                            int.parse(roomNr.text), room);
                                         Navigator.of(context).pop();
-                                        }
+                                      }
 
-                                        // TODO add more workspaces and timeslots
-                                       else {
+                                      // TODO add more workspaces and timeslots
+                                      else {
                                         return;
                                       }
                                     },

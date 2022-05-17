@@ -1,3 +1,4 @@
+import 'package:elli_admin/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
 
@@ -31,8 +32,10 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
               backend.selectDivision(selectedDivision);
               selectedOffice = backend.getDivisionOffices().keys.first;
 
-              divisionCardFuture = backend.generateDivisionReportCard(selectedDivision);
-              officeCardFuture = backend.generateOfficeReportCard(selectedOffice);
+              divisionCardFuture =
+                  backend.generateDivisionReportCard(selectedDivision);
+              officeCardFuture =
+                  backend.generateOfficeReportCard(selectedOffice);
             }
 
             return SingleChildScrollView(
@@ -46,9 +49,11 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     const SizedBox(height: 10),
                     const Text("    Analytics",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        )),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            fontFamily: 'Poppins',
+                            color: ElliColors.pink)),
+
                     const SizedBox(height: 24),
 
                     /// The dropdown menus and small header for each
@@ -93,25 +98,30 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         Expanded(
                           flex: 1,
                           child: FutureBuilder<DivisionReportCard>(
-                            future: divisionCardFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildOfficeCard(snapshot.data!.officeUse),
-                                    _buildRoomCard(snapshot.data!.roomUse),
-                                    _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                    _buildUseRateCard(snapshot.data!.usageRate),
-                                    _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
-                                  ],
-                                );
-                              }
-                              else {
-                                return const Text(' ');
-                              }
-                            }
-                          ),
+                              future: divisionCardFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                        ConnectionState.done &&
+                                    snapshot.data != null) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _buildOfficeCard(
+                                          snapshot.data!.officeUse),
+                                      _buildRoomCard(snapshot.data!.roomUse),
+                                      _buildWorkspaceCard(
+                                          snapshot.data!.workspaceUse),
+                                      _buildUseRateCard(
+                                          snapshot.data!.usageRate),
+                                      _buildFutureBookingsCard(snapshot
+                                          .data!.numberOfFutureBookings),
+                                    ],
+                                  );
+                                } else {
+                                  return const Text(' ');
+                                }
+                              }),
                         ),
                         Container(width: 12),
                         Expanded(
@@ -119,22 +129,26 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                           child: FutureBuilder<OfficeReportCard>(
                               future: officeCardFuture,
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                                if (snapshot.connectionState ==
+                                        ConnectionState.done &&
+                                    snapshot.data != null) {
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       _buildRoomCard(snapshot.data!.roomUse),
-                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                      _buildUseRateCard(snapshot.data!.usageRate),
-                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
+                                      _buildWorkspaceCard(
+                                          snapshot.data!.workspaceUse),
+                                      _buildUseRateCard(
+                                          snapshot.data!.usageRate),
+                                      _buildFutureBookingsCard(snapshot
+                                          .data!.numberOfFutureBookings),
                                     ],
                                   );
-                                }
-                                else {
+                                } else {
                                   return const Text(' ');
                                 }
-                              }
-                          ),
+                              }),
                         ),
                       ],
                     ),
@@ -150,8 +164,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Returns a card with information about offices
   Widget _buildOfficeCard(List<MapEntry<String, int>> officeUse) {
-
-    if(officeUse.length > 5) {
+    if (officeUse.length > 5) {
       officeUse = officeUse.sublist(0, 5);
     }
 
@@ -173,13 +186,19 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 4),
-                  ...officeUse.map((officePair) {
-                    return Row(children: [
-                      Text(officePair.key),
-                      const Spacer(flex: 1,),
-                      Text('${officePair.value.toString()} bookings')
-                    ],);
-                  },)
+                  ...officeUse.map(
+                    (officePair) {
+                      return Row(
+                        children: [
+                          Text(officePair.key),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          Text('${officePair.value.toString()} bookings')
+                        ],
+                      );
+                    },
+                  )
                 ],
               )),
           color: Colors.grey.shade100,
@@ -190,8 +209,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Returns a card with information about used Rooms
   Widget _buildRoomCard(List<MapEntry<Room, int>> roomUse) {
-
-    if(roomUse.length > 5) {
+    if (roomUse.length > 5) {
       roomUse = roomUse.sublist(0, 5);
     }
 
@@ -213,15 +231,23 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 4),
-                  ...roomUse.map((roomPair) {
-                    return Row(children: [
-                      Text('Number ${roomPair.key.roomNr}'),
-                      const Spacer(flex: 1,),
-                      Text(roomPair.key.name),
-                      const Spacer(flex: 1,),
-                      Text('${roomPair.value.toString()} bookings')
-                    ],);
-                  },)
+                  ...roomUse.map(
+                    (roomPair) {
+                      return Row(
+                        children: [
+                          Text('Number ${roomPair.key.roomNr}'),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          Text(roomPair.key.name),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          Text('${roomPair.value.toString()} bookings')
+                        ],
+                      );
+                    },
+                  )
                 ],
               )),
           color: Colors.grey.shade100,
@@ -231,8 +257,7 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
   }
 
   Widget _buildWorkspaceCard(List<MapEntry<String, int>> workspaceUse) {
-
-    if(workspaceUse.length > 10) {
+    if (workspaceUse.length > 10) {
       workspaceUse = workspaceUse.sublist(0, 10);
     }
 
@@ -254,15 +279,21 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 4),
-                  ...workspaceUse.map((workspaceEntry) {
-                    var roomNr = workspaceEntry.key.split(' ')[0];
-                    var workspaceNr = workspaceEntry.key.split(' ')[1];
-                    return Row(children: [
-                      Text('Number $workspaceNr in room $roomNr'),
-                      const Spacer(flex: 1,),
-                      Text('${workspaceEntry.value.toString()} bookings')
-                    ],);
-                  },)
+                  ...workspaceUse.map(
+                    (workspaceEntry) {
+                      var roomNr = workspaceEntry.key.split(' ')[0];
+                      var workspaceNr = workspaceEntry.key.split(' ')[1];
+                      return Row(
+                        children: [
+                          Text('Number $workspaceNr in room $roomNr'),
+                          const Spacer(
+                            flex: 1,
+                          ),
+                          Text('${workspaceEntry.value.toString()} bookings')
+                        ],
+                      );
+                    },
+                  )
                 ],
               )),
           color: Colors.grey.shade100,
@@ -289,8 +320,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     'Usage Rate',
                     style: TextStyle(fontSize: 16),
                   ),
-                  Text(
-                      '${(useRate * 100).toStringAsFixed(1)} %', style: const TextStyle(fontSize: 36))
+                  Text('${(useRate * 100).toStringAsFixed(1)} %',
+                      style: const TextStyle(fontSize: 36))
                 ],
               )),
           color: Colors.grey.shade100,
@@ -301,7 +332,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Returns a card with information about offices
   Widget _buildFutureBookingsCard(int numberOfFutureBookings) {
-
     return SizedBox(
       width: 400,
       child: Padding(
@@ -319,7 +349,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     'Number of Future Bookings',
                     style: TextStyle(fontSize: 16),
                   ),
-                  Text('$numberOfFutureBookings Future bookings', style: const TextStyle(fontSize: 36))
+                  Text('$numberOfFutureBookings Future bookings',
+                      style: const TextStyle(fontSize: 36))
                 ],
               )),
           color: Colors.grey.shade100,
@@ -354,7 +385,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
           selectedDivision = divisionString;
           backend.selectDivision(divisionString);
           selectedOffice = backend.getDivisionOffices().keys.first;
-          divisionCardFuture = backend.generateDivisionReportCard(selectedDivision);
+          divisionCardFuture =
+              backend.generateDivisionReportCard(selectedDivision);
           officeCardFuture = backend.generateOfficeReportCard(selectedOffice);
         });
       },
