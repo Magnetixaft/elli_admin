@@ -59,13 +59,16 @@ class _MenuBarState extends State<MenuBar> {
                         icon: Icon(Icons.settings), label: Text('Config'))
                   ],
                 ),
-                //TODO add ELLI logo here.
+                //
                 Positioned(
                     left: 10,
                     right: 0,
                     top: 100,
                     child: isExtended
-                        ? const Text("This is where the elli logo should live")
+                        ? SizedBox(
+                            child: Image.asset('assets/images/elli_logo.png'),
+                            height: 60,
+                          )
                         : const Text("")),
                 //This lets the trailing logout button at the bottom.
                 Positioned(
