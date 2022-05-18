@@ -938,13 +938,12 @@ class _HomeViewState extends State<HomeView> {
                                                 tileColor: Colors.grey[100],
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
                                               ),
-                                              const SizedBox(height: 6),
 
                                               /// Calls the list with the inputs
                                               _dynamicList(),
 
                                               CheckboxListTile(
-                                                title: const Text("Timeslots for 06:30-12:00 & 13:00-18:00"),
+                                                title: const Text("Timeslots for 06:30-12:00 & 13:00-17:00"),
                                                 value: isCheckedTwoChoices,
                                                 onChanged: (newValue) {
                                                   setState(() {
@@ -1184,7 +1183,7 @@ class _HomeViewState extends State<HomeView> {
       children: [
         Container(
             width: 560,
-            height: 260,
+            height: 170,
             child: ListView.builder(
               itemCount: _fields.length,
               itemBuilder: (context, index) {
