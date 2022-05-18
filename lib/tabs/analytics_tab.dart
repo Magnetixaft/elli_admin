@@ -101,7 +101,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                           child: FutureBuilder<DivisionReportCard>(
                               future: divisionCardFuture,
                               builder: (context, snapshot) {
-<<<<<<< HEAD
                                 if (snapshot.connectionState ==
                                         ConnectionState.done &&
                                     snapshot.data != null) {
@@ -109,27 +108,18 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      _buildOfficeCard(
+                                      _buildOfficePieCard(
                                           snapshot.data!.officeUse),
                                       _buildRoomCard(snapshot.data!.roomUse),
                                       _buildWorkspaceCard(
                                           snapshot.data!.workspaceUse),
                                       _buildUseRateCard(
-                                          snapshot.data!.usageRate),
+                                          snapshot.data!.usageRate,
+                                          snapshot.data!.bookedMinutes),
                                       _buildFutureBookingsCard(snapshot
                                           .data!.numberOfFutureBookings),
-=======
-                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      _buildOfficePieCard(snapshot.data!.officeUse),
-                                      _buildRoomCard(snapshot.data!.roomUse),
-                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
-                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
-                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
+                                      _buildEquipmentChartCard(
+                                          snapshot.data!.equipmentUsage),
                                     ],
                                   );
                                 } else {
@@ -151,30 +141,22 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       _buildRoomCard(snapshot.data!.roomUse),
-<<<<<<< HEAD
                                       _buildWorkspaceCard(
                                           snapshot.data!.workspaceUse),
                                       _buildUseRateCard(
-                                          snapshot.data!.usageRate),
+                                          snapshot.data!.usageRate,
+                                          snapshot.data!.bookedMinutes),
                                       _buildFutureBookingsCard(snapshot
                                           .data!.numberOfFutureBookings),
-=======
-                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
-                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
-                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
+                                      _buildEquipmentChartCard(
+                                          snapshot.data!.equipmentUsage),
                                     ],
                                   );
                                 } else {
                                   return const Text(' ');
                                 }
                               }),
-<<<<<<< HEAD
-                        ),
-=======
                         )
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
                       ],
                     )
                   ],
@@ -187,59 +169,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
         });
   }
 
-<<<<<<< HEAD
-  /// Returns a card with information about offices
-  Widget _buildOfficeCard(List<MapEntry<String, int>> officeUse) {
-=======
   /// Returns a card with a pie chart with information about offices
   Widget _buildOfficePieCard(List<MapEntry<String, int>> officeUse) {
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
     if (officeUse.length > 5) {
       officeUse = officeUse.sublist(0, 5);
     }
 
-<<<<<<< HEAD
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Most Booked Offices',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  ...officeUse.map(
-                    (officePair) {
-                      return Row(
-                        children: [
-                          Text(officePair.key),
-                          const Spacer(
-                            flex: 1,
-                          ),
-                          Text('${officePair.value.toString()} bookings')
-                        ],
-                      );
-                    },
-                  )
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-  }
-
-  /// Returns a card with information about used Rooms
-=======
     var data = [
       charts.Series<MapEntry<String, int>, String>(
         id: 'Office use',
@@ -251,67 +186,23 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
     return _buildPieChartCard<MapEntry<String, int>>(data, 'Booked offices');
   }
 
-
   /// Returns a card with a bar chart with information about used rooms
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
   Widget _buildRoomCard(List<MapEntry<Room, int>> roomUse) {
     if (roomUse.length > 5) {
       roomUse = roomUse.sublist(0, 5);
     }
 
-<<<<<<< HEAD
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Most Booked Rooms',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  ...roomUse.map(
-                    (roomPair) {
-                      return Row(
-                        children: [
-                          Text('Number ${roomPair.key.roomNr}'),
-                          const Spacer(
-                            flex: 1,
-                          ),
-                          Text(roomPair.key.name),
-                          const Spacer(
-                            flex: 1,
-                          ),
-                          Text('${roomPair.value.toString()} bookings')
-                        ],
-                      );
-                    },
-                  )
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-=======
     var data = [
       charts.Series<MapEntry<Room, int>, String>(
         id: 'Room use',
-        domainFn: (entry, number) => '${entry.key.name}\nNumber:${entry.key.roomNr.toString()}',
+        domainFn: (entry, number) =>
+            '${entry.key.name}\nNumber:${entry.key.roomNr.toString()}',
         measureFn: (entry, number) => entry.value,
         data: roomUse,
       )
     ];
-    return _buildBarChartCard<MapEntry<Room, int>>(data, 'Booked rooms [bookings]');
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
+    return _buildBarChartCard<MapEntry<Room, int>>(
+        data, 'Booked rooms [bookings]');
   }
 
   /// Returns a card with a bar chart with information about booked workspaces.
@@ -320,81 +211,17 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       workspaceUse = workspaceUse.sublist(0, 10);
     }
 
-<<<<<<< HEAD
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Most Booked Workspaces',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  ...workspaceUse.map(
-                    (workspaceEntry) {
-                      var roomNr = workspaceEntry.key.split(' ')[0];
-                      var workspaceNr = workspaceEntry.key.split(' ')[1];
-                      return Row(
-                        children: [
-                          Text('Number $workspaceNr in room $roomNr'),
-                          const Spacer(
-                            flex: 1,
-                          ),
-                          Text('${workspaceEntry.value.toString()} bookings')
-                        ],
-                      );
-                    },
-                  )
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUseRateCard(double useRate) {
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Usage Rate',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text('${(useRate * 100).toStringAsFixed(1)} %',
-                      style: const TextStyle(fontSize: 36))
-                ],
-              )),
-          color: Colors.grey.shade100,
-=======
     var data = [
       charts.Series<MapEntry<String, int>, String>(
         id: 'Workspace use',
-        domainFn: (entry, number) => 'Room: ${entry.key.split(' ')[0]}\nWorkspace: ${entry.key.split(' ')[1]}',
+        domainFn: (entry, number) =>
+            'Room: ${entry.key.split(' ')[0]}\nWorkspace: ${entry.key.split(' ')[1]}',
         measureFn: (entry, number) => entry.value,
         data: workspaceUse,
       )
     ];
-    return _buildBarChartCard<MapEntry<String, int>>(data, 'Booked workspaces [bookings]');
+    return _buildBarChartCard<MapEntry<String, int>>(
+        data, 'Booked workspaces [bookings]');
   }
 
   /// Returns a card with information about how much time has been booked compared to the total amount.
@@ -403,7 +230,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
       children: [
         const SizedBox(
           height: 20,
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
         ),
         SizedBox(
           width: 400,
@@ -422,8 +248,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         'Usage rate in the past three weeks',
                         style: TextStyle(fontSize: 16),
                       ),
-                      Text('${(bookedMinutes / 60).toStringAsFixed(1)} Hours booked', style: const TextStyle(fontSize: 36)),
-                      Text('${(useRate * 100).toStringAsFixed(1)} % of bookable hours', style: const TextStyle(fontSize: 36)),
+                      Text(
+                          '${(bookedMinutes / 60).toStringAsFixed(1)} Hours booked',
+                          style: const TextStyle(fontSize: 36)),
+                      Text(
+                          '${(useRate * 100).toStringAsFixed(1)} % of bookable hours',
+                          style: const TextStyle(fontSize: 36)),
                     ],
                   )),
               color: Colors.grey.shade100,
@@ -436,29 +266,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Returns a card with information about offices
   Widget _buildFutureBookingsCard(int numberOfFutureBookings) {
-<<<<<<< HEAD
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Number of Future Bookings',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text('$numberOfFutureBookings Future bookings',
-                      style: const TextStyle(fontSize: 36))
-                ],
-              )),
-=======
     return Column(
       children: [
         const SizedBox(
@@ -481,7 +288,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         'Number of future bookings',
                         style: TextStyle(fontSize: 16),
                       ),
-                      Text('$numberOfFutureBookings Future bookings', style: const TextStyle(fontSize: 36))
+                      Text('$numberOfFutureBookings Future bookings',
+                          style: const TextStyle(fontSize: 36))
                     ],
                   )),
               color: Colors.grey.shade100,
@@ -505,11 +313,13 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
         data: equipmentUse,
       )
     ];
-    return _buildBarChartCard<MapEntry<String, int>>(data, 'Most booked equipment');
+    return _buildBarChartCard<MapEntry<String, int>>(
+        data, 'Most booked equipment');
   }
 
   /// Renders a card with a bar chart based on the information contained in [data].
-  Widget _buildBarChartCard<T>(List<charts.Series<T, String>> data, String header) {
+  Widget _buildBarChartCard<T>(
+      List<charts.Series<T, String>> data, String header) {
     return Column(
       children: [
         const SizedBox(
@@ -523,14 +333,15 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4.0),
           ),
->>>>>>> 49d8d056df799e9b46c391d91ba7c433cdc01e87
           color: Colors.grey.shade100,
           child: SizedBox(
             width: 400,
             height: 400,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-              child: Padding(padding: const EdgeInsets.all(16), child: charts.BarChart(data)),
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: charts.BarChart(data)),
             ),
           ),
         ),
@@ -539,7 +350,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
   }
 
   /// Renders a card with a pie chart based on the information contained in [data].
-  Widget _buildPieChartCard<T>(List<charts.Series<T, String>> data, String header) {
+  Widget _buildPieChartCard<T>(
+      List<charts.Series<T, String>> data, String header) {
     return Column(
       children: [
         const SizedBox(
