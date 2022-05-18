@@ -114,6 +114,28 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 
+  ///Shows [AlertDialog] if user doesn't have admin privileges
+  showAlertDialog(BuildContext context) {
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () { Navigator.pop(context);},
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Login Failed"),
+      content: Text("You don't have admin privileges. Contact your system administrator for more info."),
+      actions: [
+        okButton,
+      ],
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   /// Logs the user in using Azure.
   ///
   /// Navigates to [MenuBar] when login is successful. Initializes the [FirebaseHandler]
@@ -123,6 +145,8 @@ class _MyHomePageState extends State<MyHomePage> {
       FirebaseHandler.initialize("Admin");
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => const MenuBar()));
+    } else {
+      showAlertDialog(context);
     }
   }
 
