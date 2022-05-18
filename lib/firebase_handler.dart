@@ -120,7 +120,7 @@ class FirebaseHandler {
     return _rooms;
   }
 
-  /// Returns the specified Room object
+  /// Returns the specified Room object or a place holder Room object.
   Room getRoom(int roomNr) {
     return _rooms[roomNr] ??
         Room(
