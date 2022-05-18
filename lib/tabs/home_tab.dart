@@ -839,8 +839,23 @@ class _HomeViewState extends State<HomeView> {
 
   /// This creates a card item for adding a new space
   Widget _buildAddNewRoom() {
-    String timeslot_1 = "06:30-12:00";
-    String timeslot_2 = "13:00-17:00";
+    bool isCheckedTwoChoices = false;
+    bool isCheckedEveryHour = false;
+
+    String choice1 = "06:30-12:00";
+    String choice2 = "13:00-17:00";
+
+    String hour1 = "08:00-09:00";
+    String hour2 = "09:00-10:00";
+    String hour3 = "10:00-11:00";
+    String hour4 = "11:00-12:00";
+    String hour5 = "12:00-13:00";
+    String hour6 = "13:00-14:00";
+    String hour7 = "14:00-15:00";
+    String hour8 = "15:00-16:00";
+    String hour9 = "16:00-17:00";
+    String hour10 = "17:00-18:00";
+
     int countWorkspace = 1;
 
     final roomNameInput = TextEditingController();
@@ -925,9 +940,29 @@ class _HomeViewState extends State<HomeView> {
                                               ),
                                               const SizedBox(height: 6),
 
-
                                               /// Calls the list with the inputs
                                               _dynamicList(),
+
+                                              CheckboxListTile(
+                                                title: const Text("Timeslots for 06:30-12:00 & 13:00-18:00"),
+                                                value: isCheckedTwoChoices,
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    isCheckedTwoChoices = newValue!;
+                                                  });
+                                                },
+                                                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                                              ),
+                                              CheckboxListTile(
+                                                title: const Text("Timeslots for every hour between 08:00-18:00"),
+                                                value: isCheckedEveryHour,
+                                                onChanged: (val) {
+                                                  setState(() {
+                                                    isCheckedEveryHour = val!;
+                                                  });
+                                                },
+                                                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                                              ),
                                             ],
                                           ),
                                       );
@@ -938,7 +973,8 @@ class _HomeViewState extends State<HomeView> {
                                       onPressed: () async {
                                         if (roomNameInput.text.isNotEmpty &&
                                             roomNr.text.isNotEmpty &&
-                                            description.text.isNotEmpty) {
+                                            description.text.isNotEmpty &&
+                                        isCheckedEveryHour != isCheckedTwoChoices) {
 
 
                                           Map <int, List<String>> workSpaces = Map();
@@ -951,14 +987,77 @@ class _HomeViewState extends State<HomeView> {
                                             workSpaces[j+1] = parsedEquipment;
                                           }
 
+                                          var timeslots = <Map<String, String>>[];
+                                            if (isCheckedTwoChoices) {
+                                              // split timeslots into start and end
+                                              var slot_1 = choice1.split('-');
+                                              var slot_2 = choice2.split('-');
+                                              timeslots = [
+                                                {
+                                                  'start': slot_1[0],
+                                                  'end': slot_1[1]
+                                                },
+                                                {
+                                                  'start': slot_2[0],
+                                                  'end': slot_2[1]
+                                                }
+                                              ];
+                                            }
+                                            else if (isCheckedEveryHour) {
+                                              var time1 = hour1.split('-');
+                                              var time2 = hour2.split('-');
+                                              var time3 = hour3.split('-');
+                                              var time4 = hour4.split('-');
+                                              var time5 = hour5.split('-');
+                                              var time6 = hour6.split('-');
+                                              var time7 = hour7.split('-');
+                                              var time8 = hour8.split('-');
+                                              var time9 = hour9.split('-');
+                                              var time10 = hour10.split('-');
 
-                                          // split timeslots into start and end
-                                          var slot_1 = timeslot_1.split('-');
-                                          var slot_2 = timeslot_2.split('-');
-                                          var timeslots = <Map<String, String>>[
-                                            {'start': slot_1[0], 'end': slot_1[1]},
-                                            {'start': slot_2[0], 'end': slot_2[1]}
-                                          ];
+                                              timeslots = [
+                                                {
+                                                  'start': time1[0],
+                                                  'end': time1[1]
+                                                },
+                                                {
+                                                  'start': time2[0],
+                                                  'end': time2[1]
+                                                },
+                                                {
+                                                  'start': time3[0],
+                                                  'end': time3[1]
+                                                },
+                                                {
+                                                  'start': time4[0],
+                                                  'end': time4[1]
+                                                },
+                                                {
+                                                  'start': time5[0],
+                                                  'end': time5[1]
+                                                },
+                                                {
+                                                  'start': time6[0],
+                                                  'end': time6[1]
+                                                },
+                                                {
+                                                  'start': time7[0],
+                                                  'end': time7[1]
+                                                },
+                                                {
+                                                  'start': time8[0],
+                                                  'end': time8[1]
+                                                },
+                                                {
+                                                  'start': time9[0],
+                                                  'end': time9[1]
+                                                },
+                                                {
+                                                  'start': time10[0],
+                                                  'end': time10[1]
+                                                },
+                                              ];
+                                            }
 
                                           Room room = Room(int.parse(roomNr.text), workSpaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
                                           FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
@@ -1108,7 +1207,5 @@ class _HomeViewState extends State<HomeView> {
     }
     return count;
   }
-
-
 
 }
