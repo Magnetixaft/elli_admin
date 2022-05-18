@@ -65,13 +65,13 @@ class _MenuBarState extends State<MenuBar> {
                             style: TextStyle(color: Colors.white))),
                     NavigationRailDestination(
                         icon: Icon(Icons.settings, color: Colors.white),
-                        label: Text('Configs',
+                        label: Text('Config',
                             style: TextStyle(color: Colors.white))),
                   ],
                 ),
                 //
                 Positioned(
-                    left: 10,
+                    left: 0,
                     right: 0,
                     top: 100,
                     child: isExtended
