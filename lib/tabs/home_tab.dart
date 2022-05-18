@@ -402,11 +402,11 @@ class _HomeViewState extends State<HomeView> {
                                 actions: <Widget>[
                                   ElevatedButton(
                                       onPressed: () async {
-                                        if (divisionName.text.isNotEmpty &&
-                                            info.text.isNotEmpty) {
+                                        if (divisionName.text.isNotEmpty) {
+                                          var infoText = info.text.isNotEmpty ? info.text : ' ';
                                           FirebaseHandler.getInstance()
                                               .saveDivision(
-                                              divisionName.text, info.text);
+                                              divisionName.text, infoText);
                                           Navigator.of(context).pop();
                                         } else {
                                           return;
