@@ -39,6 +39,7 @@ dependencies:
   firebase_auth: ^3.3.17
   firebase_auth_oauth: ^1.2.0
   adaptive_navigation: ^0.0.5
+  charts_flutter: ^0.12.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 /// A tab for viewing analytics for ELLI
 class AnalyticsTab extends StatefulWidget {
@@ -93,25 +94,24 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         Expanded(
                           flex: 1,
                           child: FutureBuilder<DivisionReportCard>(
-                            future: divisionCardFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildOfficeCard(snapshot.data!.officeUse),
-                                    _buildRoomCard(snapshot.data!.roomUse),
-                                    _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                    _buildUseRateCard(snapshot.data!.usageRate),
-                                    _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
-                                  ],
-                                );
-                              }
-                              else {
-                                return const Text(' ');
-                              }
-                            }
-                          ),
+                              future: divisionCardFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildOfficePieCard(snapshot.data!.officeUse),
+                                      _buildRoomCard(snapshot.data!.roomUse),
+                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
+                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
+                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
+                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
+                                    ],
+                                  );
+                                } else {
+                                  return const Text(' ');
+                                }
+                              }),
                         ),
                         Container(width: 12),
                         Expanded(
@@ -125,19 +125,18 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                                     children: [
                                       _buildRoomCard(snapshot.data!.roomUse),
                                       _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                      _buildUseRateCard(snapshot.data!.usageRate),
+                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
                                       _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
+                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
                                     ],
                                   );
-                                }
-                                else {
+                                } else {
                                   return const Text(' ');
                                 }
-                              }
-                          ),
-                        ),
+                              }),
+                        )
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -148,183 +147,207 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
         });
   }
 
-  /// Returns a card with information about offices
-  Widget _buildOfficeCard(List<MapEntry<String, int>> officeUse) {
-
-    if(officeUse.length > 5) {
+  /// Returns a card with a pie chart with information about offices
+  Widget _buildOfficePieCard(List<MapEntry<String, int>> officeUse) {
+    if (officeUse.length > 5) {
       officeUse = officeUse.sublist(0, 5);
     }
 
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Most Booked Offices',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  ...officeUse.map((officePair) {
-                    return Row(children: [
-                      Text(officePair.key),
-                      const Spacer(flex: 1,),
-                      Text('${officePair.value.toString()} bookings')
-                    ],);
-                  },)
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
+    var data = [
+      charts.Series<MapEntry<String, int>, String>(
+        id: 'Office use',
+        domainFn: (entry, number) => '${entry.key}: ${entry.value}',
+        measureFn: (entry, number) => entry.value,
+        data: officeUse,
+      )
+    ];
+    return _buildPieChartCard<MapEntry<String, int>>(data, 'Booked offices');
   }
 
-  /// Returns a card with information about used Rooms
-  Widget _buildRoomCard(List<MapEntry<Room, int>> roomUse) {
 
-    if(roomUse.length > 5) {
+  /// Returns a card with a bar chart with information about used rooms
+  Widget _buildRoomCard(List<MapEntry<Room, int>> roomUse) {
+    if (roomUse.length > 5) {
       roomUse = roomUse.sublist(0, 5);
     }
 
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Most Booked Rooms',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  ...roomUse.map((roomPair) {
-                    return Row(children: [
-                      Text('Number ${roomPair.key.roomNr}'),
-                      const Spacer(flex: 1,),
-                      Text(roomPair.key.name),
-                      const Spacer(flex: 1,),
-                      Text('${roomPair.value.toString()} bookings')
-                    ],);
-                  },)
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
+    var data = [
+      charts.Series<MapEntry<Room, int>, String>(
+        id: 'Room use',
+        domainFn: (entry, number) => '${entry.key.name}\nNumber:${entry.key.roomNr.toString()}',
+        measureFn: (entry, number) => entry.value,
+        data: roomUse,
+      )
+    ];
+    return _buildBarChartCard<MapEntry<Room, int>>(data, 'Booked rooms [bookings]');
   }
 
+  /// Returns a card with a bar chart with information about booked workspaces.
   Widget _buildWorkspaceCard(List<MapEntry<String, int>> workspaceUse) {
-
-    if(workspaceUse.length > 10) {
+    if (workspaceUse.length > 10) {
       workspaceUse = workspaceUse.sublist(0, 10);
     }
 
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Most Booked Workspaces',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  ...workspaceUse.map((workspaceEntry) {
-                    var roomNr = workspaceEntry.key.split(' ')[0];
-                    var workspaceNr = workspaceEntry.key.split(' ')[1];
-                    return Row(children: [
-                      Text('Number $workspaceNr in room $roomNr'),
-                      const Spacer(flex: 1,),
-                      Text('${workspaceEntry.value.toString()} bookings')
-                    ],);
-                  },)
-                ],
-              )),
-          color: Colors.grey.shade100,
-        ),
-      ),
-    );
+    var data = [
+      charts.Series<MapEntry<String, int>, String>(
+        id: 'Workspace use',
+        domainFn: (entry, number) => 'Room: ${entry.key.split(' ')[0]}\nWorkspace: ${entry.key.split(' ')[1]}',
+        measureFn: (entry, number) => entry.value,
+        data: workspaceUse,
+      )
+    ];
+    return _buildBarChartCard<MapEntry<String, int>>(data, 'Booked workspaces [bookings]');
   }
 
-  Widget _buildUseRateCard(double useRate) {
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Usage Rate',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text(
-                      '${(useRate * 100).toStringAsFixed(1)} %', style: const TextStyle(fontSize: 36))
-                ],
-              )),
-          color: Colors.grey.shade100,
+  /// Returns a card with information about how much time has been booked compared to the total amount.
+  Widget _buildUseRateCard(double useRate, int bookedMinutes) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
         ),
-      ),
+        SizedBox(
+          width: 400,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Usage rate in the past three weeks',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Text('${(bookedMinutes / 60).toStringAsFixed(1)} Hours booked', style: const TextStyle(fontSize: 36)),
+                      Text('${(useRate * 100).toStringAsFixed(1)} % of bookable hours', style: const TextStyle(fontSize: 36)),
+                    ],
+                  )),
+              color: Colors.grey.shade100,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   /// Returns a card with information about offices
   Widget _buildFutureBookingsCard(int numberOfFutureBookings) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+          width: 400,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Number of future bookings',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Text('$numberOfFutureBookings Future bookings', style: const TextStyle(fontSize: 36))
+                    ],
+                  )),
+              color: Colors.grey.shade100,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-    return SizedBox(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
+  /// Returns a card with bar charts showing equipment use.
+  Widget _buildEquipmentChartCard(List<MapEntry<String, int>> equipmentUse) {
+    if (equipmentUse.length > 4) {
+      equipmentUse = equipmentUse.sublist(0, 4);
+    }
+    var data = [
+      charts.Series<MapEntry<String, int>, String>(
+        id: 'Equipment use',
+        domainFn: (entry, number) => entry.key,
+        measureFn: (entry, number) => entry.value,
+        data: equipmentUse,
+      )
+    ];
+    return _buildBarChartCard<MapEntry<String, int>>(data, 'Most booked equipment');
+  }
+
+  /// Renders a card with a bar chart based on the information contained in [data].
+  Widget _buildBarChartCard<T>(List<charts.Series<T, String>> data, String header) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        Text(
+          header,
+          style: const TextStyle(fontSize: 24),
+        ),
+        Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4.0),
           ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Number of Future Bookings',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Text('$numberOfFutureBookings Future bookings', style: const TextStyle(fontSize: 36))
-                ],
-              )),
           color: Colors.grey.shade100,
+          child: SizedBox(
+            width: 400,
+            height: 400,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+              child: Padding(padding: const EdgeInsets.all(16), child: charts.BarChart(data)),
+            ),
+          ),
         ),
-      ),
+      ],
+    );
+  }
+
+  /// Renders a card with a pie chart based on the information contained in [data].
+  Widget _buildPieChartCard<T>(List<charts.Series<T, String>> data, String header) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        Text(
+          header,
+          style: const TextStyle(fontSize: 24),
+        ),
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          color: Colors.grey.shade100,
+          child: SizedBox(
+            width: 400,
+            height: 400,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: charts.PieChart(
+                  data,
+                  animate: false,
+                  behaviors: [charts.DatumLegend<Object>()],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
