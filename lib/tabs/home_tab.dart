@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../firebase_handler.dart';
@@ -22,8 +20,8 @@ class _HomeViewState extends State<HomeView> {
   var selectedRoom;
 
   /// Lists that hold textinputs
-  List<TextEditingController> _controllers = [];
-  List<TextField> _fields = [];
+  final List<TextEditingController> _controllers = [];
+  final List<TextField> _fields = [];
 
   @override
   void dispose() {
@@ -267,7 +265,7 @@ class _HomeViewState extends State<HomeView> {
                                           if (selectedRoom ==
                                               snapshot.data!.docs[index].id) {
                                             return _buildRoomCard(
-                                                selectedRoom, 4, 3);
+                                                selectedRoom, totalRoomCount(int.parse(selectedRoom)));
                                           } else {
                                             return Container();
                                           }
@@ -390,7 +388,7 @@ class _HomeViewState extends State<HomeView> {
                                         ),
                                         controller: divisionName,
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       TextField(
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(),
@@ -988,7 +986,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for space specifications
-  Widget _buildRoomCard(String name, int numberOfSpaces, int availableSpaces) {
+  Widget _buildRoomCard(String name, int numberOfSpaces) {
     return Container(
       width: 400,
       child: Padding(
@@ -1065,8 +1063,7 @@ class _HomeViewState extends State<HomeView> {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  Text('Total number of work spaces: $numberOfSpaces'),
-                  Text('Available work spaces: $availableSpaces'),
+                  Text('Total number of work spaces: $numberOfSpaces')
                 ],
               )),
           color: Colors.white,
@@ -1086,7 +1083,7 @@ class _HomeViewState extends State<HomeView> {
               itemCount: _fields.length,
               itemBuilder: (context, index) {
                 return Container(
-                  margin: EdgeInsets.all(5),
+                  margin: const EdgeInsets.all(5),
                   child: _fields[index],
                 );
               },
@@ -1095,6 +1092,16 @@ class _HomeViewState extends State<HomeView> {
       ],
     );
   }
+
+  int totalRoomCount(int roomNr) {
+    int count = 0;
+    Room room = FirebaseHandler.getInstance().getRoom(roomNr);
+      for (int i = 0; i < room.workspaces.values.length; i++) {
+          count++;
+      }
+    return count;
+  }
+
 
 /*Widget _buildTimeslots() {
 
@@ -1140,258 +1147,3 @@ class _HomeViewState extends State<HomeView> {
 
 
 }
-
-
-
-
-
-
-
-
-
-/*
-  ///Creates the popup for edititng or adding a company.
-  Widget _buildEditCompany(BuildContext context, bool edit) {
-    return AlertDialog(
-      title: edit ? const Text("Edit company") : const Text("New company"),
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          SizedBox(
-              height: 50,
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.save),
-                label: const Text("Save changes"),
-              )),
-          TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              label: Text('Name'),
-            ),
-            controller: companyNameTextController,
-          ),
-          TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              label: Text('Org.nr'),
-            ),
-            controller: companyOrgNrTextController,
-          ),
-          TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              label: Text('Address'),
-            ),
-            controller: companyAddressTextController,
-          ),
-        ],
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-      ],
-    );
-  }
-
-  ///Creates the popup for editing or adding an office.
-  Widget _buildEditOffice(BuildContext context, bool edit) {
-    return AlertDialog(
-      title: edit ? const Text("Edit office") : const Text("New office"),
-      content: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Center(
-            child: SizedBox(
-              width: 700,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(Icons.save),
-                                label: const Text("Save changes"),
-                              )),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Name',
-                            ),
-                            controller: officeNameTextController,
-                          ),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Address',
-                            ),
-                            controller: officeAddressTextController,
-                          ),
-                          const Text(
-                            "Contact Information",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Phone number',
-                            ),
-                            controller: officePhoneTextController,
-                          ),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Email',
-                            ),
-                            controller: officeEmailTextController,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-      ],
-    );
-  }
-
-  ///Creates the popup for editing or adding a space
-  Widget _buildEditSpace(BuildContext context, bool edit) {
-    return AlertDialog(
-      title: edit ? const Text("Edit space") : const Text("New space"),
-      content: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Center(
-            child: SizedBox(
-              width: 700,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(Icons.save),
-                                label: const Text("Save changes"),
-                              )),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Name',
-                            ),
-                            controller: spaceNameTextController,
-                          ),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Number of work spaces',
-                            ),
-                            controller: spaceAddressTextController,
-                          ),
-                          const Text(
-                            "Time slots",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          //TODO add functionality for adding/editing time slots
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-      ],
-    );
-  }
-
-  ///Creates the popup for editing or adding a work space
-  Widget _buildEditWorkSpace(BuildContext context, bool edit) {
-    return AlertDialog(
-      title:
-          edit ? const Text("Edit work space") : const Text("New work space"),
-      content: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Center(
-            child: SizedBox(
-              width: 700,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: ElevatedButton.icon(
-                                onPressed: () {},
-                                icon: const Icon(Icons.save),
-                                label: const Text("Save changes"),
-                              )),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Name',
-                            ),
-                            controller: worSpaceNameTextController,
-                          ),
-                          const Text(
-                            "Attributes",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          //TODO add functionality for adding/editing functionality.
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-      ],
-    );
-  }
-  */
-
