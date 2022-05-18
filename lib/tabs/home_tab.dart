@@ -638,7 +638,7 @@ class _HomeViewState extends State<HomeView> {
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
-                                        hintText: 'Enter contact info',
+                                        hintText: 'Enter optional contact info',
                                       ),
                                       controller: contactInfo,
                                     ),
@@ -649,12 +649,14 @@ class _HomeViewState extends State<HomeView> {
                                       onPressed: () async {
                                         if (officeName.text.isNotEmpty &&
                                             officeAddress.text.isNotEmpty &&
-                                            officeDescription.text.isNotEmpty &&
-                                            contactInfo.text.isNotEmpty) {
+                                            officeDescription.text.isNotEmpty) {
                                           Navigator.of(context).pop();
+                                          var contactText = contactInfo.text.isNotEmpty ? contactInfo.text : 'No contact information';
+
                                           Office office = Office(
                                               officeAddress.text,
-                                              officeDescription.text);
+                                              officeDescription.text,
+                                              contactText);
                                           FirebaseHandler.getInstance()
                                               .saveOffice(selectedDivision,
                                               officeName.text, office);

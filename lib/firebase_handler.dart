@@ -30,6 +30,13 @@ class FirebaseHandler {
   /// Data is stored in [_rooms] and [_divisions].
   /// This is information which is not supposed to be updated often.
   Future<void> buildStaticModel() async {
+
+    //delete old bookings
+    var oldBookings = await FirebaseFirestore.instance.collection('Bookings_2').where('Day', isLessThan: DateTime.now().subtract(const Duration(days: 21))).get();
+    for(var oldBooking in oldBookings.docs) {
+      oldBooking.reference.delete();
+    }
+
     _divisions = <String, Division>{};
     _rooms = <int, Room>{};
     //Downloads divisions and their offices
@@ -49,7 +56,8 @@ class FirebaseHandler {
 
       var offices = <String, Office>{};
       for (var office in officesData.docs) {
-        offices[office.id] = Office(office.data()['Address'], office.data()['Description']);
+        var contactInfo = office.data()['ContactInfo'] ?? 'No contact information';
+        offices[office.id] = Office(office.data()['Address'], office.data()['Description'], contactInfo);
       }
 
       _divisions[divisionData.id] = Division(offices);
@@ -421,7 +429,7 @@ class FirebaseHandler {
         .doc(divisionName)
         .collection('Offices')
         .doc(officeName)
-        .set({'Address': office.address, 'Description': office.description});
+        .set({'Address': office.address, 'Description': office.description, 'ContactInfo': office.contactInformation});
   }
 
   ///Removes an office, given a name of division and name of office
@@ -469,7 +477,7 @@ class FirebaseHandler {
           .collection('Bookings_2')
           .doc('room:$roomNr workspace:$workspaceNr timeslot:$timeslot day:${day.year}-${day.month}-${day.day}')
           .set(
-              {'UserId': _username, 'Timeslot': timeslot, 'Day': day, 'WorkspaceNr': workspaceNr, 'RoomNr': roomNr, 'RepeatedBookingKey': repeatKey});
+          {'UserId': _username, 'Timeslot': timeslot, 'Day': day, 'WorkspaceNr': workspaceNr, 'RoomNr': roomNr, 'RepeatedBookingKey': repeatKey});
     }
     return;
   }
@@ -604,8 +612,9 @@ class Division {
 class Office {
   final String address;
   final String description;
+  final String contactInformation;
 
-  Office(this.address, this.description);
+  Office(this.address, this.description, this.contactInformation);
 
   @override
   String toString() {
