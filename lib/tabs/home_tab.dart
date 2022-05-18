@@ -936,12 +936,12 @@ class _HomeViewState extends State<HomeView> {
 
                                           Map <int, List<String>> workSpaces = Map();
                                           // iterates through the inputs
-                                          for (var j =0; j<_controllers.length; j++) {
+                                          for (var j = 0; j < _controllers.length; j++) {
 
                                             // Gets text from the inputs
                                             String text = _controllers[j].text;
                                             List<String> parsedEquipment= text.split(", ");
-                                            workSpaces[j] = parsedEquipment;
+                                            workSpaces[j+1] = parsedEquipment;
                                           }
 
 
