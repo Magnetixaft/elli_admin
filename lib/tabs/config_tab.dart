@@ -21,6 +21,13 @@ class _ConfigTabState extends State<ConfigTab> {
     setState(() {});
   }
 
+  ///Returns true if the text string provided could be an email
+  bool isEmail(String email) {
+    return RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+  }
+
   ///Builds the config_tab Widget.
   @override
   Widget build(BuildContext context) {
@@ -307,7 +314,7 @@ class _ConfigTabState extends State<ConfigTab> {
                                 ElevatedButton(
                                     onPressed: () async {
                                       if (name.text.isNotEmpty &&
-                                          email.text.isNotEmpty) {
+                                          isEmail(email.text)) {
                                         await FirebaseHandler.getInstance()
                                             .addAdmin(
                                                 email.text, "all", name.text);
@@ -365,14 +372,15 @@ class _ConfigTabState extends State<ConfigTab> {
                       onPressed: () {
                         showDialog(
                             context: context,
-                            builder: (BuildContext context) =>
-                                _buildPopupDialog(context, "About",
-                                    "Lorem ipsum dolor sit amet"));
+                            builder: (BuildContext context) => _buildPopupDialog(
+                                context,
+                                "About",
+                                "This is a school project made in an agile fashion."));
                       },
                       child: const Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'have a gander',
+                          'behold!',
                           style: TextStyle(
                             color: Colors.grey,
                           ),
@@ -412,95 +420,3 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 }
-
-/*
-Widget _buildAdminEdit(BuildContext context) {
-    return AlertDialog(
-      title: const Text("Administrators"),
-      content: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Center(
-            child: Container(
-              width: 700,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Text("Name"),
-                          TextField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Name',
-                            ),
-                            controller: userIdTextController,
-                          ),
-                          TextField(
-                            controller: userPasswordTextController,
-                            decoration: const InputDecoration(
-                              label: Text("Email"),
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 50,
-                            child: ElevatedButton(
-                                onPressed: () => {},
-                                child: const Text(
-                                  "Add",
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-      ],
-    );
-  }
-*/
-
-/*
-Widget _editTitleTextField() {
-  if (_isEditingText)
-    return Center(
-      child: TextField(
-        onSubmitted: (newValue){
-          setState(() {
-            initialText = newValue;
-            _isEditingText =false;
-          });
-        },
-        autofocus: true,
-        controller: _editingController,
-      ),
-    );
-  return InkWell(
-    onTap: () {
-      setState(() {
-        _isEditingText = true;
-      });
-    },
-    child: Text(
-  initialText,
-  style: TextStyle(
-    color: Colors.black,
-    fontSize: 18.0,
-  ),
- );
-}
-*/
