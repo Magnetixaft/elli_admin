@@ -39,6 +39,8 @@ dependencies:
   firebase_auth: ^3.3.17
   firebase_auth_oauth: ^1.2.0
   adaptive_navigation: ^0.0.5
+  encrypt: ^5.0.1
+  charts_flutter: ^0.12.0
 
 dev_dependencies:
   flutter_test:
@@ -65,7 +67,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/elicit_logo.png
+    - assets/images/elli_logo.png
+    - assets/images/elli_logo_large.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

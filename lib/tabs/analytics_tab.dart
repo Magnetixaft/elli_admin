@@ -1,564 +1,423 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:elli_admin/firebase_handler.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
-import '../firebase_handler.dart';
-
-/// A tab for viewing offices, rooms and booking
-///
-/// Allows the user to add and remove offices, rooms, timeslots and workspaces
+/// A tab for viewing analytics for ELLI
 class AnalyticsTab extends StatefulWidget {
-  const AnalyticsTab({Key? key}) : super(key: key);
+  final staticModelFuture = FirebaseHandler.getInstance().buildStaticModel();
+  AnalyticsTab({Key? key}) : super(key: key);
 
   @override
-  State<AnalyticsTab> createState() => _AnalyticsTab();
+  State<AnalyticsTab> createState() => _AnalyticsTabState();
 }
 
-//Widget for selecting office, picking day, picking room and then booking a timeslot
-class _AnalyticsTab extends State<AnalyticsTab> {
-  var selectedDivision;
-  var selectedOffice;
-  var selectedRoom;
+// Widget for selecting office, picking day, picking room and then booking a timeslot
+class _AnalyticsTabState extends State<AnalyticsTab> {
+  String selectedDivision = 'init';
+  String selectedOffice = 'init';
+  FirebaseHandler backend = FirebaseHandler.getInstance();
 
-  callback() {
-    setState(() {});
-  }
+  late Future<DivisionReportCard> divisionCardFuture;
+  late Future<OfficeReportCard> officeCardFuture;
 
   @override
   Widget build(BuildContext context) {
-    FirebaseHandler backend = FirebaseHandler.getInstance();
     return FutureBuilder<void>(
-        future: backend.buildStaticModel(),
+        future: widget.staticModelFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return _renderView();
+            /// Selects a random division and office to initiate the dropdowns.
+            if (selectedDivision == 'init' || selectedOffice == 'init') {
+              selectedDivision = backend.getDivisions().keys.first;
+              backend.selectDivision(selectedDivision);
+              selectedOffice = backend.getDivisionOffices().keys.first;
+
+              divisionCardFuture = backend.generateDivisionReportCard(selectedDivision);
+              officeCardFuture = backend.generateOfficeReportCard(selectedOffice);
+            }
+
+            return SingleChildScrollView(
+              /// The "Analytics" header
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(height: 10),
+                    const Text("    Analytics",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                        )),
+                    const SizedBox(height: 24),
+
+                    /// The dropdown menus and small header for each
+                    Row(
+                      children: [
+                        Container(width: 80),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Company',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              _buildCompanyMenu(),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Office',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              _buildOfficesMenu(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+
+                    /// The card section with all the items under each dropdown menu
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(width: 50),
+                        Expanded(
+                          flex: 1,
+                          child: FutureBuilder<DivisionReportCard>(
+                              future: divisionCardFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildOfficePieCard(snapshot.data!.officeUse),
+                                      _buildRoomCard(snapshot.data!.roomUse),
+                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
+                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
+                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
+                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
+                                    ],
+                                  );
+                                } else {
+                                  return const Text(' ');
+                                }
+                              }),
+                        ),
+                        Container(width: 12),
+                        Expanded(
+                          flex: 1,
+                          child: FutureBuilder<OfficeReportCard>(
+                              future: officeCardFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildRoomCard(snapshot.data!.roomUse),
+                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
+                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
+                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
+                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
+                                    ],
+                                  );
+                                } else {
+                                  return const Text(' ');
+                                }
+                              }),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return const Text('');
           }
-          return const Center(child: CircularProgressIndicator());
         });
   }
 
-  /// Renders the layout of the whole homepage
-  Widget _renderView() {
-    return SingleChildScrollView(
-      /// The "Analytics" header
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 10),
-            const Text("    Home",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                )),
-            const SizedBox(height: 24),
+  /// Returns a card with a pie chart with information about offices
+  Widget _buildOfficePieCard(List<MapEntry<String, int>> officeUse) {
+    if (officeUse.length > 5) {
+      officeUse = officeUse.sublist(0, 5);
+    }
 
-            /// The dropdown menus and small header for each
-            Row(
-              children: [
-                Container(width: 80),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Company',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      Row(
-                        children: [
-                          _buildCompanyMenu(),
-                          const SizedBox(width: 16),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Office',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      Row(
-                        children: [
-                          _buildOfficesMenu(),
-                          const SizedBox(width: 16)
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Room',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      Row(
-                        children: [
-                          _buildRoomMenu(),
-                          const SizedBox(width: 16),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
+    var data = [
+      charts.Series<MapEntry<String, int>, String>(
+        id: 'Office use',
+        domainFn: (entry, number) => '${entry.key}: ${entry.value}',
+        measureFn: (entry, number) => entry.value,
+        data: officeUse,
+      )
+    ];
+    return _buildPieChartCard<MapEntry<String, int>>(data, 'Booked offices');
+  }
 
-            /// The card section with all the items under each dropdown menu
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(width: 50),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection("Divisions")
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: snapshot.data!.docs.length,
-                                      itemBuilder: (context, index) {
-                                        if (selectedDivision == null) {
-                                          return Container();
-                                        } else {
-                                          if (selectedDivision ==
-                                              snapshot.data!.docs[index].id) {
-                                            return _buildCompanyCard(
-                                                selectedDivision, 'info');
-                                          } else {
-                                            return Container();
-                                          }
-                                        }
-                                      },
-                                    );
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      !snapshot.hasData) {
-                                    return const Text('Not Found');
-                                  } else {
-                                    return Container();
-                                  }
-                                }),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Container(width: 12),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection("Divisions")
-                                    .doc(selectedDivision)
-                                    .collection('Offices')
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
-                                    return ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: snapshot.data!.docs.length,
-                                        itemBuilder: (context, index) {
-                                          if (selectedOffice == null) {
-                                            return Container();
-                                          } else {
-                                            if (selectedOffice ==
-                                                snapshot.data!.docs[index].id) {
-                                              return _buildOfficeCard(
-                                                  selectedOffice,
-                                                  snapshot.data!.docs[index]
-                                                  ['Address'],
-                                                  snapshot.data!.docs[index]
-                                                  ['Description']);
-                                            } else {
-                                              return Container();
-                                            }
-                                          }
-                                        });
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      !snapshot.hasData) {
-                                    return const Text('Not Found');
-                                  } else {
-                                    return Container();
-                                  }
-                                }),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Container(width: 12),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('Rooms_2')
-                                    .where('Office', isEqualTo: selectedOffice)
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData &&
-                                      selectedOffice != null) {
-                                    return ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: snapshot.data!.docs.length,
-                                      itemBuilder: (context, index) {
-                                        if (selectedOffice == null) {
-                                          return Container();
-                                        } else {
-                                          if (selectedRoom ==
-                                              snapshot.data!.docs[index].id) {
-                                            return _buildRoomCard(
-                                                selectedRoom, 4, 3);
-                                          } else {
-                                            return Container();
-                                          }
-                                        }
-                                      },
-                                    );
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      !snapshot.hasData) {
-                                    return const Text('Not Found');
-                                  } else {
-                                    return Container();
-                                  }
-                                }),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Container(width: 50)
-              ],
-            )
-          ],
+
+  /// Returns a card with a bar chart with information about used rooms
+  Widget _buildRoomCard(List<MapEntry<Room, int>> roomUse) {
+    if (roomUse.length > 5) {
+      roomUse = roomUse.sublist(0, 5);
+    }
+
+    var data = [
+      charts.Series<MapEntry<Room, int>, String>(
+        id: 'Room use',
+        domainFn: (entry, number) => '${entry.key.name}\nNumber:${entry.key.roomNr.toString()}',
+        measureFn: (entry, number) => entry.value,
+        data: roomUse,
+      )
+    ];
+    return _buildBarChartCard<MapEntry<Room, int>>(data, 'Booked rooms [bookings]');
+  }
+
+  /// Returns a card with a bar chart with information about booked workspaces.
+  Widget _buildWorkspaceCard(List<MapEntry<String, int>> workspaceUse) {
+    if (workspaceUse.length > 10) {
+      workspaceUse = workspaceUse.sublist(0, 10);
+    }
+
+    var data = [
+      charts.Series<MapEntry<String, int>, String>(
+        id: 'Workspace use',
+        domainFn: (entry, number) => 'Room: ${entry.key.split(' ')[0]}\nWorkspace: ${entry.key.split(' ')[1]}',
+        measureFn: (entry, number) => entry.value,
+        data: workspaceUse,
+      )
+    ];
+    return _buildBarChartCard<MapEntry<String, int>>(data, 'Booked workspaces [bookings]');
+  }
+
+  /// Returns a card with information about how much time has been booked compared to the total amount.
+  Widget _buildUseRateCard(double useRate, int bookedMinutes) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
         ),
-      ),
+        SizedBox(
+          width: 400,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Usage rate in the past three weeks',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Text('${(bookedMinutes / 60).toStringAsFixed(1)} Hours booked', style: const TextStyle(fontSize: 36)),
+                      Text('${(useRate * 100).toStringAsFixed(1)} % of bookable hours', style: const TextStyle(fontSize: 36)),
+                    ],
+                  )),
+              color: Colors.grey.shade100,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Returns a card with information about offices
+  Widget _buildFutureBookingsCard(int numberOfFutureBookings) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+          width: 400,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Number of future bookings',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Text('$numberOfFutureBookings Future bookings', style: const TextStyle(fontSize: 36))
+                    ],
+                  )),
+              color: Colors.grey.shade100,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Returns a card with bar charts showing equipment use.
+  Widget _buildEquipmentChartCard(List<MapEntry<String, int>> equipmentUse) {
+    if (equipmentUse.length > 4) {
+      equipmentUse = equipmentUse.sublist(0, 4);
+    }
+    var data = [
+      charts.Series<MapEntry<String, int>, String>(
+        id: 'Equipment use',
+        domainFn: (entry, number) => entry.key,
+        measureFn: (entry, number) => entry.value,
+        data: equipmentUse,
+      )
+    ];
+    return _buildBarChartCard<MapEntry<String, int>>(data, 'Most booked equipment');
+  }
+
+  /// Renders a card with a bar chart based on the information contained in [data].
+  Widget _buildBarChartCard<T>(List<charts.Series<T, String>> data, String header) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        Text(
+          header,
+          style: const TextStyle(fontSize: 24),
+        ),
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          color: Colors.grey.shade100,
+          child: SizedBox(
+            width: 400,
+            height: 400,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+              child: Padding(padding: const EdgeInsets.all(16), child: charts.BarChart(data)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Renders a card with a pie chart based on the information contained in [data].
+  Widget _buildPieChartCard<T>(List<charts.Series<T, String>> data, String header) {
+    return Column(
+      children: [
+        const SizedBox(
+          height: 30,
+        ),
+        Text(
+          header,
+          style: const TextStyle(fontSize: 24),
+        ),
+        Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          color: Colors.grey.shade100,
+          child: SizedBox(
+            width: 400,
+            height: 400,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: charts.PieChart(
+                  data,
+                  animate: false,
+                  behaviors: [charts.DatumLegend<Object>()],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   /// This creates the dropdown menu for companies
   Widget _buildCompanyMenu() {
-    return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('Divisions').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            const Text("Loading.....");
-          } else {
-            List<DropdownMenuItem<String>> companyItems = [];
-            for (int i = 0; i < snapshot.data!.docs.length; i++) {
-              DocumentSnapshot snap = snapshot.data!.docs[i];
-              companyItems.add(
-                DropdownMenuItem(
-                  child: Text(
-                    snap.id,
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  value: snap.id,
-                ),
-              );
-            }
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DropdownButton(
-                  items: companyItems,
-                  onChanged: (company) {
-                    final snackBar = SnackBar(
-                      content: Text(
-                        'You have selected $company',
-                      ),
-                    );
-                    Scaffold.of(context).showSnackBar(snackBar);
-                    setState(() {
-                      selectedDivision = company!;
-                      selectedOffice = null;
-                      selectedRoom = null;
-                    });
-                  },
-                  value: selectedDivision,
-                  isExpanded: false,
-                  hint: const Text(
-                    "Choose Company",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            );
-          }
-          return Container();
+    return DropdownButton(
+      // Initial Value
+      value: selectedDivision,
+
+      style: const TextStyle(fontWeight: FontWeight.bold),
+
+      // Down Arrow Icon
+      icon: const Icon(Icons.keyboard_arrow_down),
+
+      // Array list of items
+      items: backend.getDivisions().keys.map((String items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Text(items),
+        );
+      }).toList(),
+      // After selecting the desired option,it will
+      // change button value to selected value
+      onChanged: (String? newValue) {
+        setState(() {
+          var divisionString = newValue ?? 'error';
+          selectedDivision = divisionString;
+          backend.selectDivision(divisionString);
+          selectedOffice = backend.getDivisionOffices().keys.first;
+          divisionCardFuture = backend.generateDivisionReportCard(selectedDivision);
+          officeCardFuture = backend.generateOfficeReportCard(selectedOffice);
         });
-  }
-
-
-  /// This creates a card item for company specifications
-  Widget _buildCompanyCard(String name, String info) {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Text('Org.nr: [$info]')
-                ],
-              )),
-          color: Colors.white,
-        ),
-      ),
+      },
     );
   }
 
   /// This creates the dropdown menu for offices
   Widget _buildOfficesMenu() {
-    return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("Divisions")
-            .doc(selectedDivision)
-            .collection('Offices')
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            const Text("Loading.....");
-          } else {
-            List<DropdownMenuItem<String>> companyItems = [];
-            for (int i = 0; i < snapshot.data!.docs.length; i++) {
-              DocumentSnapshot snap = snapshot.data!.docs[i];
-              companyItems.add(
-                DropdownMenuItem(
-                  child: Text(
-                    snap.id,
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  value: snap.id,
-                ),
-              );
-            }
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DropdownButton(
-                  items: companyItems,
-                  onChanged: (office) {
-                    final snackBar = SnackBar(
-                      content: Text(
-                        'You have selected $office',
-                      ),
-                    );
-                    Scaffold.of(context).showSnackBar(snackBar);
-                    setState(() {
-                      selectedOffice = office;
-                      selectedRoom = null;
-                    });
-                  },
-                  value: selectedOffice,
-                  isExpanded: false,
-                  hint: const Text(
-                    "Choose Office",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            );
-          }
-          return Container();
+    var officeList = backend.getDivisionOffices().keys;
+    if (officeList.isEmpty) {
+      officeList = ['No offices in this division'];
+      selectedOffice = 'No offices in this division';
+    }
+
+    return DropdownButton(
+      // Initial Value
+      value: selectedOffice,
+
+      style: const TextStyle(fontWeight: FontWeight.bold),
+
+      // Down Arrow Icon
+      icon: const Icon(Icons.keyboard_arrow_down),
+
+      // Array list of items
+      items: officeList.map((String items) {
+        return DropdownMenuItem(
+          value: items,
+          child: Text(items),
+        );
+      }).toList(),
+      // After selecting the desired option,it will
+      // change button value to selected value
+      onChanged: (String? newValue) {
+        setState(() {
+          var officeString = newValue ?? 'error';
+          selectedOffice = officeString;
+          backend.selectOffice(officeString);
+          officeCardFuture = backend.generateOfficeReportCard(officeString);
         });
-  }
-
-
-  /// This creates a card item for office specifications
-  Widget _buildOfficeCard(String name, String address, String description) {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-
-                    ],
-                  ),
-                  Text(address),
-                  const SizedBox(height: 24),
-                  Text('Description: $description'),
-                ],
-              )),
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-
-  /// This creates the dropdown menu for spaces
-  Widget _buildRoomMenu() {
-    return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('Rooms_2')
-            .where('Office', isEqualTo: selectedOffice)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            const Text("Loading.....");
-          } else {
-            List<DropdownMenuItem<String>> companyItems = [];
-            for (int i = 0; i < snapshot.data!.docs.length; i++) {
-              DocumentSnapshot snap = snapshot.data!.docs[i];
-              if (selectedOffice != null) {
-                companyItems.add(
-                  DropdownMenuItem(
-                    child: Text(
-                      snap.id,
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                    value: snap.id,
-                  ),
-                );
-              }
-            }
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                DropdownButton(
-                  items: companyItems,
-                  onChanged: (room) {
-                    final snackBar = SnackBar(
-                      content: Text(
-                        'You have selected $room',
-                      ),
-                    );
-                    Scaffold.of(context).showSnackBar(snackBar);
-                    setState(() {
-                      selectedRoom = room;
-                    });
-                  },
-                  value: selectedRoom,
-                  isExpanded: false,
-                  hint: const Text(
-                    "Choose Room",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            );
-          }
-          return Container();
-        });
-  }
-
-  /// This creates a card item for space specifications
-  Widget _buildRoomCard(String name, int numberOfSpaces, int availableSpaces) {
-    return Container(
-      width: 400,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-          child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Text('Total number of work spaces: $numberOfSpaces'),
-                  Text('Available work spaces: $availableSpaces'),
-                ],
-              )),
-          color: Colors.white,
-        ),
-      ),
+      },
     );
   }
 }

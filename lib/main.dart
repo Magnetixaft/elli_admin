@@ -87,11 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               children: [
                 Expanded(
-                  child: Center(
-                      child: Padding(
-                    padding: const EdgeInsets.fromLTRB(40, 80, 40, 20),
-                    child: Image.asset('assets/images/elicit_logo.png'),
-                  )),
+                  child: Image.asset('assets/images/elli_logo_large.png'),
                 ),
                 Expanded(
                   child: Padding(
@@ -154,6 +150,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  /// Checks if user is logged in and is admin
+  ///
   /// Navigates to [MenuBar] when if true is successful. Initializes the [FirebaseHandler]
   Future<void> checkLoggedIn() async {
     if (await authenticationHandler.isUserSignedIn() == true) {
