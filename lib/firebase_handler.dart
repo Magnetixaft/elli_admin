@@ -30,6 +30,13 @@ class FirebaseHandler {
   /// Data is stored in [_rooms] and [_divisions].
   /// This is information which is not supposed to be updated often.
   Future<void> buildStaticModel() async {
+
+    //delete old bookings
+    var oldBookings = await FirebaseFirestore.instance.collection('Bookings_2').where('Day', isLessThan: DateTime.now().subtract(const Duration(days: 21))).get();
+    for(var oldBooking in oldBookings.docs) {
+      oldBooking.reference.delete();
+    }
+
     _divisions = <String, Division>{};
     _rooms = <int, Room>{};
     //Downloads divisions and their offices
@@ -49,7 +56,8 @@ class FirebaseHandler {
 
       var offices = <String, Office>{};
       for (var office in officesData.docs) {
-        offices[office.id] = Office(office.data()['Address'], office.data()['Description']);
+        var contactInfo = office.data()['ContactInfo'] ?? 'No contact information';
+        offices[office.id] = Office(office.data()['Address'], office.data()['Description'], contactInfo);
       }
 
       _divisions[divisionData.id] = Division(offices);
@@ -138,7 +146,7 @@ class FirebaseHandler {
 
   /// Returns a [DivisionReportCard] with analytical information about a division.
   Future<DivisionReportCard> generateDivisionReportCard(String division) async {
-    var pastBookings = await _getXDaysBookings(21, 0);
+    var pastBookings = await _getXDaysBookings(21, 21); // TODO REMOVE!!!!!
     var allOfficesInDivision = getDivisions()[division]?.offices.keys.toList() ?? ['ErrorOffice'];
     var allRoomsInDivision = _rooms.values.where((room1) => allOfficesInDivision.contains(room1.office)).toList();
     var allRoomNrInDivision = allRoomsInDivision.map((room2) => room2.roomNr).toList();
@@ -160,7 +168,7 @@ class FirebaseHandler {
 
   /// Returns a [OfficeReportCard] with analytical information about an office.
   Future<OfficeReportCard> generateOfficeReportCard(String office) async {
-    var pastBookings = await _getXDaysBookings(21, 0);
+    var pastBookings = await _getXDaysBookings(21, 21); // TODO REMOVE!!!!!
     var allRoomsInOffice = _rooms.values.where((room1) => room1.office == office).toList();
     var allRoomNrInOffice = allRoomsInOffice.map((room2) => room2.roomNr).toList();
     var allPastBookingsInOffice = pastBookings.where((booking) => allRoomNrInOffice.contains(booking.roomNr)).toList();
@@ -401,10 +409,15 @@ class FirebaseHandler {
 
   ///Removes a division, given name of division
   Future<void> removeDivision(String divisionName) async {
-    var offices = await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').get();
-    for (var office in offices.docs) {
-      office.reference.delete();
-    }
+
+    // var offices = await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').get();
+    // for (var office in offices.docs) {
+    //   office.reference.delete();
+    // }
+    _divisions[divisionName]?.offices.forEach((officeName, value) async {
+      await removeOffice(divisionName, officeName);
+    });
+
     await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).delete();
     return;
   }
@@ -416,11 +429,14 @@ class FirebaseHandler {
         .doc(divisionName)
         .collection('Offices')
         .doc(officeName)
-        .set({'Address': office.address, 'Description': office.description});
+        .set({'Address': office.address, 'Description': office.description, 'ContactInfo': office.contactInformation});
   }
 
   ///Removes an office, given a name of division and name of office
   Future<void> removeOffice(String divisionName, String officeName) async {
+    _rooms.entries.where((roomEntry) => roomEntry.value.office == officeName).forEach((remainingEntry) async {
+      await removeRoom(remainingEntry.key);
+    });
     await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').doc(officeName).delete();
     return;
   }
@@ -428,8 +444,8 @@ class FirebaseHandler {
   /// Adds a room to Firebase.
   Future<void> saveRoom(int roomNr, Room room) async {
     var timeslots = room.timeslots.map((timesMap) {
-      var start = timesMap['start'] ?? "";
-      var end = timesMap['end'] ?? "";
+      var start = timesMap['start'] ?? "6:00";
+      var end = timesMap['end'] ?? "12:00";
       return start + "-" + end;
     }).toList();
 
@@ -461,7 +477,7 @@ class FirebaseHandler {
           .collection('Bookings_2')
           .doc('room:$roomNr workspace:$workspaceNr timeslot:$timeslot day:${day.year}-${day.month}-${day.day}')
           .set(
-              {'UserId': _username, 'Timeslot': timeslot, 'Day': day, 'WorkspaceNr': workspaceNr, 'RoomNr': roomNr, 'RepeatedBookingKey': repeatKey});
+          {'UserId': _username, 'Timeslot': timeslot, 'Day': day, 'WorkspaceNr': workspaceNr, 'RoomNr': roomNr, 'RepeatedBookingKey': repeatKey});
     }
     return;
   }
@@ -596,8 +612,9 @@ class Division {
 class Office {
   final String address;
   final String description;
+  final String contactInformation;
 
-  Office(this.address, this.description);
+  Office(this.address, this.description, this.contactInformation);
 
   @override
   String toString() {
