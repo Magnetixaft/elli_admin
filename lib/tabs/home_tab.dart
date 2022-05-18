@@ -1096,9 +1096,9 @@ class _HomeViewState extends State<HomeView> {
   int totalRoomCount(int roomNr) {
     int count = 0;
     Room room = FirebaseHandler.getInstance().getRoom(roomNr);
-      for (int i = 0; i < room.workspaces.values.length; i++) {
-          count++;
-      }
+    for (int i = 0; i < room.workspaces.values.length; i++) {
+      count++;
+    }
     return count;
   }
 
