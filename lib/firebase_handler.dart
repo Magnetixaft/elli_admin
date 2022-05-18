@@ -160,7 +160,6 @@ class FirebaseHandler {
 
   /// Returns a [OfficeReportCard] with analytical information about an office.
   Future<OfficeReportCard> generateOfficeReportCard(String office) async {
-
     var pastBookings = await _getXDaysBookings(21, 0);
     var allRoomsInOffice = _rooms.values.where((room1) => room1.office == office).toList();
     var allRoomNrInOffice = allRoomsInOffice.map((room2) => room2.roomNr).toList();
@@ -384,6 +383,16 @@ class FirebaseHandler {
     return;
   }
 
+  Future<List<Admin>> getAllAdmins() async {
+    var adminList = <Admin>[];
+    var allAdmins = await FirebaseFirestore.instance.collection('Admins').get();
+
+    for (var admin in allAdmins.docs) {
+      adminList.add(Admin(admin.id, admin.data()['Name'], admin.data()['Permissions']));
+    }
+    return adminList;
+  }
+
   ///Saves a division
   Future<void> saveDivision(String divisionName, String info) async {
     await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).set({'Info': info});
@@ -476,6 +485,24 @@ class FirebaseHandler {
       await document.reference.delete();
     }
     return;
+  }
+}
+
+/// Immutable data class which represents an Admin user.
+class Admin {
+  final String adminHashId;
+  final String name;
+  final String permissions;
+
+  Admin(this.adminHashId, this.name, this.permissions);
+
+  @override
+  String toString() {
+    return 'Room{adminHashId: $adminHashId, name: $name, permissions: $permissions}';
+  }
+
+  String getName() {
+    return name;
   }
 }
 
