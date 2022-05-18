@@ -834,6 +834,7 @@ class _HomeViewState extends State<HomeView> {
   Widget _buildAddNewRoom() {
     String timeslot_1 = "06:30-12:00";
     String timeslot_2 = "13:00-17:00";
+    int countWorkspace = 1;
 
     final roomNameInput = TextEditingController();
     final roomNr = TextEditingController();
@@ -900,13 +901,14 @@ class _HomeViewState extends State<HomeView> {
                                                   final controller = TextEditingController();
                                                   final field = TextField(
                                                     controller: controller,
-                                                    decoration: const InputDecoration(
+                                                    decoration: InputDecoration(
                                                       border: OutlineInputBorder(),
-                                                      labelText: "Enter equipment for workspace",
+                                                      labelText: "Optional: Enter equipment for workspace $countWorkspace. Seperate them with \",\"",
                                                       contentPadding: EdgeInsets.all(10),
                                                     ),
                                                   );
                                                   setState(() {
+                                                    countWorkspace++;
                                                     // adds the new input to a list in the top
                                                     _controllers.add(controller);
                                                     _fields.add(field);
