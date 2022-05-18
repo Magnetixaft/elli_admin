@@ -621,7 +621,7 @@ class _HomeViewState extends State<HomeView> {
                                       ),
                                       controller: officeName,
                                     ),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
@@ -629,7 +629,7 @@ class _HomeViewState extends State<HomeView> {
                                       ),
                                       controller: officeAddress,
                                     ),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
@@ -637,7 +637,7 @@ class _HomeViewState extends State<HomeView> {
                                       ),
                                       controller: officeDescription,
                                     ),
-                                    const SizedBox(height: 8),
+                                    const SizedBox(height: 6),
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
@@ -897,7 +897,7 @@ class _HomeViewState extends State<HomeView> {
                                           ),
                                           controller: roomNameInput,
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(height: 6),
                                         TextField(
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
@@ -905,7 +905,7 @@ class _HomeViewState extends State<HomeView> {
                                           ),
                                           controller: roomNr,
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(height: 6),
                                         TextField(
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
@@ -913,7 +913,7 @@ class _HomeViewState extends State<HomeView> {
                                           ),
                                           controller: description,
                                         ),
-                                        const SizedBox(height: 8),
+                                        const SizedBox(height: 6),
 
                                               /// Button for adding new inputs
                                               ListTile(
@@ -924,7 +924,7 @@ class _HomeViewState extends State<HomeView> {
                                                     controller: controller,
                                                     decoration: InputDecoration(
                                                       border: OutlineInputBorder(),
-                                                      labelText: "Optional: Enter equipment for workspace $countWorkspace. Seperate them with \",\"",
+                                                      labelText: "Optional: Enter equipment for workspace $countWorkspace. Seperate with \",\"",
                                                       contentPadding: EdgeInsets.all(10),
                                                     ),
                                                   );
@@ -938,6 +938,7 @@ class _HomeViewState extends State<HomeView> {
                                                 tileColor: Colors.grey[100],
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
                                               ),
+                                              const SizedBox(height: 6),
 
                                               /// Calls the list with the inputs
                                               _dynamicList(),
