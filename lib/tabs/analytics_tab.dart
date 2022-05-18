@@ -149,10 +149,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Returns a card with a pie chart with information about offices
   Widget _buildOfficePieCard(List<MapEntry<String, int>> officeUse) {
-    if (officeUse.length > 5) {
-      officeUse = officeUse.sublist(0, 5);
-    }
-
     var data = [
       charts.Series<MapEntry<String, int>, String>(
         id: 'Office use',
