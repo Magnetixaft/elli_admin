@@ -23,7 +23,7 @@ class AuthenticationHandler {
           ["openid profile offline_access"],
           {'tenant': '48306bc3-49ff-43e2-8964-4bd7d2dbba92'});
       //print(user?.email);
-      if (adminList.contains(user?.email)) {
+      if (adminList.contains(user?.email?.toLowerCase())) {
         return user;
       } else {
         print("User does not have Admin privileges");
