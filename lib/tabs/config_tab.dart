@@ -274,7 +274,7 @@ class _ConfigTabState extends State<ConfigTab> {
     final email = TextEditingController();
 
     return SizedBox(
-      width: double.infinity,
+      width: 800,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
         child: Card(
@@ -291,41 +291,67 @@ class _ConfigTabState extends State<ConfigTab> {
                       showDialog(
                           builder: (context) {
                             return AlertDialog(
-                              title: const Text('Add administrator'),
+                              title: const Text("Add administrator"),
                               content: Column(
-                                children: <Widget>[
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Enter admin name',
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          25, 25, 25, 0),
+                                      child: Column(
+                                        children: [
+                                          TextField(
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              hintText: 'Enter admin name',
+                                            ),
+                                            controller: name,
+                                          ),
+                                          TextField(
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              hintText: 'Email',
+                                            ),
+                                            controller: email,
+                                          ),
+                                          ElevatedButton(
+                                              onPressed: () async {
+                                                if (name.text.isNotEmpty &&
+                                                    isEmail(email.text)) {
+                                                  await FirebaseHandler
+                                                          .getInstance()
+                                                      .addAdmin(email.text,
+                                                          "all", name.text);
+                                                  Navigator.of(context).pop();
+                                                } else {
+                                                  return;
+                                                }
+                                              },
+                                              child: const Text('Add')),
+                                        ],
+                                      ),
                                     ),
-                                    controller: name,
-                                  ),
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      hintText: 'Email',
-                                    ),
-                                    controller: email,
                                   ),
                                 ],
                               ),
                               actions: <Widget>[
-                                ElevatedButton(
-                                    onPressed: () async {
-                                      if (name.text.isNotEmpty &&
-                                          isEmail(email.text)) {
-                                        await FirebaseHandler.getInstance()
-                                            .addAdmin(
-                                                email.text, "all", name.text);
-                                        Navigator.of(context).pop();
-                                      } else {
-                                        return;
-                                      }
-                                    },
-                                    child: const Text('Add')),
+                                TextButton(
+                                  onPressed: () {
+                                    selectedAdmin = null;
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Close'),
+                                ),
                               ],
                             );
+                            /*
+                            return AlertDialog(
+                              title: const Text('Add administrator'),
+                              content: Column(
+                                children: <Widget>[
+                                  
+                              ],
+                            );*/
                           },
                           context: context);
                     },
