@@ -138,7 +138,7 @@ class FirebaseHandler {
 
   /// Returns a [DivisionReportCard] with analytical information about a division.
   Future<DivisionReportCard> generateDivisionReportCard(String division) async {
-    var pastBookings = await _getXDaysBookings(21, 0);
+    var pastBookings = await _getXDaysBookings(21, 21); // TODO REMOVE!!!!!
     var allOfficesInDivision = getDivisions()[division]?.offices.keys.toList() ?? ['ErrorOffice'];
     var allRoomsInDivision = _rooms.values.where((room1) => allOfficesInDivision.contains(room1.office)).toList();
     var allRoomNrInDivision = allRoomsInDivision.map((room2) => room2.roomNr).toList();
@@ -160,7 +160,7 @@ class FirebaseHandler {
 
   /// Returns a [OfficeReportCard] with analytical information about an office.
   Future<OfficeReportCard> generateOfficeReportCard(String office) async {
-    var pastBookings = await _getXDaysBookings(21, 0);
+    var pastBookings = await _getXDaysBookings(21, 21); // TODO REMOVE!!!!!
     var allRoomsInOffice = _rooms.values.where((room1) => room1.office == office).toList();
     var allRoomNrInOffice = allRoomsInOffice.map((room2) => room2.roomNr).toList();
     var allPastBookingsInOffice = pastBookings.where((booking) => allRoomNrInOffice.contains(booking.roomNr)).toList();

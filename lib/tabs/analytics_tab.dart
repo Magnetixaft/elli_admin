@@ -167,8 +167,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Returns a card with a bar chart with information about used rooms
   Widget _buildRoomCard(List<MapEntry<Room, int>> roomUse) {
-    if (roomUse.length > 5) {
-      roomUse = roomUse.sublist(0, 5);
+    if (roomUse.length > 4) {
+      roomUse = roomUse.sublist(0, 4);
     }
 
     var data = [
@@ -184,14 +184,14 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
 
   /// Returns a card with a bar chart with information about booked workspaces.
   Widget _buildWorkspaceCard(List<MapEntry<String, int>> workspaceUse) {
-    if (workspaceUse.length > 10) {
-      workspaceUse = workspaceUse.sublist(0, 10);
+    if (workspaceUse.length > 5) {
+      workspaceUse = workspaceUse.sublist(0, 5);
     }
 
     var data = [
       charts.Series<MapEntry<String, int>, String>(
         id: 'Workspace use',
-        domainFn: (entry, number) => 'Room: ${entry.key.split(' ')[0]}\nWorkspace: ${entry.key.split(' ')[1]}',
+        domainFn: (entry, number) => 'Room:${entry.key.split(' ')[0]}\nSpace: ${entry.key.split(' ')[1]}',
         measureFn: (entry, number) => entry.value,
         data: workspaceUse,
       )
