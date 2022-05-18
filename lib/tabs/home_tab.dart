@@ -558,47 +558,47 @@ class _HomeViewState extends State<HomeView> {
                       showDialog(
                           context: context,
                           builder: (context) {
+                            var inset = (MediaQuery.of(context).size.width - 600)/ 2;
+                            inset = inset > 0 ? inset : 0;
                             return Padding(
-                              padding: const EdgeInsets.fromLTRB(350, 120, 350, 120),
+                              padding: EdgeInsets.only(left: inset, right: inset),
                               child: AlertDialog(
                                 title: const Text('Add new office'),
-                                content: Padding(
-                                  padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                  child: Column(
-                                    children: <Widget>[
-                                      TextField(
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Enter office name',
-                                        ),
-                                        controller: officeName,
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Enter office name',
                                       ),
-                                      const SizedBox(height: 8),
-                                      TextField(
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Enter address',
-                                        ),
-                                        controller: officeAddress,
+                                      controller: officeName,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Enter address',
                                       ),
-                                      const SizedBox(height: 8),
-                                      TextField(
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Enter description',
-                                        ),
-                                        controller: officeDescription,
+                                      controller: officeAddress,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Enter description',
                                       ),
-                                      const SizedBox(height: 8),
-                                      TextField(
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Enter contact info',
-                                        ),
-                                        controller: contactInfo,
+                                      controller: officeDescription,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Enter contact info',
                                       ),
-                                    ],
-                                  ),
+                                      controller: contactInfo,
+                                    ),
+                                  ],
                                 ),
                                 actions: <Widget>[
                                   ElevatedButton(
@@ -795,70 +795,69 @@ class _HomeViewState extends State<HomeView> {
                     onPressed: () {
                       showDialog(
                           context: context,
-                          builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(350, 0, 350, 0),
+                          builder: (context) {var inset = (MediaQuery.of(context).size.width - 600)/ 2;
+                          inset = inset > 0 ? inset : 0;
+                          return Padding(
+                            padding: EdgeInsets.only(left: inset, right: inset),
                               child: AlertDialog(
                                 title: const Text('Add new room'),
                                 content: StatefulBuilder(builder: (context, setState) {
                                   return SingleChildScrollView(
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                      child: Column(
-                                        children: <Widget>[
-                                          TextField(
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              hintText: 'Enter room name',
-                                            ),
-                                            controller: roomNameInput,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        TextField(
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: 'Enter room name',
                                           ),
-                                          const SizedBox(height: 8),
-                                          TextField(
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              hintText: 'Enter room number',
-                                            ),
-                                            controller: roomNr,
+                                          controller: roomNameInput,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        TextField(
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: 'Enter room number',
                                           ),
-                                          const SizedBox(height: 8),
-                                          TextField(
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              hintText: 'Description',
-                                            ),
-                                            controller: description,
+                                          controller: roomNr,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        TextField(
+                                          decoration: const InputDecoration(
+                                            border: OutlineInputBorder(),
+                                            hintText: 'Description',
                                           ),
-                                          const SizedBox(height: 8),
+                                          controller: description,
+                                        ),
+                                        const SizedBox(height: 8),
 
-                                          /// Button for adding new inputs
-                                          ListTile(
-                                            title: const Text('Add new workspace'),
-                                            onTap: () {
-                                              final controller = TextEditingController();
-                                              final field = TextField(
-                                                controller: controller,
-                                                decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText: "Enter equipment for workspace",
-                                                  contentPadding: EdgeInsets.all(10),
-                                                ),
-                                              );
-                                              setState(() {
-                                                // adds the new input to a list in the top
-                                                _controllers.add(controller);
-                                                _fields.add(field);
-                                              });
-                                            },
-                                            tileColor: Colors.grey[100],
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
-                                          ),
-                                          const SizedBox(height: 6),
+                                        /// Button for adding new inputs
+                                        ListTile(
+                                          title: const Text('Add new workspace'),
+                                          onTap: () {
+                                            final controller = TextEditingController();
+                                            final field = TextField(
+                                              controller: controller,
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: "Enter equipment for workspace",
+                                                contentPadding: EdgeInsets.all(10),
+                                              ),
+                                            );
+                                            setState(() {
+                                              // adds the new input to a list in the top
+                                              _controllers.add(controller);
+                                              _fields.add(field);
+                                            });
+                                          },
+                                          tileColor: Colors.grey[100],
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                                        ),
+                                        const SizedBox(height: 6),
 
-                                          /// Calls the list with the inputs
-                                          _dynamicList(),
-                                        ],
-                                      ),
+                                        /// Calls the list with the inputs
+                                        _dynamicList(),
+                                      ],
                                     ),
                                   );
                                 }),
@@ -1001,7 +1000,7 @@ class _HomeViewState extends State<HomeView> {
       children: [
         Container(
             width: 560,
-            height: 160,
+            height: 260,
             child: ListView.builder(
               itemCount: _fields.length,
               itemBuilder: (context, index) {
