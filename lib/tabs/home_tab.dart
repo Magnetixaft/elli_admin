@@ -210,12 +210,15 @@ class _HomeViewState extends State<HomeView> {
                                           } else {
                                             if (selectedOffice ==
                                                 snapshot.data!.docs[index].id) {
+                                              String contactInfo = (snapshot.data!.docs[index].data() as Map<String, dynamic>)['ContactInfo'] ?? 'No contact information';
                                               return _buildOfficeCard(
                                                   selectedOffice,
                                                   snapshot.data!.docs[index]
                                                   ['Address'],
                                                   snapshot.data!.docs[index]
-                                                  ['Description']);
+                                                  ['Description'],
+                                                  contactInfo
+                                              );
                                             } else {
                                               return Container();
                                             }
@@ -510,7 +513,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ],
                   ),
-                  Text('Org.nr: [$info]')
+                  Text('Admin information: $info')
                 ],
               )),
           color: Colors.white,
@@ -687,7 +690,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   /// This creates a card item for office specifications
-  Widget _buildOfficeCard(String name, String address, String description) {
+  Widget _buildOfficeCard(String name, String address, String description, String contactInfo) {
     return Container(
       width: 400,
       child: Padding(
@@ -766,6 +769,8 @@ class _HomeViewState extends State<HomeView> {
                   Text(address),
                   const SizedBox(height: 24),
                   Text('Description: $description'),
+                  const SizedBox(height: 24),
+                  Text('Contact Information: $contactInfo'),
                 ],
               )),
           color: Colors.white,
