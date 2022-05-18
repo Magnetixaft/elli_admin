@@ -1,6 +1,7 @@
 import 'package:elli_admin/main.dart';
 import 'package:elli_admin/tabs/config_tab.dart';
 import 'package:elli_admin/tabs/analytics_tab.dart';
+import 'package:elli_admin/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/tabs/home_tab.dart';
 import 'package:elli_admin/authentication_handler.dart';
@@ -37,26 +38,35 @@ class _MenuBarState extends State<MenuBar> {
             Stack(
               children: [
                 NavigationRail(
+                  backgroundColor: ElliColors.darkBlue,
                   groupAlignment: 0.0,
                   selectedIndex: _selectedIndex,
                   extended: isExtended,
-                  minExtendedWidth: 150,
+                  minExtendedWidth: 180,
                   onDestinationSelected: (_selectedIndex) =>
                       setState(() => this._selectedIndex = _selectedIndex),
                   leading: IconButton(
                     icon: Icon(
-                        isExtended ? Icons.arrow_back : Icons.arrow_forward),
+                      isExtended ? Icons.arrow_back : Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
                     onPressed: () => setState(() {
                       isExtended = !isExtended;
                     }),
                   ),
                   destinations: const [
                     NavigationRailDestination(
-                        icon: Icon(Icons.home), label: Text('Home')),
+                        icon: Icon(Icons.home, color: Colors.white),
+                        label: Text('Home',
+                            style: TextStyle(color: Colors.white))),
                     NavigationRailDestination(
-                        icon: Icon(Icons.bar_chart), label: Text('Analytics')),
+                        icon: Icon(Icons.bar_chart, color: Colors.white),
+                        label: Text('Analytics',
+                            style: TextStyle(color: Colors.white))),
                     NavigationRailDestination(
-                        icon: Icon(Icons.settings), label: Text('Config'))
+                        icon: Icon(Icons.settings, color: Colors.white),
+                        label: Text('Configs',
+                            style: TextStyle(color: Colors.white))),
                   ],
                 ),
                 //
@@ -73,23 +83,26 @@ class _MenuBarState extends State<MenuBar> {
                 //This lets the trailing logout button at the bottom.
                 Positioned(
                     bottom: 10,
-                    left: 8,
+                    left: 0,
                     right: 0,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MyHomePage(
-                                      title: '',
-                                    )));
-                        logOut();
-                      },
-                      icon: const Icon(Icons.logout_outlined),
-                      //The text does not fit if the navigationRail is collapsed
-                      label:
-                          isExtended ? const Text("Log out") : const Text(""),
-                    ))
+                    child: TextButton.icon(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MyHomePage(
+                                        title: '',
+                                      )));
+                          logOut();
+                        },
+                        icon: const Icon(Icons.logout_outlined,
+                            color: Colors.white),
+                        //The text does not fit if the navigationRail is collapsed
+                        label: isExtended
+                            ? const Text("Log out",
+                                style: TextStyle(color: Colors.white))
+                            : const Text("",
+                                style: TextStyle(color: Colors.white))))
               ],
             ),
             const VerticalDivider(),
