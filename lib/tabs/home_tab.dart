@@ -1103,47 +1103,5 @@ class _HomeViewState extends State<HomeView> {
   }
 
 
-/*Widget _buildTimeslots() {
-
-    bool isChecked = false;
-    return CheckboxListTile(
-      title: Text(timeslot),
-      controlAffinity: ListTileControlAffinity.leading,
-      value: isChecked,
-      onChanged: (v) {
-        setState(() {
-          isChecked = v!;
-        });
-      },
-    );
-  }
-
-   */
-
-/*Widget _addTile() {
-    return ListTile(
-      title: Icon(Icons.add),
-      onTap: () {
-        final controller = TextEditingController();
-        final field = TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: "Enter equipment for workspace: $c",
-          ),
-        );
-
-        setState(() {
-          _controllers.add(controller);
-          _fields.add(field);
-        });
-      },
-    );
-  }
-
-   */
-
-
-
 
 }
