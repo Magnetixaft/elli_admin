@@ -401,10 +401,15 @@ class FirebaseHandler {
 
   ///Removes a division, given name of division
   Future<void> removeDivision(String divisionName) async {
-    var offices = await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').get();
-    for (var office in offices.docs) {
-      office.reference.delete();
-    }
+
+    // var offices = await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').get();
+    // for (var office in offices.docs) {
+    //   office.reference.delete();
+    // }
+    _divisions[divisionName]?.offices.forEach((officeName, value) async {
+      await removeOffice(divisionName, officeName);
+    });
+
     await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).delete();
     return;
   }
@@ -421,6 +426,9 @@ class FirebaseHandler {
 
   ///Removes an office, given a name of division and name of office
   Future<void> removeOffice(String divisionName, String officeName) async {
+    _rooms.entries.where((roomEntry) => roomEntry.value.office == officeName).forEach((remainingEntry) async {
+      await removeRoom(remainingEntry.key);
+    });
     await FirebaseFirestore.instance.collection('Divisions').doc(divisionName).collection('Offices').doc(officeName).delete();
     return;
   }
@@ -428,8 +436,8 @@ class FirebaseHandler {
   /// Adds a room to Firebase.
   Future<void> saveRoom(int roomNr, Room room) async {
     var timeslots = room.timeslots.map((timesMap) {
-      var start = timesMap['start'] ?? "";
-      var end = timesMap['end'] ?? "";
+      var start = timesMap['start'] ?? "6:00";
+      var end = timesMap['end'] ?? "12:00";
       return start + "-" + end;
     }).toList();
 
