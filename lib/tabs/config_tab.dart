@@ -90,7 +90,7 @@ class _ConfigTabState extends State<ConfigTab> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) =>
-                                _buildAdminEdit2(context));
+                                _buildAdminEdit(context));
                       },
                       child: const Align(
                         alignment: Alignment.center,
@@ -111,13 +111,26 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  ///Builds pop up for editing administrators.
+  ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
+  ///All buttons and text fields used here should have width: 800.
   Widget _buildAdminEdit2(BuildContext context) {
     return FutureBuilder<List<Admin>>(
         future: FirebaseHandler.getInstance().getAllAdmins(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return const AlertDialog(
-              title: Text("Administrators"),
+            return AlertDialog(
+              title: const Text("Administrators"),
+              content: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+                      child: Column(),
+                    ),
+                  )
+                ],
+              ),
             );
           }
           return const Center(child: CircularProgressIndicator());
@@ -126,80 +139,76 @@ class _ConfigTabState extends State<ConfigTab> {
 
   Widget _buildAdminEdit(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-          "Administrators                                                                             "),
-      content: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection('Admins')
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            const Text("Loading.....");
-                          } else {
-                            List<DropdownMenuItem<String>> adminItems = [];
-                            for (int i = 0;
-                                i < snapshot.data!.docs.length;
-                                i++) {
-                              DocumentSnapshot snap = snapshot.data!.docs[i];
-                              adminItems.add(
-                                DropdownMenuItem(
-                                  child: Text(
-                                    snap.id,
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  value: snap.id,
+      title: const Text("Administrators"),
+      content: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+              child: Column(
+                children: [
+                  StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Admins')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          const Text("Loading.....");
+                        } else {
+                          List<DropdownMenuItem<String>> adminItems = [];
+                          for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                            DocumentSnapshot snap = snapshot.data!.docs[i];
+                            adminItems.add(
+                              DropdownMenuItem(
+                                child: Text(
+                                  snap.id,
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              );
-                            }
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                DropdownButton(
-                                  items: adminItems,
-                                  onChanged: (admin) {
-                                    setState(() {
-                                      selectedAdmin = admin;
-                                    });
-                                    Navigator.of(context).pop();
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            _buildAdminEdit(context));
-                                  },
-                                  value: selectedAdmin,
-                                  isExpanded: false,
-                                  hint: const Text(
-                                    "Choose Admin",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
+                                value: snap.id,
+                              ),
                             );
                           }
-                          return Container();
-                        }),
-                    _buildAddNewAdmin(context),
-                    _buildDeleteSelectedAdmin(context),
-                  ],
-                ),
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              DropdownButton(
+                                items: adminItems,
+                                onChanged: (admin) {
+                                  setState(() {
+                                    selectedAdmin = admin;
+                                  });
+                                  Navigator.of(context).pop();
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          _buildAdminEdit(context));
+                                },
+                                value: selectedAdmin,
+                                isExpanded: false,
+                                hint: const Text(
+                                  "Choose Admin",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Container();
+                      }),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  _buildAddNewAdmin(context),
+                  _buildDeleteSelectedAdmin(context),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       actions: <Widget>[
         TextButton(
@@ -215,7 +224,7 @@ class _ConfigTabState extends State<ConfigTab> {
 
   Widget _buildDeleteSelectedAdmin(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: 800,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
         child: Card(
@@ -403,10 +412,6 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 }
-
-
-
-
 
 /*
 Widget _buildAdminEdit(BuildContext context) {
