@@ -98,10 +98,7 @@ class _HomeViewState extends State<HomeView> {
                         style: TextStyle(fontSize: 16),
                       ),
                       Row(
-                        children: [
-                          _buildOfficesMenu(),
-                          const SizedBox(width: 16)
-                        ],
+                        children: [_buildOfficesMenu(), const SizedBox(width: 16)],
                       ),
                     ],
                   ),
@@ -145,9 +142,7 @@ class _HomeViewState extends State<HomeView> {
                           Container(
                             width: double.infinity,
                             child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection("Divisions")
-                                    .snapshots(),
+                                stream: FirebaseFirestore.instance.collection("Divisions").snapshots(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return ListView.builder(
@@ -157,19 +152,15 @@ class _HomeViewState extends State<HomeView> {
                                         if (selectedDivision == null) {
                                           return Container();
                                         } else {
-                                          if (selectedDivision ==
-                                              snapshot.data!.docs[index].id) {
-                                            return _buildCompanyCard(
-                                                selectedDivision, 'info');
+                                          if (selectedDivision == snapshot.data!.docs[index].id) {
+                                            return _buildCompanyCard(selectedDivision, 'info');
                                           } else {
                                             return Container();
                                           }
                                         }
                                       },
                                     );
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      !snapshot.hasData) {
+                                  } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
                                     return const Text('Not Found');
                                   } else {
                                     return Container();
@@ -194,11 +185,7 @@ class _HomeViewState extends State<HomeView> {
                           Container(
                             width: double.infinity,
                             child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection("Divisions")
-                                    .doc(selectedDivision)
-                                    .collection('Offices')
-                                    .snapshots(),
+                                stream: FirebaseFirestore.instance.collection("Divisions").doc(selectedDivision).collection('Offices').snapshots(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
                                     return ListView.builder(
@@ -208,22 +195,15 @@ class _HomeViewState extends State<HomeView> {
                                           if (selectedOffice == null) {
                                             return Container();
                                           } else {
-                                            if (selectedOffice ==
-                                                snapshot.data!.docs[index].id) {
+                                            if (selectedOffice == snapshot.data!.docs[index].id) {
                                               return _buildOfficeCard(
-                                                  selectedOffice,
-                                                  snapshot.data!.docs[index]
-                                                  ['Address'],
-                                                  snapshot.data!.docs[index]
-                                                  ['Description']);
+                                                  selectedOffice, snapshot.data!.docs[index]['Address'], snapshot.data!.docs[index]['Description']);
                                             } else {
                                               return Container();
                                             }
                                           }
                                         });
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      !snapshot.hasData) {
+                                  } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
                                     return const Text('Not Found');
                                   } else {
                                     return Container();
@@ -248,13 +228,9 @@ class _HomeViewState extends State<HomeView> {
                           Container(
                             width: double.infinity,
                             child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('Rooms_2')
-                                    .where('Office', isEqualTo: selectedOffice)
-                                    .snapshots(),
+                                stream: FirebaseFirestore.instance.collection('Rooms_2').where('Office', isEqualTo: selectedOffice).snapshots(),
                                 builder: (context, snapshot) {
-                                  if (snapshot.hasData &&
-                                      selectedOffice != null) {
+                                  if (snapshot.hasData && selectedOffice != null) {
                                     return ListView.builder(
                                       shrinkWrap: true,
                                       itemCount: snapshot.data!.docs.length,
@@ -262,19 +238,15 @@ class _HomeViewState extends State<HomeView> {
                                         if (selectedOffice == null) {
                                           return Container();
                                         } else {
-                                          if (selectedRoom ==
-                                              snapshot.data!.docs[index].id) {
-                                            return _buildRoomCard(
-                                                selectedRoom, totalRoomCount(int.parse(selectedRoom)));
+                                          if (selectedRoom == snapshot.data!.docs[index].id) {
+                                            return _buildRoomCard(selectedRoom, totalRoomCount(int.parse(selectedRoom)));
                                           } else {
                                             return Container();
                                           }
                                         }
                                       },
                                     );
-                                  } else if (snapshot.connectionState ==
-                                      ConnectionState.done &&
-                                      !snapshot.hasData) {
+                                  } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
                                     return const Text('Not Found');
                                   } else {
                                     return Container();
@@ -310,8 +282,7 @@ class _HomeViewState extends State<HomeView> {
                 DropdownMenuItem(
                   child: Text(
                     snap.id,
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   value: snap.id,
                 ),
@@ -339,8 +310,7 @@ class _HomeViewState extends State<HomeView> {
                   isExpanded: false,
                   hint: const Text(
                     "Choose Company",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -373,40 +343,37 @@ class _HomeViewState extends State<HomeView> {
                       showDialog(
                           context: context,
                           builder: (context) {
+                            var inset = (MediaQuery.of(context).size.width - 600)/ 2;
+                            inset = inset > 0 ? inset : 0;
                             return Padding(
-                              padding: const EdgeInsets.fromLTRB(350, 180, 350, 180),
+                              padding: EdgeInsets.only(left: inset, right: inset),
                               child: AlertDialog(
                                 title: const Text('Add new company'),
-                                content: Padding(
-                                  padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                  child: Column(
-                                    children: <Widget>[
-                                      TextField(
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Enter company name',
-                                        ),
-                                        controller: divisionName,
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Enter company name',
                                       ),
-                                      const SizedBox(height: 8),
-                                      TextField(
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          hintText: 'Organization number',
-                                        ),
-                                        controller: info,
+                                      controller: divisionName,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                        hintText: 'Optional information for admins',
                                       ),
-                                    ],
-                                  ),
+                                      controller: info,
+                                    ),
+                                  ],
                                 ),
                                 actions: <Widget>[
                                   ElevatedButton(
                                       onPressed: () async {
-                                        if (divisionName.text.isNotEmpty &&
-                                            info.text.isNotEmpty) {
-                                          FirebaseHandler.getInstance()
-                                              .saveDivision(
-                                              divisionName.text, info.text);
+                                        if (divisionName.text.isNotEmpty && info.text.isNotEmpty) {
+                                          FirebaseHandler.getInstance().saveDivision(divisionName.text, info.text);
                                           Navigator.of(context).pop();
                                         } else {
                                           return;
@@ -454,8 +421,7 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       Text(
                         name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
                         height: 40,
@@ -468,16 +434,14 @@ class _HomeViewState extends State<HomeView> {
                           onPressed: () {
                             showDialog<void>(
                               context: context,
-                              barrierDismissible:
-                              false, // user must tap button!
+                              barrierDismissible: false, // user must tap button!
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text('Delete $selectedDivision'),
                                   content: SingleChildScrollView(
                                     child: ListBody(
                                       children: <Widget>[
-                                        Text(
-                                            'Are you sure you want to delete $selectedDivision?'),
+                                        Text('Are you sure you want to delete $selectedDivision?'),
                                       ],
                                     ),
                                   ),
@@ -492,8 +456,7 @@ class _HomeViewState extends State<HomeView> {
                                       child: const Text('Delete'),
                                       onPressed: () {
                                         setState(() {
-                                          FirebaseHandler.getInstance()
-                                              .removeDivision(selectedDivision);
+                                          FirebaseHandler.getInstance().removeDivision(selectedDivision);
                                           selectedDivision = null;
                                         });
                                         Navigator.of(context).pop();
@@ -504,13 +467,12 @@ class _HomeViewState extends State<HomeView> {
                               },
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.transparent),
+                          style: ElevatedButton.styleFrom(primary: Colors.transparent),
                         ),
                       ),
                     ],
                   ),
-                  Text('Org.nr: [$info]')
+                  Text('Admin information: [$info]')
                 ],
               )),
           color: Colors.white,
@@ -522,11 +484,7 @@ class _HomeViewState extends State<HomeView> {
   /// This creates the dropdown menu for offices
   Widget _buildOfficesMenu() {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("Divisions")
-            .doc(selectedDivision)
-            .collection('Offices')
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection("Divisions").doc(selectedDivision).collection('Offices').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             const Text("Loading.....");
@@ -538,8 +496,7 @@ class _HomeViewState extends State<HomeView> {
                 DropdownMenuItem(
                   child: Text(
                     snap.id,
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   value: snap.id,
                 ),
@@ -566,8 +523,7 @@ class _HomeViewState extends State<HomeView> {
                   isExpanded: false,
                   hint: const Text(
                     "Choose Office",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -652,12 +608,8 @@ class _HomeViewState extends State<HomeView> {
                                             officeDescription.text.isNotEmpty &&
                                             contactInfo.text.isNotEmpty) {
                                           Navigator.of(context).pop();
-                                          Office office = Office(
-                                              officeAddress.text,
-                                              officeDescription.text);
-                                          FirebaseHandler.getInstance()
-                                              .saveOffice(selectedDivision,
-                                              officeName.text, office);
+                                          Office office = Office(officeAddress.text, officeDescription.text);
+                                          FirebaseHandler.getInstance().saveOffice(selectedDivision, officeName.text, office);
                                         } else {
                                           return;
                                         }
@@ -704,8 +656,7 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       Text(
                         name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
                         height: 40,
@@ -718,17 +669,13 @@ class _HomeViewState extends State<HomeView> {
                           onPressed: () {
                             showDialog<void>(
                               context: context,
-                              barrierDismissible:
-                              false, // user must tap button!
+                              barrierDismissible: false, // user must tap button!
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text('Delete $selectedOffice'),
                                   content: SingleChildScrollView(
                                     child: ListBody(
-                                      children: <Widget>[
-                                        Text(
-                                            'Are you sure you want to delete $selectedOffice?')
-                                      ],
+                                      children: <Widget>[Text('Are you sure you want to delete $selectedOffice?')],
                                     ),
                                   ),
                                   actions: <Widget>[
@@ -742,9 +689,7 @@ class _HomeViewState extends State<HomeView> {
                                       child: const Text('Delete'),
                                       onPressed: () {
                                         setState(() {
-                                          FirebaseHandler.getInstance()
-                                              .removeOffice(selectedDivision,
-                                              selectedOffice);
+                                          FirebaseHandler.getInstance().removeOffice(selectedDivision, selectedOffice);
                                           selectedOffice = null;
                                         });
                                         Navigator.of(context).pop();
@@ -755,8 +700,7 @@ class _HomeViewState extends State<HomeView> {
                               },
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.transparent),
+                          style: ElevatedButton.styleFrom(primary: Colors.transparent),
                         ),
                       ),
                     ],
@@ -775,10 +719,7 @@ class _HomeViewState extends State<HomeView> {
   /// This creates the dropdown menu for spaces
   Widget _buildRoomMenu() {
     return StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('Rooms_2')
-            .where('Office', isEqualTo: selectedOffice)
-            .snapshots(),
+        stream: FirebaseFirestore.instance.collection('Rooms_2').where('Office', isEqualTo: selectedOffice).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             const Text("Loading.....");
@@ -791,8 +732,7 @@ class _HomeViewState extends State<HomeView> {
                   DropdownMenuItem(
                     child: Text(
                       snap.id,
-                      style: const TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                     ),
                     value: snap.id,
                   ),
@@ -819,8 +759,7 @@ class _HomeViewState extends State<HomeView> {
                   isExpanded: false,
                   hint: const Text(
                     "Choose Room",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -861,89 +800,80 @@ class _HomeViewState extends State<HomeView> {
                               padding: const EdgeInsets.fromLTRB(350, 0, 350, 0),
                               child: AlertDialog(
                                 title: const Text('Add new room'),
-                                content: StatefulBuilder(
-                                    builder: (context, setState) {
-                                      return SingleChildScrollView(
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                                          child: Column(
-                                            children: <Widget>[
-                                              TextField(
-                                                decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  hintText: 'Enter room name',
-                                                ),
-                                                controller: roomNameInput,
-                                              ),
-                                              const SizedBox(height: 8),
-                                              TextField(
-                                                decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  hintText: 'Enter room number',
-                                                ),
-                                                controller: roomNr,
-                                              ),
-                                              const SizedBox(height: 8),
-                                              TextField(
-                                                decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  hintText: 'Description',
-                                                ),
-                                                controller: description,
-                                              ),
-                                              const SizedBox(height: 8),
-
-                                              /// Button for adding new inputs
-                                              ListTile(
-                                                title: const Text('Add new workspace'),
-                                                onTap: () {
-                                                  final controller = TextEditingController();
-                                                  final field = TextField(
-                                                    controller: controller,
-                                                    decoration: const InputDecoration(
-                                                      border: OutlineInputBorder(),
-                                                      labelText: "Enter equipment for workspace",
-                                                      contentPadding: EdgeInsets.all(10),
-                                                    ),
-                                                  );
-                                                  setState(() {
-                                                    // adds the new input to a list in the top
-                                                    _controllers.add(controller);
-                                                    _fields.add(field);
-                                                  });
-                                                },
-                                                tileColor: Colors.grey[100],
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
-                                              ),
-                                              const SizedBox(height: 6),
-
-
-                                              /// Calls the list with the inputs
-                                              _dynamicList(),
-                                            ],
+                                content: StatefulBuilder(builder: (context, setState) {
+                                  return SingleChildScrollView(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                      child: Column(
+                                        children: <Widget>[
+                                          TextField(
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              hintText: 'Enter room name',
+                                            ),
+                                            controller: roomNameInput,
                                           ),
-                                        ),
-                                      );
-                                    }),
+                                          const SizedBox(height: 8),
+                                          TextField(
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              hintText: 'Enter room number',
+                                            ),
+                                            controller: roomNr,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          TextField(
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(),
+                                              hintText: 'Description',
+                                            ),
+                                            controller: description,
+                                          ),
+                                          const SizedBox(height: 8),
 
+                                          /// Button for adding new inputs
+                                          ListTile(
+                                            title: const Text('Add new workspace'),
+                                            onTap: () {
+                                              final controller = TextEditingController();
+                                              final field = TextField(
+                                                controller: controller,
+                                                decoration: const InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  labelText: "Enter equipment for workspace",
+                                                  contentPadding: EdgeInsets.all(10),
+                                                ),
+                                              );
+                                              setState(() {
+                                                // adds the new input to a list in the top
+                                                _controllers.add(controller);
+                                                _fields.add(field);
+                                              });
+                                            },
+                                            tileColor: Colors.grey[100],
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                                          ),
+                                          const SizedBox(height: 6),
+
+                                          /// Calls the list with the inputs
+                                          _dynamicList(),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
                                 actions: <Widget>[
                                   ElevatedButton(
                                       onPressed: () async {
-                                        if (roomNameInput.text.isNotEmpty &&
-                                            roomNr.text.isNotEmpty &&
-                                            description.text.isNotEmpty) {
-
-
-                                          Map <int, List<String>> workSpaces = Map();
+                                        if (roomNameInput.text.isNotEmpty && roomNr.text.isNotEmpty && description.text.isNotEmpty) {
+                                          Map<int, List<String>> workSpaces = Map();
                                           // iterates through the inputs
                                           for (var j = 0; j < _controllers.length; j++) {
-
                                             // Gets text from the inputs
                                             String text = _controllers[j].text;
-                                            List<String> parsedEquipment= text.split(", ");
-                                            workSpaces[j+1] = parsedEquipment;
+                                            List<String> parsedEquipment = text.split(", ");
+                                            workSpaces[j + 1] = parsedEquipment;
                                           }
-
 
                                           // split timeslots into start and end
                                           var slot_1 = timeslot_1.split('-');
@@ -953,7 +883,8 @@ class _HomeViewState extends State<HomeView> {
                                             {'start': slot_2[0], 'end': slot_2[1]}
                                           ];
 
-                                          Room room = Room(int.parse(roomNr.text), workSpaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
+                                          Room room = Room(int.parse(roomNr.text), workSpaces, timeslots.toList(), description.text, selectedOffice,
+                                              roomNameInput.text);
                                           FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
                                           Navigator.of(context).pop();
                                         }
@@ -1005,8 +936,7 @@ class _HomeViewState extends State<HomeView> {
                     children: [
                       Text(
                         name,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Container(
                         height: 40,
@@ -1019,17 +949,13 @@ class _HomeViewState extends State<HomeView> {
                           onPressed: () {
                             showDialog<void>(
                               context: context,
-                              barrierDismissible:
-                              false, // user must tap button!
+                              barrierDismissible: false, // user must tap button!
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('AlertDialog Title'),
                                   content: SingleChildScrollView(
                                     child: ListBody(
-                                      children: <Widget>[
-                                        Text(
-                                            'Are you sure you want to delete $selectedRoom?')
-                                      ],
+                                      children: <Widget>[Text('Are you sure you want to delete $selectedRoom?')],
                                     ),
                                   ),
                                   actions: <Widget>[
@@ -1043,9 +969,7 @@ class _HomeViewState extends State<HomeView> {
                                       child: const Text('Delete'),
                                       onPressed: () {
                                         setState(() {
-                                          FirebaseHandler.getInstance()
-                                              .removeRoom(int.parse(
-                                              selectedRoom.toString()));
+                                          FirebaseHandler.getInstance().removeRoom(int.parse(selectedRoom.toString()));
                                           selectedRoom = null;
                                         });
                                         Navigator.of(context).pop();
@@ -1056,8 +980,7 @@ class _HomeViewState extends State<HomeView> {
                               },
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.transparent),
+                          style: ElevatedButton.styleFrom(primary: Colors.transparent),
                         ),
                       ),
                     ],
@@ -1087,8 +1010,7 @@ class _HomeViewState extends State<HomeView> {
                   child: _fields[index],
                 );
               },
-            )
-        ),
+            )),
       ],
     );
   }
@@ -1101,7 +1023,4 @@ class _HomeViewState extends State<HomeView> {
     }
     return count;
   }
-
-
-
 }
