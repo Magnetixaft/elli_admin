@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:time_range_picker/time_range_picker.dart';
 import '../firebase_handler.dart';
 
 /// A tab for viewing offices, rooms and booking
