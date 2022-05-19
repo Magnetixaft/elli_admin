@@ -16,6 +16,7 @@ class ConfigTab extends StatefulWidget {
 
 class _ConfigTabState extends State<ConfigTab> {
   var selectedAdmin;
+  double fieldDistance = 10;
 
   callback() {
     setState(() {});
@@ -27,6 +28,16 @@ class _ConfigTabState extends State<ConfigTab> {
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email);
   }
+
+  /*
+  ///Encrypts users [email] and return encrypted, needs .base64 to get String of encrypted
+  Encrypted encryptEmail(String email) {
+    final key = Key.fromUtf8('testkeytestkeytestkeytestkeytest');
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(key));
+    return encrypter.encrypt(email, iv: iv);
+  }
+  */
 
   ///Builds the config_tab Widget.
   @override
@@ -118,6 +129,7 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  //Hopefully a new and improved version
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
   ///All buttons and text fields used here should have width: 800.
@@ -126,6 +138,7 @@ class _ConfigTabState extends State<ConfigTab> {
         future: FirebaseHandler.getInstance().getAllAdmins(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {}
             return AlertDialog(
               title: const Text("Administrators"),
               content: Column(
@@ -133,7 +146,17 @@ class _ConfigTabState extends State<ConfigTab> {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                      child: Column(),
+                      child: Column(
+                        children: const [
+                          Text("sug kuk")
+                          /*
+                          StreamBuilder<QuerySnapshot>(
+                              builder: (context, snapshot) {
+                        
+                          }),
+                          */
+                        ],
+                      ),
                     ),
                   )
                 ],
@@ -144,6 +167,9 @@ class _ConfigTabState extends State<ConfigTab> {
         });
   }
 
+  ///Builds pop up for editing administrators.
+  ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
+  ///All buttons and text fields used here should have width: 800.
   Widget _buildAdminEdit(BuildContext context) {
     return AlertDialog(
       title: const Text("Administrators"),
@@ -229,6 +255,7 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  ///The delete admin button. Deletes the selected administrator.
   Widget _buildDeleteSelectedAdmin(BuildContext context) {
     return SizedBox(
       width: 800,
@@ -245,13 +272,10 @@ class _ConfigTabState extends State<ConfigTab> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      setState(() {
-                        FirebaseHandler.getInstance()
-                            .removeAdmin(selectedAdmin);
-                        selectedAdmin = null;
-                      });
-
-                      Navigator.of(context).pop();
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              _deleteAdminCheck(context, selectedAdmin));
                     },
                     label: const Text(
                       'Delete selected admin',
@@ -269,10 +293,42 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
-  Widget _buildAddNewAdmin(BuildContext context) {
-    final name = TextEditingController();
-    final email = TextEditingController();
+  ///Builds a popup double checking if the selected admin should be deleted.
+  Widget _deleteAdminCheck(BuildContext context, String admin) {
+    return AlertDialog(
+      title: Text("Delete " + admin + " ?"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("Are you sure you want to delete " + admin + " ?"),
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('No'),
+        ),
+        FlatButton(
+          onPressed: () {
+            setState(() {
+              FirebaseHandler.getInstance().removeAdmin(selectedAdmin);
+              selectedAdmin = null;
+            });
+            Navigator.of(context).pop();
+          },
+          textColor: Theme.of(context).primaryColor,
+          child: const Text('Yes, delete that mofo'),
+        ),
+      ],
+    );
+  }
 
+  ///Builds the button for adding a new administrator.
+  Widget _buildAddNewAdmin(BuildContext context) {
     return SizedBox(
       width: 800,
       child: Padding(
@@ -289,71 +345,9 @@ class _ConfigTabState extends State<ConfigTab> {
                   TextButton.icon(
                     onPressed: () {
                       showDialog(
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text("Add administrator"),
-                              content: Column(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          25, 25, 25, 0),
-                                      child: Column(
-                                        children: [
-                                          TextField(
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              hintText: 'Enter admin name',
-                                            ),
-                                            controller: name,
-                                          ),
-                                          TextField(
-                                            decoration: const InputDecoration(
-                                              border: OutlineInputBorder(),
-                                              hintText: 'Email',
-                                            ),
-                                            controller: email,
-                                          ),
-                                          ElevatedButton(
-                                              onPressed: () async {
-                                                if (name.text.isNotEmpty &&
-                                                    isEmail(email.text)) {
-                                                  await FirebaseHandler
-                                                          .getInstance()
-                                                      .addAdmin(email.text,
-                                                          "all", name.text);
-                                                  Navigator.of(context).pop();
-                                                } else {
-                                                  return;
-                                                }
-                                              },
-                                              child: const Text('Add')),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    selectedAdmin = null;
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Close'),
-                                ),
-                              ],
-                            );
-                            /*
-                            return AlertDialog(
-                              title: const Text('Add administrator'),
-                              content: Column(
-                                children: <Widget>[
-                                  
-                              ],
-                            );*/
-                          },
-                          context: context);
+                          context: context,
+                          builder: (BuildContext context) =>
+                              _addNewAdminForm(context));
                     },
                     label: const Text(
                       'Add new admin',
@@ -368,6 +362,69 @@ class _ConfigTabState extends State<ConfigTab> {
           color: Colors.grey.shade100,
         ),
       ),
+    );
+  }
+
+  ///Builds the form for adding a new administrator.
+  Widget _addNewAdminForm(BuildContext context) {
+    final name = TextEditingController();
+    final email = TextEditingController();
+
+    return AlertDialog(
+      title: const Text("Add administrator"),
+      content: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
+            child: Column(
+              children: [
+                SizedBox(height: fieldDistance),
+                SizedBox(
+                  width: 800,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      if (name.text.isNotEmpty && isEmail(email.text)) {
+                        await FirebaseHandler.getInstance()
+                            .addAdmin(email.text, "all", name.text);
+                        Navigator.of(context).pop();
+                      } else {
+                        return;
+                      }
+                    },
+                    icon: const Icon(Icons.save),
+                    label: const Text("Save"),
+                  ),
+                ),
+                SizedBox(height: fieldDistance),
+                TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    label: Text('Enter admin name'),
+                  ),
+                  controller: name,
+                ),
+                SizedBox(height: fieldDistance),
+                TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    label: Text('Email'),
+                  ),
+                  controller: email,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            selectedAdmin = null;
+            Navigator.of(context).pop();
+          },
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 
