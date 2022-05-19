@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) => checkLoggedIn());
+    WidgetsBinding.instance.addPostFrameCallback((_) => checkLoggedIn());
   }
 
   @override
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Center(
-          child: Container(
+          child: SizedBox(
             width: 700,
             child: Column(
               children: [
@@ -118,12 +118,15 @@ class _MyHomePageState extends State<MyHomePage> {
   showAlertDialog(BuildContext context) {
     Widget okButton = TextButton(
       child: Text("OK"),
-      onPressed: () { Navigator.pop(context);},
+      onPressed: () {
+        Navigator.pop(context);
+      },
     );
 
     AlertDialog alert = AlertDialog(
       title: Text("Login Failed"),
-      content: Text("You don't have admin privileges. Contact your system administrator for more info."),
+      content: const Text(
+          "You don't have admin privileges. Contact your system administrator for more info."),
       actions: [
         okButton,
       ],

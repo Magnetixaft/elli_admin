@@ -1,12 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
-
+import 'package:elli_admin/authentication_handler.dart';
 import '../theme.dart';
 
 /// A tab for viewing the admin config settings for ELLI
 ///
 /// Allows an admin to edit the Admin priviliges, and view the about section.
+//TODO implement hashing for the admin emails.
 class ConfigTab extends StatefulWidget {
   const ConfigTab({Key? key}) : super(key: key);
 
@@ -16,11 +16,7 @@ class ConfigTab extends StatefulWidget {
 
 class _ConfigTabState extends State<ConfigTab> {
   var selectedAdmin;
-  double fieldDistance = 10;
-
-  callback() {
-    setState(() {});
-  }
+  double fieldDistance = 20;
 
   ///Returns true if the text string provided could be an email
   bool isEmail(String email) {
@@ -28,16 +24,6 @@ class _ConfigTabState extends State<ConfigTab> {
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email);
   }
-
-  /*
-  ///Encrypts users [email] and return encrypted, needs .base64 to get String of encrypted
-  Encrypted encryptEmail(String email) {
-    final key = Key.fromUtf8('testkeytestkeytestkeytestkeytest');
-    final iv = IV.fromLength(16);
-    final encrypter = Encrypter(AES(key));
-    return encrypter.encrypt(email, iv: iv);
-  }
-  */
 
   ///Builds the config_tab Widget.
   @override
@@ -108,7 +94,7 @@ class _ConfigTabState extends State<ConfigTab> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) =>
-                                _buildAdminEdit(context));
+                                _buildAdminEdit2(context));
                       },
                       child: const Align(
                         alignment: Alignment.center,
@@ -129,7 +115,6 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
-  /*
   //Hopefully a new and improved version
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
@@ -154,33 +139,65 @@ class _ConfigTabState extends State<ConfigTab> {
                         children: [
                           _adminDropDown(snapshot.data!),
                           _buildAddNewAdmin(context),
-                          _buildDeleteSelectedAdmin(context),
+                          _buildDeleteSelectedAdmin(context, snapshot.data!),
                         ],
                       ),
                     ),
                   )
                 ],
               ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    selectedAdmin = null;
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Close'),
+                ),
+              ],
             );
           }
           return const Center(child: CircularProgressIndicator());
         });
   }
 
+  ///Returns the drop down menu for
   Widget _adminDropDown(List<Admin> adminList) {
-    List<String> names = _getAdminNames;
-    
+    List<DropdownMenuItem<String>> adminItems = [];
+
+    for (Admin admin in adminList) {
+      adminItems.add(
+        DropdownMenuItem(
+          child: Text(
+            admin.name,
+            style: const TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          value: admin.name,
+        ),
+      );
+    }
+    return DropdownButton(
+      items: adminItems,
+      onChanged: (admin) {
+        setState(() {
+          selectedAdmin = admin.toString();
+        });
+        Navigator.of(context).pop();
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => _buildAdminEdit2(context));
+      },
+      value: selectedAdmin,
+      isExpanded: false,
+      hint: const Text(
+        "Choose Admin",
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
-  List<String>  _getAdminNames(List<Admin> adminList){
-    List<String> names = [];
-    for(Admin admin in  adminList){
-      names.add(admin.getName());
-    }
-    return names;
-  }; 
-  */
-
+  /*
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
   ///All buttons and text fields used here should have width: 800.
@@ -268,9 +285,10 @@ class _ConfigTabState extends State<ConfigTab> {
       ],
     );
   }
+  */
 
   ///The delete admin button. Deletes the selected administrator.
-  Widget _buildDeleteSelectedAdmin(BuildContext context) {
+  Widget _buildDeleteSelectedAdmin(BuildContext context, List<Admin> list) {
     return SizedBox(
       width: 800,
       child: Padding(
@@ -286,10 +304,13 @@ class _ConfigTabState extends State<ConfigTab> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              _deleteAdminCheck(context, selectedAdmin));
+                      if (selectedAdmin != null) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                _deleteAdminCheck(
+                                    context, _getAdminHash(list), list));
+                      }
                     },
                     label: const Text(
                       'Delete selected admin',
@@ -307,15 +328,27 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  String _getAdminHash(List<Admin> adminList) {
+    for (Admin admin in adminList) {
+      if (admin.name == selectedAdmin) {
+        return admin.adminHashId;
+      }
+    }
+    return "😭 error!";
+  }
+
   ///Builds a popup double checking if the selected admin should be deleted.
-  Widget _deleteAdminCheck(BuildContext context, String admin) {
+  Widget _deleteAdminCheck(
+      BuildContext context, String admin, List<Admin> list) {
     return AlertDialog(
-      title: Text("Delete " + admin + " ?"),
+      title: Text("Delete " + selectedAdmin + " ?"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Are you sure you want to delete " + admin + " ?"),
+          Text("Are you sure you want to remove " +
+              selectedAdmin +
+              "'s admin priviliges?"),
         ],
       ),
       actions: <Widget>[
@@ -329,13 +362,15 @@ class _ConfigTabState extends State<ConfigTab> {
         FlatButton(
           onPressed: () {
             setState(() {
-              FirebaseHandler.getInstance().removeAdmin(selectedAdmin);
+              FirebaseHandler.getInstance().removeAdmin(admin);
               selectedAdmin = null;
             });
+            print(selectedAdmin);
+            Navigator.of(context).pop();
             Navigator.of(context).pop();
           },
           textColor: Theme.of(context).primaryColor,
-          child: const Text('Yes, delete that mofo'),
+          child: const Text('Yes'),
         ),
       ],
     );
@@ -400,7 +435,13 @@ class _ConfigTabState extends State<ConfigTab> {
                       if (name.text.isNotEmpty && isEmail(email.text)) {
                         await FirebaseHandler.getInstance()
                             .addAdmin(email.text, "all", name.text);
+                        selectedAdmin = null;
                         Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                _buildAdminEdit2(context));
                       } else {
                         return;
                       }
