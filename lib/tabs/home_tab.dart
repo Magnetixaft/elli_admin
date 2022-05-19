@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:time_range_picker/time_range_picker.dart';
 import '../firebase_handler.dart';
 
 /// A tab for viewing offices, rooms and booking
@@ -839,6 +839,9 @@ class _HomeViewState extends State<HomeView> {
 
   /// This creates a card item for adding a new space
   Widget _buildAddNewRoom() {
+    String startTimePicker = "";
+    String endTimePicker = "";
+
     bool isCheckedTwoChoices = false;
     bool isCheckedEveryHour = false;
 
@@ -861,6 +864,8 @@ class _HomeViewState extends State<HomeView> {
     final roomNameInput = TextEditingController();
     final roomNr = TextEditingController();
     final description = TextEditingController();
+    final customTimeslot = TextEditingController();
+
 
     return Container(
       width: double.infinity,
@@ -963,7 +968,16 @@ class _HomeViewState extends State<HomeView> {
                                                 },
                                                 controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
                                               ),
-                                            ],
+                                        const SizedBox(height: 8),
+                                        TextField(
+                                                decoration: const InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  hintText: 'Or: Add custom timeslot, ex: "09:00-12:00".',
+                                                ),
+                                                controller: customTimeslot,
+                                              ),
+                                              const SizedBox(height: 6),
+                                      ],
                                           ),
                                       );
                                     }),
@@ -973,21 +987,31 @@ class _HomeViewState extends State<HomeView> {
                                       onPressed: () async {
                                         if (roomNameInput.text.isNotEmpty &&
                                             roomNr.text.isNotEmpty &&
-                                            description.text.isNotEmpty &&
-                                        isCheckedEveryHour != isCheckedTwoChoices) {
-
-
-                                          Map <int, List<String>> workSpaces = Map();
-                                          // iterates through the inputs
-                                          for (var j = 0; j < _controllers.length; j++) {
-
-                                            // Gets text from the inputs
-                                            String text = _controllers[j].text;
-                                            List<String> parsedEquipment= text.split(", ");
-                                            workSpaces[j+1] = parsedEquipment;
+                                            description.text.isNotEmpty) {
+                                          if ((isCheckedEveryHour == true &&
+                                              isCheckedTwoChoices == true) ||
+                                              (customTimeslot.text.isNotEmpty && (isCheckedEveryHour == true || isCheckedTwoChoices == true))) {
+                                            return;
                                           }
+                                          else {
+                                            Map <int,
+                                                List<
+                                                    String>> workSpaces = Map();
+                                            // iterates through the inputs
+                                            for (var j = 0; j <
+                                                _controllers.length; j++) {
+                                              // Gets text from the inputs
+                                              String text = _controllers[j]
+                                                  .text;
+                                              List<
+                                                  String> parsedEquipment = text
+                                                  .split(", ");
+                                              workSpaces[j + 1] =
+                                                  parsedEquipment;
+                                            }
 
-                                          var timeslots = <Map<String, String>>[];
+                                            var timeslots = <
+                                                Map<String, String>>[];
                                             if (isCheckedTwoChoices) {
                                               // split timeslots into start and end
                                               var slot_1 = choice1.split('-');
@@ -1059,12 +1083,28 @@ class _HomeViewState extends State<HomeView> {
                                               ];
                                             }
 
-                                          Room room = Room(int.parse(roomNr.text), workSpaces, timeslots.toList(), description.text, selectedOffice, roomNameInput.text);
-                                          FirebaseHandler.getInstance().saveRoom(int.parse(roomNr.text), room);
-                                          Navigator.of(context).pop();
-                                        }
+                                            if (isCheckedEveryHour == false &&
+                                                isCheckedTwoChoices == false) {
+                                              var slot = customTimeslot.text.split('-');
+                                              timeslots = [{
+                                                'start': slot[0],
+                                                'end': slot[1]
+                                              },
+                                              ];
+                                            }
 
-                                        // TODO add more workspaces and timeslots
+                                            Room room = Room(
+                                                int.parse(roomNr.text),
+                                                workSpaces, timeslots.toList(),
+                                                description.text,
+                                                selectedOffice,
+                                                roomNameInput.text);
+                                            FirebaseHandler.getInstance()
+                                                .saveRoom(
+                                                int.parse(roomNr.text), room);
+                                            Navigator.of(context).pop();
+                                          }
+                                        }
                                         else {
                                           return;
                                         }
@@ -1207,5 +1247,6 @@ class _HomeViewState extends State<HomeView> {
     }
     return count;
   }
+
 
 }
