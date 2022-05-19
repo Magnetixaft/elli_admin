@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../firebase_handler.dart';
+import '../theme.dart';
 
 /// A tab for viewing offices, rooms and booking
 ///
@@ -61,9 +62,10 @@ class _HomeViewState extends State<HomeView> {
             const SizedBox(height: 10),
             const Text("    Home",
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                )),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    fontFamily: 'Poppins',
+                    color: ElliColors.pink)),
             const SizedBox(height: 24),
 
             /// The dropdown menus and small header for each
