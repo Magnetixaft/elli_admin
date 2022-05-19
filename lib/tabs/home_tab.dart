@@ -1006,26 +1006,45 @@ class _HomeViewState extends State<HomeView> {
                                         if (roomNameInput.text.isNotEmpty &&
                                             roomNr.text.isNotEmpty &&
                                             description.text.isNotEmpty) {
-
-                                            Map <int, List<String>> workSpaces = Map();
+                                          if ((isCheckedEveryHour == true &&
+                                              isCheckedTwoChoices == true) ||
+                                              (_controllersTimeslots
+                                                  .isNotEmpty &&
+                                                  (isCheckedEveryHour == true ||
+                                                      isCheckedTwoChoices ==
+                                                          true))) {
+                                            return;
+                                          }
+                                          else {
+                                            Map <int,
+                                                List<
+                                                    String>> workSpaces = Map();
                                             // iterates through the inputs
-                                            for (var j = 0; j < _controllersEquipment.length; j++) {
+                                            for (var j = 0; j <
+                                                _controllersEquipment
+                                                    .length; j++) {
                                               // Gets text from the inputs
-                                              String text = _controllersEquipment[j].text;
-                                              List<String> parsedEquipment = text
+                                              String text = _controllersEquipment[j]
+                                                  .text;
+                                              List<
+                                                  String> parsedEquipment = text
                                                   .split(", ");
                                               workSpaces[j + 1] =
                                                   parsedEquipment;
                                             }
 
-                                            var timeslots = <Map<String, String>>[];
+                                            var timeslots = <
+                                                Map<String, String>>[];
                                             // iterates through the inputs
                                             for (var i in _controllersTimeslots) {
                                               // Gets text from the inputs
                                               String text = i.text;
-                                              List<String> slot = text.split('-');
-                                              timeslots.add({'start': slot[0].toString(), 'end': slot[1].toString()});
-
+                                              List<String> slot = text.split(
+                                                  '-');
+                                              timeslots.add({
+                                                'start': slot[0].toString(),
+                                                'end': slot[1].toString()
+                                              });
                                             }
 
                                             if (isCheckedTwoChoices) {
@@ -1054,14 +1073,6 @@ class _HomeViewState extends State<HomeView> {
                                               var time8 = hour8.split('-');
                                               var time9 = hour9.split('-');
                                               var time10 = hour10.split('-');
-
-                                              /*if ((isCheckedEveryHour == true &&
-                                                  isCheckedTwoChoices == true) ||
-                                                  (_controllersTimeslots.isNotEmpty && (isCheckedEveryHour == true || isCheckedTwoChoices == true))) {
-                                                return;
-                                              }
-
-                                               */
 
                                               timeslots = [
                                                 {
@@ -1107,16 +1118,6 @@ class _HomeViewState extends State<HomeView> {
                                               ];
                                             }
 
-                                            if (isCheckedEveryHour == false &&
-                                                isCheckedTwoChoices == false) {
-                                              var slot = customTimeslot.text.split('-');
-                                              timeslots = [{
-                                                'start': slot[0],
-                                                'end': slot[1]
-                                              },
-                                              ];
-                                            }
-
                                             Room room = Room(
                                                 int.parse(roomNr.text),
                                                 workSpaces, timeslots.toList(),
@@ -1127,6 +1128,7 @@ class _HomeViewState extends State<HomeView> {
                                                 .saveRoom(
                                                 int.parse(roomNr.text), room);
                                             Navigator.of(context).pop();
+                                          }
                                         }
                                         else {
                                           return;
