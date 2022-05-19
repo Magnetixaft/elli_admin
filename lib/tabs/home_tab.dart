@@ -19,12 +19,15 @@ class _HomeViewState extends State<HomeView> {
   var selectedRoom;
 
   /// Lists that hold textinputs
-  final List<TextEditingController> _controllers = [];
-  final List<TextField> _fields = [];
+  final List<TextEditingController> _controllersEquipment = [];
+  final List<TextField> _fieldsEquipment = [];
+
+  final List<TextEditingController> _controllersTimeslots = [];
+  final List<TextField> _fieldsTimeslots = [];
 
   @override
   void dispose() {
-    for (final controller in _controllers) {
+    for (final controller in _controllersEquipment) {
       controller.dispose();
     }
     super.dispose();
@@ -387,7 +390,7 @@ class _HomeViewState extends State<HomeView> {
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
-                                        hintText: 'Enter company name',
+                                        labelText: 'Enter company name',
                                       ),
                                       controller: divisionName,
                                     ),
@@ -395,7 +398,7 @@ class _HomeViewState extends State<HomeView> {
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
-                                        hintText: 'Optional information for admins',
+                                        labelText: 'Optional information for admins',
                                       ),
                                       controller: info,
                                     ),
@@ -616,7 +619,7 @@ class _HomeViewState extends State<HomeView> {
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
-                                        hintText: 'Enter office name',
+                                        labelText: 'Enter office name',
                                       ),
                                       controller: officeName,
                                     ),
@@ -624,7 +627,7 @@ class _HomeViewState extends State<HomeView> {
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
-                                        hintText: 'Enter address',
+                                        labelText: 'Enter address',
                                       ),
                                       controller: officeAddress,
                                     ),
@@ -632,7 +635,7 @@ class _HomeViewState extends State<HomeView> {
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
-                                        hintText: 'Enter description',
+                                        labelText: 'Enter description',
                                       ),
                                       controller: officeDescription,
                                     ),
@@ -640,7 +643,7 @@ class _HomeViewState extends State<HomeView> {
                                     TextField(
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
-                                        hintText: 'Enter optional contact info',
+                                        labelText: 'Enter optional contact info',
                                       ),
                                       controller: contactInfo,
                                     ),
@@ -838,9 +841,6 @@ class _HomeViewState extends State<HomeView> {
 
   /// This creates a card item for adding a new space
   Widget _buildAddNewRoom() {
-    String startTimePicker = "";
-    String endTimePicker = "";
-
     bool isCheckedTwoChoices = false;
     bool isCheckedEveryHour = false;
 
@@ -894,10 +894,11 @@ class _HomeViewState extends State<HomeView> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
+                                        SizedBox(height: 4),
                                         TextField(
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
-                                            hintText: 'Enter room name',
+                                            labelText: 'Enter room name',
                                           ),
                                           controller: roomNameInput,
                                         ),
@@ -905,7 +906,7 @@ class _HomeViewState extends State<HomeView> {
                                         TextField(
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
-                                            hintText: 'Enter room number',
+                                            labelText: 'Enter room number',
                                           ),
                                           controller: roomNr,
                                         ),
@@ -913,69 +914,87 @@ class _HomeViewState extends State<HomeView> {
                                         TextField(
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
-                                            hintText: 'Description',
+                                            labelText: 'Description',
                                           ),
                                           controller: description,
                                         ),
+                                        const SizedBox(height: 12),
+
+                                        /// Button for adding new inputs
+                                        ListTile(
+                                          title: const Text('Add new workspace'),
+                                          onTap: () {
+                                            final controller = TextEditingController();
+                                            final field = TextField(
+                                              controller: controller,
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: "Optional: Enter equipment for workspace $countWorkspace. Seperate with \",\"",
+                                                contentPadding: EdgeInsets.all(10),
+                                              ),
+                                            );
+                                            setState(() {
+                                              countWorkspace++;
+                                              // adds the new input to a list in the top
+                                              _controllersEquipment.add(controller);
+                                              _fieldsEquipment.add(field);
+                                            });
+                                          },
+                                          tileColor: Colors.grey[100],
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                                        ),
                                         const SizedBox(height: 6),
 
-                                              /// Button for adding new inputs
-                                              ListTile(
-                                                title: const Text('Add new workspace'),
-                                                onTap: () {
-                                                  final controller = TextEditingController();
-                                                  final field = TextField(
-                                                    controller: controller,
-                                                    decoration: InputDecoration(
-                                                      border: OutlineInputBorder(),
-                                                      labelText: "Optional: Enter equipment for workspace $countWorkspace. Seperate with \",\"",
-                                                      contentPadding: EdgeInsets.all(10),
-                                                    ),
-                                                  );
-                                                  setState(() {
-                                                    countWorkspace++;
-                                                    // adds the new input to a list in the top
-                                                    _controllers.add(controller);
-                                                    _fields.add(field);
-                                                  });
-                                                },
-                                                tileColor: Colors.grey[100],
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
-                                              ),
-                                              const SizedBox(height: 6),
+                                        /// Calls the list with the inputs
+                                        _dynamicEquipmentList(),
 
-                                              /// Calls the list with the inputs
-                                              _dynamicList(),
+                                        CheckboxListTile(
+                                          title: const Text("Timeslots for 06:30-12:00 & 13:00-17:00"),
+                                          value: isCheckedTwoChoices,
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              isCheckedTwoChoices = newValue!;
+                                            });
+                                          },
+                                          controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                                        ),
+                                        CheckboxListTile(
+                                          title: const Text("Timeslots for every hour between 08:00-18:00"),
+                                          value: isCheckedEveryHour,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              isCheckedEveryHour = val!;
+                                            });
+                                          },
+                                          controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                                        ),
+                                        const SizedBox(height: 12),
 
-                                              CheckboxListTile(
-                                                title: const Text("Timeslots for 06:30-12:00 & 13:00-17:00"),
-                                                value: isCheckedTwoChoices,
-                                                onChanged: (newValue) {
-                                                  setState(() {
-                                                    isCheckedTwoChoices = newValue!;
-                                                  });
-                                                },
-                                                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                                        /// Button for adding new timeslots
+                                        ListTile(
+                                          title: const Text('Or: Add new custom timeslot'),
+                                          onTap: () {
+                                            final controller = TextEditingController();
+                                            final field = TextField(
+                                              controller: controller,
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: "Optional: Add new timeslot, ex: 07:30-10:00",
+                                                contentPadding: EdgeInsets.all(10),
                                               ),
-                                              CheckboxListTile(
-                                                title: const Text("Timeslots for every hour between 08:00-18:00"),
-                                                value: isCheckedEveryHour,
-                                                onChanged: (val) {
-                                                  setState(() {
-                                                    isCheckedEveryHour = val!;
-                                                  });
-                                                },
-                                                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
-                                              ),
-                                        const SizedBox(height: 8),
-                                        TextField(
-                                                decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  hintText: 'Or: Add custom timeslot, ex: "09:00-12:00".',
-                                                ),
-                                                controller: customTimeslot,
-                                              ),
-                                              const SizedBox(height: 6),
+                                            );
+                                            setState(() {
+                                              // adds the new input to a list in the top
+                                              _controllersTimeslots.add(controller);
+                                              _fieldsTimeslots.add(field);
+                                            });
+                                          },
+                                          tileColor: Colors.grey[100],
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                                        ),
+                                        const SizedBox(height: 6),
+
+                                        _dynamicTimeslotList(),
                                       ],
                                           ),
                                       );
@@ -987,30 +1006,28 @@ class _HomeViewState extends State<HomeView> {
                                         if (roomNameInput.text.isNotEmpty &&
                                             roomNr.text.isNotEmpty &&
                                             description.text.isNotEmpty) {
-                                          if ((isCheckedEveryHour == true &&
-                                              isCheckedTwoChoices == true) ||
-                                              (customTimeslot.text.isNotEmpty && (isCheckedEveryHour == true || isCheckedTwoChoices == true))) {
-                                            return;
-                                          }
-                                          else {
-                                            Map <int,
-                                                List<
-                                                    String>> workSpaces = Map();
+
+                                            Map <int, List<String>> workSpaces = Map();
                                             // iterates through the inputs
-                                            for (var j = 0; j <
-                                                _controllers.length; j++) {
+                                            for (var j = 0; j < _controllersEquipment.length; j++) {
                                               // Gets text from the inputs
-                                              String text = _controllers[j]
-                                                  .text;
-                                              List<
-                                                  String> parsedEquipment = text
+                                              String text = _controllersEquipment[j].text;
+                                              List<String> parsedEquipment = text
                                                   .split(", ");
                                               workSpaces[j + 1] =
                                                   parsedEquipment;
                                             }
 
-                                            var timeslots = <
-                                                Map<String, String>>[];
+                                            var timeslots = <Map<String, String>>[];
+                                            // iterates through the inputs
+                                            for (var i in _controllersTimeslots) {
+                                              // Gets text from the inputs
+                                              String text = i.text;
+                                              List<String> slot = text.split('-');
+                                              timeslots.add({'start': slot[0].toString(), 'end': slot[1].toString()});
+
+                                            }
+
                                             if (isCheckedTwoChoices) {
                                               // split timeslots into start and end
                                               var slot_1 = choice1.split('-');
@@ -1037,6 +1054,14 @@ class _HomeViewState extends State<HomeView> {
                                               var time8 = hour8.split('-');
                                               var time9 = hour9.split('-');
                                               var time10 = hour10.split('-');
+
+                                              /*if ((isCheckedEveryHour == true &&
+                                                  isCheckedTwoChoices == true) ||
+                                                  (_controllersTimeslots.isNotEmpty && (isCheckedEveryHour == true || isCheckedTwoChoices == true))) {
+                                                return;
+                                              }
+
+                                               */
 
                                               timeslots = [
                                                 {
@@ -1102,7 +1127,6 @@ class _HomeViewState extends State<HomeView> {
                                                 .saveRoom(
                                                 int.parse(roomNr.text), room);
                                             Navigator.of(context).pop();
-                                          }
                                         }
                                         else {
                                           return;
@@ -1217,7 +1241,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _dynamicList() {
+  Widget _dynamicEquipmentList() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1225,11 +1249,32 @@ class _HomeViewState extends State<HomeView> {
             width: 560,
             height: 170,
             child: ListView.builder(
-              itemCount: _fields.length,
+              itemCount: _fieldsEquipment.length,
               itemBuilder: (context, index) {
                 return Container(
                   margin: const EdgeInsets.all(5),
-                  child: _fields[index],
+                  child: _fieldsEquipment[index],
+                );
+              },
+            )
+        ),
+      ],
+    );
+  }
+
+  Widget _dynamicTimeslotList() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+            width: 560,
+            height: 170,
+            child: ListView.builder(
+              itemCount: _fieldsTimeslots.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.all(5),
+                  child: _fieldsTimeslots[index],
                 );
               },
             )
