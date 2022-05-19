@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
-import 'package:elli_admin/authentication_handler.dart';
 import '../theme.dart';
 
 /// A tab for viewing the admin config settings for ELLI
 ///
 /// Allows an admin to edit the Admin priviliges, and view the about section.
 //TODO implement hashing for the admin emails.
+//TODO apply notifications for blocked actions
 class ConfigTab extends StatefulWidget {
   const ConfigTab({Key? key}) : super(key: key);
 
@@ -115,10 +115,10 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
-  //Hopefully a new and improved version
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
   ///All buttons and text fields used here should have width: 800.
+
   Widget _buildAdminEdit2(BuildContext context) {
     return FutureBuilder<List<Admin>>(
         future: FirebaseHandler.getInstance().getAllAdmins(),
@@ -129,29 +129,23 @@ class _ConfigTabState extends State<ConfigTab> {
               return Text('😭 $error');
             }
             return AlertDialog(
-              title: const Text("Administrators"),
+              title: Text("Administrators"),
               content: Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-                      child: Column(
-                        children: [
-                          _adminDropDown(snapshot.data!),
-                          _buildAddNewAdmin(context),
-                          _buildDeleteSelectedAdmin(context, snapshot.data!),
-                        ],
-                      ),
-                    ),
-                  )
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _adminDropDown(snapshot.data!),
+                  const SizedBox(height: 20),
+                  _buildAddNewAdmin(context),
+                  _buildDeleteSelectedAdmin(context, snapshot.data!),
                 ],
               ),
               actions: <Widget>[
-                TextButton(
+                FlatButton(
                   onPressed: () {
-                    selectedAdmin = null;
                     Navigator.of(context).pop();
                   },
+                  textColor: Theme.of(context).primaryColor,
                   child: const Text('Close'),
                 ),
               ],
@@ -290,7 +284,7 @@ class _ConfigTabState extends State<ConfigTab> {
   ///The delete admin button. Deletes the selected administrator.
   Widget _buildDeleteSelectedAdmin(BuildContext context, List<Admin> list) {
     return SizedBox(
-      width: 800,
+      width: 600,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
         child: Card(
@@ -328,6 +322,7 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  ///Returns the id of an admin with a given name as a String.
   String _getAdminHash(List<Admin> adminList) {
     for (Admin admin in adminList) {
       if (admin.name == selectedAdmin) {
@@ -379,7 +374,7 @@ class _ConfigTabState extends State<ConfigTab> {
   ///Builds the button for adding a new administrator.
   Widget _buildAddNewAdmin(BuildContext context) {
     return SizedBox(
-      width: 800,
+      width: 600,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
         child: Card(
@@ -420,63 +415,59 @@ class _ConfigTabState extends State<ConfigTab> {
     final email = TextEditingController();
 
     return AlertDialog(
-      title: const Text("Add administrator"),
+      title: Text("Add administrator"),
       content: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-            child: Column(
-              children: [
-                SizedBox(height: fieldDistance),
-                SizedBox(
-                  width: 800,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      if (name.text.isNotEmpty && isEmail(email.text)) {
-                        await FirebaseHandler.getInstance()
-                            .addAdmin(email.text, "all", name.text);
-                        selectedAdmin = null;
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                _buildAdminEdit2(context));
-                      } else {
-                        return;
-                      }
-                    },
-                    icon: const Icon(Icons.save),
-                    label: const Text("Save"),
-                  ),
-                ),
-                SizedBox(height: fieldDistance),
-                TextField(
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    label: Text('Enter admin name'),
-                  ),
-                  controller: name,
-                ),
-                SizedBox(height: fieldDistance),
-                TextField(
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    label: Text('Email'),
-                  ),
-                  controller: email,
-                ),
-              ],
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(height: fieldDistance),
+          SizedBox(
+            width: 600,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                if (name.text.isNotEmpty && isEmail(email.text)) {
+                  await FirebaseHandler.getInstance()
+                      .addAdmin(email.text.toLowerCase(), "all", name.text);
+                  selectedAdmin = null;
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          _buildAdminEdit2(context));
+                } else {
+                  return;
+                }
+              },
+              icon: const Icon(Icons.save),
+              label: const Text("Save"),
             ),
           ),
+          SizedBox(height: fieldDistance),
+          TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              label: Text('Enter admin name'),
+            ),
+            controller: name,
+          ),
+          SizedBox(height: fieldDistance),
+          TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              label: Text('Email'),
+            ),
+            controller: email,
+          ),
+          SizedBox(height: fieldDistance),
         ],
       ),
       actions: <Widget>[
-        TextButton(
+        FlatButton(
           onPressed: () {
-            selectedAdmin = null;
             Navigator.of(context).pop();
           },
+          textColor: Theme.of(context).primaryColor,
           child: const Text('Close'),
         ),
       ],
@@ -512,8 +503,8 @@ class _ConfigTabState extends State<ConfigTab> {
                             context: context,
                             builder: (BuildContext context) => _buildPopupDialog(
                                 context,
-                                "About",
-                                "This is a school project made in an agile fashion."));
+                                "About:",
+                                "DAT257 Agile Software Project Management\n\n\nElli is a office space booking app created as part of the course DAT257 at Chalmers University of Technology. \nIt consists of a web-based admin console, and a smartphone application."));
                       },
                       child: const Align(
                         alignment: Alignment.center,

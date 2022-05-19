@@ -62,7 +62,7 @@ class _HomeViewState extends State<HomeView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 10),
-            const Text("    Config",
+            const Text("    Home",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
