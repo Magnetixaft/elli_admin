@@ -413,6 +413,8 @@ class _HomeViewState extends State<HomeView> {
                                               .saveDivision(
                                               divisionName.text, infoText);
                                           Navigator.of(context).pop();
+                                          divisionName.clear();
+                                          info.clear();
                                         } else {
                                           return;
                                         }
@@ -665,6 +667,12 @@ class _HomeViewState extends State<HomeView> {
                                           FirebaseHandler.getInstance()
                                               .saveOffice(selectedDivision,
                                               officeName.text, office);
+
+                                          officeName.clear();
+                                          officeDescription.clear();
+                                          officeAddress.clear();
+                                          contactInfo.clear();
+
                                         } else {
                                           return;
                                         }
@@ -858,13 +866,9 @@ class _HomeViewState extends State<HomeView> {
     String hour9 = "16:00-17:00";
     String hour10 = "17:00-18:00";
 
-    int countWorkspace = 1;
-
     final roomNameInput = TextEditingController();
     final roomNr = TextEditingController();
     final description = TextEditingController();
-    final customTimeslot = TextEditingController();
-
 
     return Container(
       width: double.infinity,
@@ -894,7 +898,7 @@ class _HomeViewState extends State<HomeView> {
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
-                                        SizedBox(height: 4),
+                                        const SizedBox(height: 4),
                                         TextField(
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
@@ -927,14 +931,16 @@ class _HomeViewState extends State<HomeView> {
                                             final controller = TextEditingController();
                                             final field = TextField(
                                               controller: controller,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 border: OutlineInputBorder(),
-                                                labelText: "Optional: Enter equipment for workspace $countWorkspace. Seperate with \",\"",
+                                                labelText: "Optional: Enter equipment for workspace. Seperate with \",\"",
+                                                labelStyle: TextStyle(
+                                                  fontSize: 13
+                                                ),
                                                 contentPadding: EdgeInsets.all(10),
                                               ),
                                             );
                                             setState(() {
-                                              countWorkspace++;
                                               // adds the new input to a list in the top
                                               _controllersEquipment.add(controller);
                                               _fieldsEquipment.add(field);
@@ -945,8 +951,41 @@ class _HomeViewState extends State<HomeView> {
                                         ),
                                         const SizedBox(height: 6),
 
-                                        /// Calls the list with the inputs
-                                        _dynamicEquipmentList(),
+                                          /// List with the inputs for special equipment for a workspace
+                                        Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                                width: 560,
+                                                height: 170,
+                                                child: ListView.builder(
+                                                  itemCount: _fieldsEquipment.length,
+                                                  itemBuilder: (context, index) {
+                                                    return Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 4,
+                                                          child: _fieldsEquipment[index],
+                                                        ),
+                                                        const SizedBox(width: 8, height: 56),
+                                                        Expanded(
+                                                            child: ElevatedButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  _controllersEquipment.removeAt(index);
+                                                                  _fieldsEquipment.removeAt(index);
+                                                                });
+                                                              },
+                                                              child: const Text('Delete'),
+                                                            )
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                )
+                                            ),
+                                          ],
+                                        ),
 
                                         CheckboxListTile(
                                           title: const Text("Timeslots for 06:30-12:00 & 13:00-17:00"),
@@ -980,6 +1019,9 @@ class _HomeViewState extends State<HomeView> {
                                               decoration: const InputDecoration(
                                                 border: OutlineInputBorder(),
                                                 labelText: "Optional: Add new timeslot, ex: 07:30-10:00",
+                                                labelStyle: TextStyle(
+                                                  fontSize: 13
+                                                ),
                                                 contentPadding: EdgeInsets.all(10),
                                               ),
                                             );
@@ -994,11 +1036,45 @@ class _HomeViewState extends State<HomeView> {
                                         ),
                                         const SizedBox(height: 6),
 
-                                        _dynamicTimeslotList(),
-                                      ],
-                                          ),
-                                      );
-                                    }),
+                                        /// The dynamic list with timeslots for a room
+                                        Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Container(
+                                                width: 560,
+                                                height: 170,
+                                                child: ListView.builder(
+                                                  itemCount: _fieldsTimeslots.length,
+                                                  itemBuilder: (context, index) {
+                                                    return Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 4,
+                                                          child: _fieldsTimeslots[index],
+                                                        ),
+                                                        const SizedBox(width: 8, height: 56),
+                                                        Expanded(
+                                                            child: ElevatedButton(
+                                                              onPressed: () {
+                                                              setState(() {
+                                                                _controllersTimeslots.removeAt(index);
+                                                                _fieldsTimeslots.removeAt(index);
+                                                              });
+                                                            },
+                                                              child: const Text('Delete'),
+                                                            )
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                )
+                                            ),
+                                          ],
+                                        ),
+                                          ],
+                                        ),
+                                  );
+                                }),
 
                                 actions: <Widget>[
                                   ElevatedButton(
@@ -1008,39 +1084,27 @@ class _HomeViewState extends State<HomeView> {
                                             description.text.isNotEmpty) {
                                           if ((isCheckedEveryHour == true &&
                                               isCheckedTwoChoices == true) ||
-                                              (_controllersTimeslots
-                                                  .isNotEmpty &&
+                                              (_controllersTimeslots.isNotEmpty &&
                                                   (isCheckedEveryHour == true ||
-                                                      isCheckedTwoChoices ==
-                                                          true))) {
+                                                      isCheckedTwoChoices == true))) {
                                             return;
                                           }
                                           else {
-                                            Map <int,
-                                                List<
-                                                    String>> workSpaces = Map();
+                                            Map <int, List<String>> workSpaces = Map();
                                             // iterates through the inputs
-                                            for (var j = 0; j <
-                                                _controllersEquipment
-                                                    .length; j++) {
+                                            for (var j = 0; j < _controllersEquipment.length; j++) {
                                               // Gets text from the inputs
-                                              String text = _controllersEquipment[j]
-                                                  .text;
-                                              List<
-                                                  String> parsedEquipment = text
-                                                  .split(", ");
-                                              workSpaces[j + 1] =
-                                                  parsedEquipment;
+                                              String text = _controllersEquipment[j].text;
+                                              List<String> parsedEquipment = text.split(", ");
+                                              workSpaces[j + 1] = parsedEquipment;
                                             }
 
-                                            var timeslots = <
-                                                Map<String, String>>[];
+                                            var timeslots = <Map<String, String>>[];
                                             // iterates through the inputs
                                             for (var i in _controllersTimeslots) {
                                               // Gets text from the inputs
                                               String text = i.text;
-                                              List<String> slot = text.split(
-                                                  '-');
+                                              List<String> slot = text.split('-');
                                               timeslots.add({
                                                 'start': slot[0].toString(),
                                                 'end': slot[1].toString()
@@ -1127,6 +1191,15 @@ class _HomeViewState extends State<HomeView> {
                                             FirebaseHandler.getInstance()
                                                 .saveRoom(
                                                 int.parse(roomNr.text), room);
+
+                                            roomNameInput.clear();
+                                            roomNr.clear();
+                                            description.clear();
+                                            _fieldsEquipment.clear();
+                                            _fieldsTimeslots.clear();
+                                            isCheckedTwoChoices = false;
+                                            isCheckedEveryHour = false;
+
                                             Navigator.of(context).pop();
                                           }
                                         }
@@ -1240,48 +1313,6 @@ class _HomeViewState extends State<HomeView> {
           color: Colors.white,
         ),
       ),
-    );
-  }
-
-  Widget _dynamicEquipmentList() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-            width: 560,
-            height: 170,
-            child: ListView.builder(
-              itemCount: _fieldsEquipment.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.all(5),
-                  child: _fieldsEquipment[index],
-                );
-              },
-            )
-        ),
-      ],
-    );
-  }
-
-  Widget _dynamicTimeslotList() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-            width: 560,
-            height: 170,
-            child: ListView.builder(
-              itemCount: _fieldsTimeslots.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.all(5),
-                  child: _fieldsTimeslots[index],
-                );
-              },
-            )
-        ),
-      ],
     );
   }
 
