@@ -129,6 +129,7 @@ class _ConfigTabState extends State<ConfigTab> {
     );
   }
 
+  /*
   //Hopefully a new and improved version
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
@@ -138,7 +139,10 @@ class _ConfigTabState extends State<ConfigTab> {
         future: FirebaseHandler.getInstance().getAllAdmins(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {}
+            if (snapshot.hasError) {
+              final error = snapshot.error;
+              return Text('😭 $error');
+            }
             return AlertDialog(
               title: const Text("Administrators"),
               content: Column(
@@ -147,14 +151,10 @@ class _ConfigTabState extends State<ConfigTab> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
                       child: Column(
-                        children: const [
-                          Text("sug kuk")
-                          /*
-                          StreamBuilder<QuerySnapshot>(
-                              builder: (context, snapshot) {
-                        
-                          }),
-                          */
+                        children: [
+                          _adminDropDown(snapshot.data!),
+                          _buildAddNewAdmin(context),
+                          _buildDeleteSelectedAdmin(context),
                         ],
                       ),
                     ),
@@ -166,6 +166,20 @@ class _ConfigTabState extends State<ConfigTab> {
           return const Center(child: CircularProgressIndicator());
         });
   }
+
+  Widget _adminDropDown(List<Admin> adminList) {
+    List<String> names = _getAdminNames;
+    
+  }
+
+  List<String>  _getAdminNames(List<Admin> adminList){
+    List<String> names = [];
+    for(Admin admin in  adminList){
+      names.add(admin.getName());
+    }
+    return names;
+  }; 
+  */
 
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
