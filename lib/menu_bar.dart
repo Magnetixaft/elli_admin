@@ -83,7 +83,7 @@ class _MenuBarState extends State<MenuBar> {
                             child: Image.asset('assets/images/elli_E_logo.png'),
                             height: 60,
                           )),
-                //This lets the trailing logout button at the bottom.
+                //This lets the trailing logout button be at the bottom.
                 Positioned(
                     bottom: 10,
                     left: 0,
