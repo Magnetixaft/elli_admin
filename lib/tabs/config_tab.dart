@@ -15,7 +15,9 @@ class ConfigTab extends StatefulWidget {
 }
 
 class _ConfigTabState extends State<ConfigTab> {
+  //The selected Admin.
   var selectedAdmin;
+  //Spacing between fields.
   double fieldDistance = 20;
 
   ///Returns true if the text string provided could be an email
@@ -190,96 +192,6 @@ class _ConfigTabState extends State<ConfigTab> {
       ),
     );
   }
-
-  /*
-  ///Builds pop up for editing administrators.
-  ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
-  ///All buttons and text fields used here should have width: 800.
-  Widget _buildAdminEdit(BuildContext context) {
-    return AlertDialog(
-      title: const Text("Administrators"),
-      content: Column(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(25, 25, 25, 0),
-              child: Column(
-                children: [
-                  StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('Admins')
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          const Text("Loading.....");
-                        } else {
-                          List<DropdownMenuItem<String>> adminItems = [];
-                          for (int i = 0; i < snapshot.data!.docs.length; i++) {
-                            DocumentSnapshot snap = snapshot.data!.docs[i];
-                            adminItems.add(
-                              DropdownMenuItem(
-                                child: Text(
-                                  snap.id,
-                                  style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                value: snap.id,
-                              ),
-                            );
-                          }
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DropdownButton(
-                                items: adminItems,
-                                onChanged: (admin) {
-                                  setState(() {
-                                    selectedAdmin = admin;
-                                  });
-                                  Navigator.of(context).pop();
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          _buildAdminEdit(context));
-                                },
-                                value: selectedAdmin,
-                                isExpanded: false,
-                                hint: const Text(
-                                  "Choose Admin",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                        return Container();
-                      }),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  _buildAddNewAdmin(context),
-                  _buildDeleteSelectedAdmin(context),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            selectedAdmin = null;
-            Navigator.of(context).pop();
-          },
-          child: const Text('Close'),
-        ),
-      ],
-    );
-  }
-  */
 
   ///The delete admin button. Deletes the selected administrator.
   Widget _buildDeleteSelectedAdmin(BuildContext context, List<Admin> list) {

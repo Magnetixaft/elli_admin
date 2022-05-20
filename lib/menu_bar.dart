@@ -30,6 +30,7 @@ class _MenuBarState extends State<MenuBar> {
   final AuthenticationHandler authenticationHandler =
       AuthenticationHandler.getInstance();
 
+  ///Builds the menu bar Widget and fills the ramaining space with the selected tab.
   @override
   Widget build(BuildContext context) => Scaffold(
         body: Row(
