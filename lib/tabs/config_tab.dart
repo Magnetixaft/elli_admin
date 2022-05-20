@@ -120,7 +120,6 @@ class _ConfigTabState extends State<ConfigTab> {
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
   ///All buttons and text fields used here should have width: 800.
-
   Widget _buildAdminEdit2(BuildContext context) {
     return FutureBuilder<List<Admin>>(
         future: FirebaseHandler.getInstance().getAllAdmins(),
