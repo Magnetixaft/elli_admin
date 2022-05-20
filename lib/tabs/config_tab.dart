@@ -266,14 +266,14 @@ class _ConfigTabState extends State<ConfigTab> {
           child: const Text('No'),
         ),
         FlatButton(
-          onPressed: () {
-            setState(() {
-              FirebaseHandler.getInstance().removeAdmin(admin);
-              selectedAdmin = null;
-            });
-            print(selectedAdmin);
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
+          onPressed: () async {
+            await FirebaseHandler.getInstance().removeAdmin(admin);
+            selectedAdmin = null;
+            setState(() {});
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => _buildAdminEdit2(context));
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Yes'),
