@@ -1270,6 +1270,8 @@ class _HomeViewState extends State<HomeView> {
                                             roomNameInput.clear();
                                             roomNr.clear();
                                             description.clear();
+                                            _controllersEquipment.clear();
+                                            _controllersTimeslots.clear();
                                             _fieldsEquipment.clear();
                                             _fieldsTimeslots.clear();
                                             isCheckedTwoChoices = false;
