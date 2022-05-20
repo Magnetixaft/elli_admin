@@ -1,3 +1,4 @@
+import 'package:elli_admin/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -32,8 +33,10 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
               backend.selectDivision(selectedDivision);
               selectedOffice = backend.getDivisionOffices().keys.first;
 
-              divisionCardFuture = backend.generateDivisionReportCard(selectedDivision);
-              officeCardFuture = backend.generateOfficeReportCard(selectedOffice);
+              divisionCardFuture =
+                  backend.generateDivisionReportCard(selectedDivision);
+              officeCardFuture =
+                  backend.generateOfficeReportCard(selectedOffice);
             }
 
             return SingleChildScrollView(
@@ -47,9 +50,11 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                     const SizedBox(height: 10),
                     const Text("    Analytics",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        )),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                            fontFamily: 'Poppins',
+                            color: ElliColors.pink)),
+
                     const SizedBox(height: 24),
 
                     /// The dropdown menus and small header for each
@@ -96,16 +101,25 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                           child: FutureBuilder<DivisionReportCard>(
                               future: divisionCardFuture,
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                                if (snapshot.connectionState ==
+                                        ConnectionState.done &&
+                                    snapshot.data != null) {
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      _buildOfficePieCard(snapshot.data!.officeUse),
+                                      _buildOfficePieCard(
+                                          snapshot.data!.officeUse),
                                       _buildRoomCard(snapshot.data!.roomUse),
-                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
-                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
-                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
+                                      _buildWorkspaceCard(
+                                          snapshot.data!.workspaceUse),
+                                      _buildUseRateCard(
+                                          snapshot.data!.usageRate,
+                                          snapshot.data!.bookedMinutes),
+                                      _buildFutureBookingsCard(snapshot
+                                          .data!.numberOfFutureBookings),
+                                      _buildEquipmentChartCard(
+                                          snapshot.data!.equipmentUsage),
                                     ],
                                   );
                                 } else {
@@ -119,15 +133,23 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                           child: FutureBuilder<OfficeReportCard>(
                               future: officeCardFuture,
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                                if (snapshot.connectionState ==
+                                        ConnectionState.done &&
+                                    snapshot.data != null) {
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       _buildRoomCard(snapshot.data!.roomUse),
-                                      _buildWorkspaceCard(snapshot.data!.workspaceUse),
-                                      _buildUseRateCard(snapshot.data!.usageRate, snapshot.data!.bookedMinutes),
-                                      _buildFutureBookingsCard(snapshot.data!.numberOfFutureBookings),
-                                      _buildEquipmentChartCard(snapshot.data!.equipmentUsage),
+                                      _buildWorkspaceCard(
+                                          snapshot.data!.workspaceUse),
+                                      _buildUseRateCard(
+                                          snapshot.data!.usageRate,
+                                          snapshot.data!.bookedMinutes),
+                                      _buildFutureBookingsCard(snapshot
+                                          .data!.numberOfFutureBookings),
+                                      _buildEquipmentChartCard(
+                                          snapshot.data!.equipmentUsage),
                                     ],
                                   );
                                 } else {
@@ -160,7 +182,6 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
     return _buildPieChartCard<MapEntry<String, int>>(data, 'Booked offices');
   }
 
-
   /// Returns a card with a bar chart with information about used rooms
   Widget _buildRoomCard(List<MapEntry<Room, int>> roomUse) {
     if (roomUse.length > 4) {
@@ -170,12 +191,14 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
     var data = [
       charts.Series<MapEntry<Room, int>, String>(
         id: 'Room use',
-        domainFn: (entry, number) => '${entry.key.name}\nNumber:${entry.key.roomNr.toString()}',
+        domainFn: (entry, number) =>
+            '${entry.key.name}\nNumber:${entry.key.roomNr.toString()}',
         measureFn: (entry, number) => entry.value,
         data: roomUse,
       )
     ];
-    return _buildBarChartCard<MapEntry<Room, int>>(data, 'Booked rooms [bookings]');
+    return _buildBarChartCard<MapEntry<Room, int>>(
+        data, 'Booked rooms [bookings]');
   }
 
   /// Returns a card with a bar chart with information about booked workspaces.
@@ -187,12 +210,14 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
     var data = [
       charts.Series<MapEntry<String, int>, String>(
         id: 'Workspace use',
-        domainFn: (entry, number) => 'Room:${entry.key.split(' ')[0]}\nSpace: ${entry.key.split(' ')[1]}',
+        domainFn: (entry, number) =>
+            'Room:${entry.key.split(' ')[0]}\nSpace: ${entry.key.split(' ')[1]}',
         measureFn: (entry, number) => entry.value,
         data: workspaceUse,
       )
     ];
-    return _buildBarChartCard<MapEntry<String, int>>(data, 'Booked workspaces [bookings]');
+    return _buildBarChartCard<MapEntry<String, int>>(
+        data, 'Booked workspaces [bookings]');
   }
 
   /// Returns a card with information about how much time has been booked compared to the total amount.
@@ -219,8 +244,12 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         'Usage rate in the past three weeks',
                         style: TextStyle(fontSize: 16),
                       ),
-                      Text('${(bookedMinutes / 60).toStringAsFixed(1)} Hours booked', style: const TextStyle(fontSize: 36)),
-                      Text('${(useRate * 100).toStringAsFixed(1)} % of bookable hours', style: const TextStyle(fontSize: 36)),
+                      Text(
+                          '${(bookedMinutes / 60).toStringAsFixed(1)} Hours booked',
+                          style: const TextStyle(fontSize: 36)),
+                      Text(
+                          '${(useRate * 100).toStringAsFixed(1)} % of bookable hours',
+                          style: const TextStyle(fontSize: 36)),
                     ],
                   )),
               color: Colors.grey.shade100,
@@ -255,7 +284,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
                         'Number of future bookings',
                         style: TextStyle(fontSize: 16),
                       ),
-                      Text('$numberOfFutureBookings Future bookings', style: const TextStyle(fontSize: 36))
+                      Text('$numberOfFutureBookings Future bookings',
+                          style: const TextStyle(fontSize: 36))
                     ],
                   )),
               color: Colors.grey.shade100,
@@ -279,11 +309,13 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
         data: equipmentUse,
       )
     ];
-    return _buildBarChartCard<MapEntry<String, int>>(data, 'Most booked equipment');
+    return _buildBarChartCard<MapEntry<String, int>>(
+        data, 'Most booked equipment');
   }
 
   /// Renders a card with a bar chart based on the information contained in [data].
-  Widget _buildBarChartCard<T>(List<charts.Series<T, String>> data, String header) {
+  Widget _buildBarChartCard<T>(
+      List<charts.Series<T, String>> data, String header) {
     return Column(
       children: [
         const SizedBox(
@@ -303,7 +335,9 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
             height: 400,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-              child: Padding(padding: const EdgeInsets.all(16), child: charts.BarChart(data)),
+              child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: charts.BarChart(data)),
             ),
           ),
         ),
@@ -312,7 +346,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
   }
 
   /// Renders a card with a pie chart based on the information contained in [data].
-  Widget _buildPieChartCard<T>(List<charts.Series<T, String>> data, String header) {
+  Widget _buildPieChartCard<T>(
+      List<charts.Series<T, String>> data, String header) {
     return Column(
       children: [
         const SizedBox(
@@ -373,7 +408,8 @@ class _AnalyticsTabState extends State<AnalyticsTab> {
           selectedDivision = divisionString;
           backend.selectDivision(divisionString);
           selectedOffice = backend.getDivisionOffices().keys.first;
-          divisionCardFuture = backend.generateDivisionReportCard(selectedDivision);
+          divisionCardFuture =
+              backend.generateDivisionReportCard(selectedDivision);
           officeCardFuture = backend.generateOfficeReportCard(selectedOffice);
         });
       },
