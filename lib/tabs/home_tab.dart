@@ -174,7 +174,7 @@ class _HomeViewState extends State<HomeView> {
                                       },
                                     );
                                   } else if (snapshot.connectionState ==
-                                          ConnectionState.done &&
+                                      ConnectionState.done &&
                                       !snapshot.hasData) {
                                     return const Text('Not Found');
                                   } else {
@@ -217,18 +217,18 @@ class _HomeViewState extends State<HomeView> {
                                             if (selectedOffice ==
                                                 snapshot.data!.docs[index].id) {
                                               String contactInfo = (snapshot
-                                                              .data!.docs[index]
-                                                              .data()
-                                                          as Map<String,
-                                                              dynamic>)[
-                                                      'ContactInfo'] ??
+                                                  .data!.docs[index]
+                                                  .data()
+                                              as Map<String,
+                                                  dynamic>)[
+                                              'ContactInfo'] ??
                                                   'No contact information';
                                               return _buildOfficeCard(
                                                   selectedOffice,
                                                   snapshot.data!.docs[index]
-                                                      ['Address'],
+                                                  ['Address'],
                                                   snapshot.data!.docs[index]
-                                                      ['Description'],
+                                                  ['Description'],
                                                   contactInfo);
                                             } else {
                                               return Container();
@@ -236,7 +236,7 @@ class _HomeViewState extends State<HomeView> {
                                           }
                                         });
                                   } else if (snapshot.connectionState ==
-                                          ConnectionState.done &&
+                                      ConnectionState.done &&
                                       !snapshot.hasData) {
                                     return const Text('Not Found');
                                   } else {
@@ -289,7 +289,7 @@ class _HomeViewState extends State<HomeView> {
                                       },
                                     );
                                   } else if (snapshot.connectionState ==
-                                          ConnectionState.done &&
+                                      ConnectionState.done &&
                                       !snapshot.hasData) {
                                     return const Text('Not Found');
                                   } else {
@@ -394,7 +394,7 @@ class _HomeViewState extends State<HomeView> {
                             inset = inset > 0 ? inset : 0;
                             return Padding(
                               padding:
-                                  EdgeInsets.only(left: inset, right: inset),
+                              EdgeInsets.only(left: inset, right: inset),
                               child: AlertDialog(
                                 title: const Text('Add new company'),
                                 content: Column(
@@ -412,7 +412,7 @@ class _HomeViewState extends State<HomeView> {
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         labelText:
-                                            'Optional information for admins',
+                                        'Optional information for admins',
                                       ),
                                       controller: info,
                                     ),
@@ -427,7 +427,7 @@ class _HomeViewState extends State<HomeView> {
                                               : ' ';
                                           FirebaseHandler.getInstance()
                                               .saveDivision(
-                                                  divisionName.text, infoText);
+                                              divisionName.text, infoText);
                                           Navigator.of(context).pop();
                                           divisionName.clear();
                                           info.clear();
@@ -492,7 +492,7 @@ class _HomeViewState extends State<HomeView> {
                             showDialog<void>(
                               context: context,
                               barrierDismissible:
-                                  false, // user must tap button!
+                              false, // user must tap button!
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text('Delete $selectedDivision'),
@@ -630,7 +630,7 @@ class _HomeViewState extends State<HomeView> {
                             inset = inset > 0 ? inset : 0;
                             return Padding(
                               padding:
-                                  EdgeInsets.only(left: inset, right: inset),
+                              EdgeInsets.only(left: inset, right: inset),
                               child: AlertDialog(
                                 title: const Text('Add new office'),
                                 content: Column(
@@ -664,7 +664,7 @@ class _HomeViewState extends State<HomeView> {
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(),
                                         labelText:
-                                            'Enter optional contact info',
+                                        'Enter optional contact info',
                                       ),
                                       controller: contactInfo,
                                     ),
@@ -678,9 +678,9 @@ class _HomeViewState extends State<HomeView> {
                                             officeDescription.text.isNotEmpty) {
                                           Navigator.of(context).pop();
                                           var contactText =
-                                              contactInfo.text.isNotEmpty
-                                                  ? contactInfo.text
-                                                  : 'No contact information';
+                                          contactInfo.text.isNotEmpty
+                                              ? contactInfo.text
+                                              : 'No contact information';
 
                                           Office office = Office(
                                               officeAddress.text,
@@ -688,7 +688,7 @@ class _HomeViewState extends State<HomeView> {
                                               contactText);
                                           FirebaseHandler.getInstance()
                                               .saveOffice(selectedDivision,
-                                                  officeName.text, office);
+                                              officeName.text, office);
 
                                           officeName.clear();
                                           officeDescription.clear();
@@ -756,7 +756,7 @@ class _HomeViewState extends State<HomeView> {
                             showDialog<void>(
                               context: context,
                               barrierDismissible:
-                                  false, // user must tap button!
+                              false, // user must tap button!
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text('Delete $selectedOffice'),
@@ -781,7 +781,7 @@ class _HomeViewState extends State<HomeView> {
                                         setState(() {
                                           FirebaseHandler.getInstance()
                                               .removeOffice(selectedDivision,
-                                                  selectedOffice);
+                                              selectedOffice);
                                           selectedOffice = null;
                                         });
                                         Navigator.of(context).pop();
@@ -915,228 +915,228 @@ class _HomeViewState extends State<HomeView> {
                             inset = inset > 0 ? inset : 0;
                             return Padding(
                               padding:
-                                  EdgeInsets.only(left: inset, right: inset),
+                              EdgeInsets.only(left: inset, right: inset),
                               child: AlertDialog(
                                 title: const Text('Add new room'),
                                 content: StatefulBuilder(
                                     builder: (context, setState) {
-                                  return SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        const SizedBox(height: 4),
-                                        TextField(
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Enter room name',
-                                          ),
-                                          controller: roomNameInput,
-                                        ),
-                                        const SizedBox(height: 6),
-                                        TextField(
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Enter room number',
-                                          ),
-                                          controller: roomNr,
-                                        ),
-                                        const SizedBox(height: 6),
-                                        TextField(
-                                          decoration: const InputDecoration(
-                                            border: OutlineInputBorder(),
-                                            labelText: 'Description',
-                                          ),
-                                          controller: description,
-                                        ),
-                                        const SizedBox(height: 12),
+                                      return SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            const SizedBox(height: 4),
+                                            TextField(
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: 'Enter room name',
+                                              ),
+                                              controller: roomNameInput,
+                                            ),
+                                            const SizedBox(height: 6),
+                                            TextField(
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: 'Enter room number',
+                                              ),
+                                              controller: roomNr,
+                                            ),
+                                            const SizedBox(height: 6),
+                                            TextField(
+                                              decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                labelText: 'Description',
+                                              ),
+                                              controller: description,
+                                            ),
+                                            const SizedBox(height: 12),
 
-                                        /// Button for adding new inputs
-                                        ListTile(
-                                          title:
+                                            /// Button for adding new inputs
+                                            ListTile(
+                                              title:
                                               const Text('Add new workspace'),
-                                          onTap: () {
-                                            final controller =
+                                              onTap: () {
+                                                final controller =
                                                 TextEditingController();
-                                            final field = TextField(
-                                              controller: controller,
-                                              decoration: const InputDecoration(
-                                                border: OutlineInputBorder(),
-                                                labelText:
+                                                final field = TextField(
+                                                  controller: controller,
+                                                  decoration: const InputDecoration(
+                                                    border: OutlineInputBorder(),
+                                                    labelText:
                                                     "Optional: Enter equipment for workspace. Seperate with \",\"",
-                                                labelStyle:
+                                                    labelStyle:
                                                     TextStyle(fontSize: 13),
-                                                contentPadding:
+                                                    contentPadding:
                                                     EdgeInsets.all(10),
-                                              ),
-                                            );
-                                            setState(() {
-                                              // adds the new input to a list in the top
-                                              _controllersEquipment
-                                                  .add(controller);
-                                              _fieldsEquipment.add(field);
-                                            });
-                                          },
-                                          tileColor: Colors.grey[100],
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
+                                                  ),
+                                                );
+                                                setState(() {
+                                                  // adds the new input to a list in the top
+                                                  _controllersEquipment
+                                                      .add(controller);
+                                                  _fieldsEquipment.add(field);
+                                                });
+                                              },
+                                              tileColor: Colors.grey[100],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
                                                   BorderRadius.circular(3.0)),
-                                        ),
-                                        const SizedBox(height: 6),
+                                            ),
+                                            const SizedBox(height: 6),
 
-                                        /// List with the inputs for special equipment for a workspace
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                                width: 560,
-                                                height: 170,
-                                                child: ListView.builder(
-                                                  itemCount:
+                                            /// List with the inputs for special equipment for a workspace
+                                            Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                    width: 560,
+                                                    height: 170,
+                                                    child: ListView.builder(
+                                                      itemCount:
                                                       _fieldsEquipment.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return Row(
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 4,
-                                                          child:
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Row(
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 4,
+                                                              child:
                                                               _fieldsEquipment[
-                                                                  index],
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 8,
-                                                            height: 56),
-                                                        Expanded(
-                                                            child:
+                                                              index],
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 8,
+                                                                height: 56),
+                                                            Expanded(
+                                                                child:
                                                                 ElevatedButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              _controllersEquipment
-                                                                  .removeAt(
-                                                                      index);
-                                                              _fieldsEquipment
-                                                                  .removeAt(
-                                                                      index);
-                                                            });
-                                                          },
-                                                          child: const Text(
-                                                              'Delete'),
-                                                        ))
-                                                      ],
-                                                    );
-                                                  },
-                                                )),
-                                          ],
-                                        ),
+                                                                  onPressed: () {
+                                                                    setState(() {
+                                                                      _controllersEquipment
+                                                                          .removeAt(
+                                                                          index);
+                                                                      _fieldsEquipment
+                                                                          .removeAt(
+                                                                          index);
+                                                                    });
+                                                                  },
+                                                                  child: const Text(
+                                                                      'Delete'),
+                                                                ))
+                                                          ],
+                                                        );
+                                                      },
+                                                    )),
+                                              ],
+                                            ),
 
-                                        CheckboxListTile(
-                                          title: const Text(
-                                              "Timeslots for 06:30-12:00 & 13:00-17:00"),
-                                          value: isCheckedTwoChoices,
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              isCheckedTwoChoices = newValue!;
-                                            });
-                                          },
-                                          controlAffinity: ListTileControlAffinity
-                                              .leading, //  <-- leading Checkbox
-                                        ),
-                                        CheckboxListTile(
-                                          title: const Text(
-                                              "Timeslots for every hour between 08:00-18:00"),
-                                          value: isCheckedEveryHour,
-                                          onChanged: (val) {
-                                            setState(() {
-                                              isCheckedEveryHour = val!;
-                                            });
-                                          },
-                                          controlAffinity: ListTileControlAffinity
-                                              .leading, //  <-- leading Checkbox
-                                        ),
-                                        const SizedBox(height: 12),
+                                            CheckboxListTile(
+                                              title: const Text(
+                                                  "Timeslots for 06:30-12:00 & 13:00-17:00"),
+                                              value: isCheckedTwoChoices,
+                                              onChanged: (newValue) {
+                                                setState(() {
+                                                  isCheckedTwoChoices = newValue!;
+                                                });
+                                              },
+                                              controlAffinity: ListTileControlAffinity
+                                                  .leading, //  <-- leading Checkbox
+                                            ),
+                                            CheckboxListTile(
+                                              title: const Text(
+                                                  "Timeslots for every hour between 08:00-18:00"),
+                                              value: isCheckedEveryHour,
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  isCheckedEveryHour = val!;
+                                                });
+                                              },
+                                              controlAffinity: ListTileControlAffinity
+                                                  .leading, //  <-- leading Checkbox
+                                            ),
+                                            const SizedBox(height: 12),
 
-                                        /// Button for adding new timeslots
-                                        ListTile(
-                                          title: const Text(
-                                              'Or: Add new custom timeslot'),
-                                          onTap: () {
-                                            final controller =
+                                            /// Button for adding new timeslots
+                                            ListTile(
+                                              title: const Text(
+                                                  'Or: Add new custom timeslot'),
+                                              onTap: () {
+                                                final controller =
                                                 TextEditingController();
-                                            final field = TextField(
-                                              controller: controller,
-                                              decoration: const InputDecoration(
-                                                border: OutlineInputBorder(),
-                                                labelText:
+                                                final field = TextField(
+                                                  controller: controller,
+                                                  decoration: const InputDecoration(
+                                                    border: OutlineInputBorder(),
+                                                    labelText:
                                                     "Optional: Add new timeslot, ex: 07:30-10:00",
-                                                labelStyle:
+                                                    labelStyle:
                                                     TextStyle(fontSize: 13),
-                                                contentPadding:
+                                                    contentPadding:
                                                     EdgeInsets.all(10),
-                                              ),
-                                            );
-                                            setState(() {
-                                              // adds the new input to a list in the top
-                                              _controllersTimeslots
-                                                  .add(controller);
-                                              _fieldsTimeslots.add(field);
-                                            });
-                                          },
-                                          tileColor: Colors.grey[100],
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
+                                                  ),
+                                                );
+                                                setState(() {
+                                                  // adds the new input to a list in the top
+                                                  _controllersTimeslots
+                                                      .add(controller);
+                                                  _fieldsTimeslots.add(field);
+                                                });
+                                              },
+                                              tileColor: Colors.grey[100],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
                                                   BorderRadius.circular(3.0)),
-                                        ),
-                                        const SizedBox(height: 6),
+                                            ),
+                                            const SizedBox(height: 6),
 
-                                        /// The dynamic list with timeslots for a room
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Container(
-                                                width: 560,
-                                                height: 170,
-                                                child: ListView.builder(
-                                                  itemCount:
+                                            /// The dynamic list with timeslots for a room
+                                            Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                    width: 560,
+                                                    height: 170,
+                                                    child: ListView.builder(
+                                                      itemCount:
                                                       _fieldsTimeslots.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return Row(
-                                                      children: [
-                                                        Expanded(
-                                                          flex: 4,
-                                                          child:
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Row(
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 4,
+                                                              child:
                                                               _fieldsTimeslots[
-                                                                  index],
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 8,
-                                                            height: 56),
-                                                        Expanded(
-                                                            child:
+                                                              index],
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 8,
+                                                                height: 56),
+                                                            Expanded(
+                                                                child:
                                                                 ElevatedButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              _controllersTimeslots
-                                                                  .removeAt(
-                                                                      index);
-                                                              _fieldsTimeslots
-                                                                  .removeAt(
-                                                                      index);
-                                                            });
-                                                          },
-                                                          child: const Text(
-                                                              'Delete'),
-                                                        ))
-                                                      ],
-                                                    );
-                                                  },
-                                                )),
+                                                                  onPressed: () {
+                                                                    setState(() {
+                                                                      _controllersTimeslots
+                                                                          .removeAt(
+                                                                          index);
+                                                                      _fieldsTimeslots
+                                                                          .removeAt(
+                                                                          index);
+                                                                    });
+                                                                  },
+                                                                  child: const Text(
+                                                                      'Delete'),
+                                                                ))
+                                                          ],
+                                                        );
+                                                      },
+                                                    )),
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                      );
+                                    }),
                                 actions: <Widget>[
                                   ElevatedButton(
                                       onPressed: () async {
@@ -1144,41 +1144,41 @@ class _HomeViewState extends State<HomeView> {
                                             roomNr.text.isNotEmpty &&
                                             description.text.isNotEmpty) {
                                           if ((isCheckedEveryHour == true &&
-                                                  isCheckedTwoChoices ==
-                                                      true) ||
+                                              isCheckedTwoChoices ==
+                                                  true) ||
                                               (_controllersTimeslots
-                                                      .isNotEmpty &&
+                                                  .isNotEmpty &&
                                                   (isCheckedEveryHour == true ||
                                                       isCheckedTwoChoices ==
                                                           true))) {
                                             return;
                                           } else {
                                             Map<int, List<String>> workSpaces =
-                                                Map();
+                                            Map();
                                             // iterates through the inputs
                                             for (var j = 0;
-                                                j <
-                                                    _controllersEquipment
-                                                        .length;
-                                                j++) {
+                                            j <
+                                                _controllersEquipment
+                                                    .length;
+                                            j++) {
                                               // Gets text from the inputs
                                               String text =
                                                   _controllersEquipment[j].text;
                                               List<String> parsedEquipment =
-                                                  text.split(", ");
+                                              text.split(", ");
                                               workSpaces[j + 1] =
                                                   parsedEquipment;
                                             }
 
                                             var timeslots =
-                                                <Map<String, String>>[];
+                                            <Map<String, String>>[];
                                             // iterates through the inputs
                                             for (var i
-                                                in _controllersTimeslots) {
+                                            in _controllersTimeslots) {
                                               // Gets text from the inputs
                                               String text = i.text;
                                               List<String> slot =
-                                                  text.split('-');
+                                              text.split('-');
                                               timeslots.add({
                                                 'start': slot[0].toString(),
                                                 'end': slot[1].toString()
@@ -1264,8 +1264,8 @@ class _HomeViewState extends State<HomeView> {
                                                 roomNameInput.text);
                                             FirebaseHandler.getInstance()
                                                 .saveRoom(
-                                                    int.parse(roomNr.text),
-                                                    room);
+                                                int.parse(roomNr.text),
+                                                room);
 
                                             roomNameInput.clear();
                                             roomNr.clear();
@@ -1338,7 +1338,7 @@ class _HomeViewState extends State<HomeView> {
                             showDialog<void>(
                               context: context,
                               barrierDismissible:
-                                  false, // user must tap button!
+                              false, // user must tap button!
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('AlertDialog Title'),
@@ -1363,7 +1363,7 @@ class _HomeViewState extends State<HomeView> {
                                         setState(() {
                                           FirebaseHandler.getInstance()
                                               .removeRoom(int.parse(
-                                                  selectedRoom.toString()));
+                                              selectedRoom.toString()));
                                           selectedRoom = null;
                                         });
                                         Navigator.of(context).pop();
