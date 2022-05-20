@@ -19,10 +19,11 @@ class _HomeViewState extends State<HomeView> {
   var selectedOffice;
   var selectedRoom;
 
-  /// Lists that hold textinputs
+  /// Lists that hold textinputs for special equipment for workspaces
   final List<TextEditingController> _controllersEquipment = [];
   final List<TextField> _fieldsEquipment = [];
 
+  /// Lists that hold textinputs for custom timeslots for workspaces
   final List<TextEditingController> _controllersTimeslots = [];
   final List<TextField> _fieldsTimeslots = [];
 
@@ -38,6 +39,7 @@ class _HomeViewState extends State<HomeView> {
     setState(() {});
   }
 
+  /// Returns the entire view if connection with the database is established
   @override
   Widget build(BuildContext context) {
     FirebaseHandler backend = FirebaseHandler.getInstance();
@@ -278,7 +280,7 @@ class _HomeViewState extends State<HomeView> {
                                               snapshot.data!.docs[index].id) {
                                             return _buildRoomCard(
                                                 selectedRoom,
-                                                totalRoomCount(
+                                                totalWorkspaceCount(
                                                     int.parse(selectedRoom)));
                                           } else {
                                             return Container();
@@ -1388,7 +1390,8 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  int totalRoomCount(int roomNr) {
+  /// This returns the total number of workspaces within a specific room
+  int totalWorkspaceCount(int roomNr) {
     int count = 0;
     Room room = FirebaseHandler.getInstance().getRoom(roomNr);
     for (int i = 0; i < room.workspaces.values.length; i++) {
