@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
-import 'models/space.dart';
 
 
 /* Under arbete, men längst ner finns de värdena jag ser som intresanta */
