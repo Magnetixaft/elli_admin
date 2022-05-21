@@ -1,3 +1,4 @@
+import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/material.dart';
 import 'package:elli_admin/firebase_handler.dart';
 import '../theme.dart';
@@ -5,8 +6,10 @@ import '../theme.dart';
 /// A tab for viewing the admin config settings for ELLI
 ///
 /// Allows an admin to edit the Admin priviliges, and view the about section.
-//TODO implement hashing for the admin emails.
-//TODO apply notifications for blocked actions
+//TODO apply notifications for blocked actions such as;
+//  - It is not possible to delete a user if no user is selected.
+//  - There is no feedback for trying to enter something that is not an email in the email field
+//  - something more?
 class ConfigTab extends StatefulWidget {
   const ConfigTab({Key? key}) : super(key: key);
 
@@ -20,7 +23,17 @@ class _ConfigTabState extends State<ConfigTab> {
   //Spacing between fields.
   double fieldDistance = 20;
 
-  ///Returns true if the text string provided could be an email
+  ///Encrypts users [email] and returns it as a string.
+  String encryptEmail(String email) {
+    final key = enc.Key.fromUtf8('testkeytestkeytestkeytestkeytest');
+    final iv = enc.IV.fromLength(16);
+    final encrypter = enc.Encrypter(enc.AES(key));
+    return encrypter.encrypt(email, iv: iv).base64;
+  }
+
+  ///Returns true if the text string provided could be an email,
+  ///Meaning it follows the format user@domain.something.
+  ///The method does not check if the email actually exists.
   bool isEmail(String email) {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -96,7 +109,7 @@ class _ConfigTabState extends State<ConfigTab> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) =>
-                                _buildAdminEdit2(context));
+                                _buildAdminEdit(context));
                       },
                       child: const Align(
                         alignment: Alignment.center,
@@ -120,8 +133,7 @@ class _ConfigTabState extends State<ConfigTab> {
   ///Builds pop up for editing administrators.
   ///The window adapts fills the screen vertically and adapts itself to the buttons horizontally.
   ///All buttons and text fields used here should have width: 800.
-
-  Widget _buildAdminEdit2(BuildContext context) {
+  Widget _buildAdminEdit(BuildContext context) {
     return FutureBuilder<List<Admin>>(
         future: FirebaseHandler.getInstance().getAllAdmins(),
         builder: (context, snapshot) {
@@ -182,7 +194,7 @@ class _ConfigTabState extends State<ConfigTab> {
         Navigator.of(context).pop();
         showDialog(
             context: context,
-            builder: (BuildContext context) => _buildAdminEdit2(context));
+            builder: (BuildContext context) => _buildAdminEdit(context));
       },
       value: selectedAdmin,
       isExpanded: false,
@@ -267,14 +279,14 @@ class _ConfigTabState extends State<ConfigTab> {
           child: const Text('No'),
         ),
         FlatButton(
-          onPressed: () {
-            setState(() {
-              FirebaseHandler.getInstance().removeAdmin(admin);
-              selectedAdmin = null;
-            });
-            print(selectedAdmin);
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
+          onPressed: () async {
+            await FirebaseHandler.getInstance().removeAdmin(admin);
+            selectedAdmin = null;
+            setState(() {});
+            Navigator.of(context).popUntil((route) => route.isFirst);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => _buildAdminEdit(context));
           },
           textColor: Theme.of(context).primaryColor,
           child: const Text('Yes'),
@@ -338,15 +350,15 @@ class _ConfigTabState extends State<ConfigTab> {
             child: ElevatedButton.icon(
               onPressed: () async {
                 if (name.text.isNotEmpty && isEmail(email.text)) {
-                  await FirebaseHandler.getInstance()
-                      .addAdmin(email.text.toLowerCase(), "all", name.text);
+                  await FirebaseHandler.getInstance().addAdmin(
+                      encryptEmail(email.text.toLowerCase()), "all", name.text);
                   selectedAdmin = null;
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                   showDialog(
                       context: context,
                       builder: (BuildContext context) =>
-                          _buildAdminEdit2(context));
+                          _buildAdminEdit(context));
                 } else {
                   return;
                 }
