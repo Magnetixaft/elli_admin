@@ -3,6 +3,11 @@
 Group: Queen
 DAT257 Agile Software Project Management
 
+## Repository file structure
+
+* Docs - DartDocs for the entire app available [here](https://github.com/Magnetixaft/AgileQueen/tree/main/Docs)
+* Source code is available directly in this repo. Classes are located in [lib](https://github.com/Magnetixaft/AgileQueen/tree/main/lib)
+
 ## About Elli
 
 Elli is a office space booking app created as part of the course DAT257 at Chalmers University of Technology. It consists of a web-based admin console, available in this repository, and a smartphone application available [here](https://github.com/Magnetixaft/AgileQueen).
