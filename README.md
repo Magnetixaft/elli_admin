@@ -5,7 +5,7 @@ DAT257 Agile Software Project Management
 
 ## Repository file structure
 
-* Docs - DartDocs for the entire app available [here](https://github.com/Magnetixaft/AgileQueen/tree/main/Docs)
+* Docs - DartDocs for the entire app is available [here](https://github.com/Magnetixaft/elli_admin/tree/master/Docs)
 * Source code is available directly in this repo. Classes are located in [lib](https://github.com/Magnetixaft/AgileQueen/tree/main/lib)
 
 ## About Elli
@@ -30,4 +30,4 @@ Run from source:
 
 ## Documentation
 
-Elli's codebase is documented using [DartDoc](https://dart.dev/guides/language/effective-dart/documentation). To view the compiled docs, kindly download the files from [here](https://github.com/Magnetixaft/AgileQueen/tree/main/Docs) and open `index.html` using your favorite browser.
+Elli's codebase is documented using [DartDoc](https://dart.dev/guides/language/effective-dart/documentation). To view the compiled docs, kindly download the files from [here](https://github.com/Magnetixaft/elli_admin/tree/master/Docs) and open `index.html` using your favorite browser.
